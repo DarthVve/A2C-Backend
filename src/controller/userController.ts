@@ -1,8 +1,9 @@
-import express, { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { userSchema, options } from '../utility/utils';
 import { UserInstance } from '../model/userModel';
 import bcrypt from 'bcryptjs';
+import { Op } from 'sequelize';
 
 export async function registerUser(req: Request, res: Response, next: NextFunction) {
   try {
@@ -13,11 +14,19 @@ export async function registerUser(req: Request, res: Response, next: NextFuncti
       return res.status(400).json({ Error: validationResult.error.details[0].message });
     }
 
-    // const duplicateEmail = await UserInstance.findOne({ where: { email: req.body.email } });
+    const duplicate = await UserInstance.findOne({
+      where: {
+        [Op.or]: [
+          { username: req.body.username },
+          { email: req.body.email },
+          { phonenumber: req.body.phonenumber }
+        ]
+      }
+    });
 
-    // if (duplicateEmail) {
-    //   return res.status(409).json({ msg: 'Email has been used, enter new email' });
-    // }
+    if (duplicate) {
+      return res.status(409).json({ msg: 'Enter a unique username, email, or phonenumber' });
+    }
 
     const passwordHash = await bcrypt.hash(req.body.password, 8);
     const record = await UserInstance.create({

@@ -50,7 +50,7 @@ UserInstance.init(
     username: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      //unique: true,
       validate: {
         notNull: {
           msg: 'Enter a username'
@@ -63,7 +63,7 @@ UserInstance.init(
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      //unique: true,
       validate: {
         notNull: {
           msg: 'email is required'
@@ -76,7 +76,7 @@ UserInstance.init(
     phonenumber: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      //unique: true,
       validate: {
         notNull: {
           msg: 'Phone Number is required'
