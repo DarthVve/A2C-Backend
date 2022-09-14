@@ -1,45 +1,52 @@
-import express, { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { registerSchema, options } from '../utility/utils';
+import { userSchema, options } from '../utility/utils';
 import { UserInstance } from '../model/userModel';
 import bcrypt from 'bcryptjs';
+import { Op } from 'sequelize';
 
-export async function RegisterUser(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
-  const id = uuidv4();
+export async function registerUser(req: Request, res: Response, next: NextFunction) {
   try {
-    const validationResult = registerSchema.validate(req.body, options);
+    const id = uuidv4();
+    const validationResult = userSchema.validate(req.body, options);
+
     if (validationResult.error) {
-      return res.status(400).json({
-        Error: validationResult.error.details[0].message,
-      });
+      return res.status(400).json({ Error: validationResult.error.details[0].message });
     }
-    const duplicatEmail = await UserInstance.findOne({
-      where: { email: req.body.email },
+
+    const duplicate = await UserInstance.findOne({
+      where: {
+        [Op.or]: [
+          { username: req.body.username },
+          { email: req.body.email },
+          { phonenumber: req.body.phonenumber }
+        ]
+      }
     });
-    if (duplicatEmail) {
-      return res.status(409).json({
-        msg: 'Email is used, please change email',
-      });
+
+    if (duplicate) {
+      return res.status(409).json({ msg: 'Enter a unique username, email, or phonenumber' });
     }
 
     const passwordHash = await bcrypt.hash(req.body.password, 8);
     const record = await UserInstance.create({
       id: id,
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      username: req.body.username,
       email: req.body.email,
+      phonenumber: req.body.phonenumber,
       password: passwordHash,
+      avatar: '',
+      verified: false
     });
+
     res.status(201).json({
-      msg: 'You have successfully created a user',
-      record,
+      msg: 'User created successfully',
+      record
     });
   } catch (err) {
-    res.status(500).json({
-      msg: 'failed to register',
-      route: '/register',
-    });
+    console.log(err)
+    res.status(500).json({ msg: 'failed to register', route: '/register' });
   }
-}
+};

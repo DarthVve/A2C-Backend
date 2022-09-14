@@ -1,11 +1,8 @@
-import db from './db/database.config';
-
 import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
-
-import indexRouter from './routes/index';
+import db from './db/database.config';
 import userRouter from './routes/user';
 
 db.sync()
@@ -24,7 +21,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
 app.use('/user', userRouter);
 
 export default app;
