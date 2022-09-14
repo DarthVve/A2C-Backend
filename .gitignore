@@ -14,6 +14,7 @@ dist-ssr
 database.sqlite
 test.sqlite
 package-lock.json
+coverage
 
 # Editor directories and files
 .vscode/*
