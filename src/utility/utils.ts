@@ -22,8 +22,8 @@ export const userSchema = Joi.object().keys({
   confirm_password: Joi.ref('password')
 }).with('password', 'confirm_password');
 
-export const loginSchema = Joi.object()
-  .keys({
+//User Login schema
+export const loginSchema = Joi.object().keys({
     emailOrUsername: Joi.string().trim().required(),
     password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
   })

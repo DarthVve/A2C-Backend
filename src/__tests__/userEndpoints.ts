@@ -3,7 +3,7 @@ import request from 'supertest';
 import userRouter from '../routes/user';
 import db from '../db/database.config';
 
-process.env.JWT_SECRET = 'secret';
+// process.env.JWT_SECRET = 'secret';
 
 beforeAll(async () => {
   await db.sync({ force: true })
@@ -136,7 +136,7 @@ describe('User Login API Integration test', () => {
 
   test('POST /user/login - failure - user not verified', async () => {
     const [results] = await db.query('UPDATE usertable SET verified = false WHERE email = "jds@gmail.com";')
-    
+
     const { body, statusCode } = await request(app).post('/user/login').send({
       emailOrUsername: "jasydizzy",
       password: "test",
