@@ -47,6 +47,7 @@ describe('User Sign-up API Integration test', () => {
     })
 
     expect(statusCode).toBe(400);
+    expect(body).toHaveProperty('Error');
   });
 
   test('POST /user/register - failure - User already exists', async () => {
