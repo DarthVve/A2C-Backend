@@ -1,5 +1,5 @@
 export function emailVerificationView(token: string): string {
-  const link = `${process.env.REACT_LINK}/verifypage/${token}`;
+  const link =`${process.env.ROOT_URL}/user/verify/${token}`;
   let temp = `
   <div
   style="

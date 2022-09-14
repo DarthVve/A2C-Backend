@@ -144,4 +144,5 @@ describe('User Login API Integration test', () => {
     expect(statusCode).toBe(401);
     expect(body.msg).toBe('Your account has not been verified');
   });
+  
 });

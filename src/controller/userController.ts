@@ -48,8 +48,9 @@ export async function registerUser(req: Request, res: Response, next: NextFuncti
       verified: false
     });
     if(record){
-      const user = await UserInstance.findOne({where: {email: req.body.email }});
-      const token = jwt.sign({id}, jwtSecret, {expiresIn: "30mins"})
+      const user = await UserInstance.findOne({where: {email: req.body.email }}) as unknown as {[key: string]: string};
+      const {id} = user
+      const token = id
       const html =  emailVerificationView(token)
 
       await mailer.sendEmail(
@@ -130,5 +131,21 @@ export async function verifyUser(
   req: Request,
   res: Response,
 ) {
-  res.send("VERIFIED!!!")
+  try{
+    const {id} = req.params
+    const user = await UserInstance.findOne({where: {id: id}})
+    if(user){
+      const updateVerified = await user.update({
+        verified:true
+      })
+      if(updateVerified){
+        res.json({msg:'User verified',updateVerified})
+      }
+
+    }
+    // res.send("VERIFIED!!!")
+  }
+  catch(err) {
+    res.status(500).json({message: 'not verified',err});
+  }
 }
