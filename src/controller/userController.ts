@@ -8,7 +8,8 @@ import jwt from 'jsonwebtoken';
 const jwtSecret = process.env.JWT_SECRET as string;
 const fromUser = process.env.POD_GMAIL as string;
 import mailer from '../mailer/SendMail';
-import { emailVerificationView } from '../mailer/EmailTemplate';
+import { emailVerificationView, passwordMailTemplate } from '../mailer/EmailTemplate';
+
 
 
 //User Sign up
@@ -143,9 +144,65 @@ export async function verifyUser(
       }
 
     }
-    // res.send("VERIFIED!!!")
+    
   }
   catch(err) {
     res.status(500).json({message: 'not verified',err});
   }
+}
+
+export async function forgetPassword ( req: Request, res: Response ) {
+  try{
+      const {email} = req.body
+      const user = await UserInstance.findOne({where:{email:email}}) as unknown as {[key:string]:string} as any
+     
+
+      if(user){
+          
+          var newPassword = Math.random().toString(36).slice(-8);
+         
+          const passwordHash = await bcrypt.hash(newPassword,8)
+          const updatePassword = await user.update({
+              password:passwordHash
+          })
+
+          if(updatePassword){
+             const {id} = user
+              const token = id
+              const html = passwordMailTemplate(token,newPassword)
+              const subject = "New Account Password"
+              await mailer.sendEmail("AirtimeToCash",email,subject,html)
+              res.json({msg:"new password sent",newPassword})
+          }
+          
+      }
+      else{
+          res.json({msg:"invalid email Address"})
+      }
+  }catch(err){
+      console.log(err)
+  }
+}
+
+export async function resetPassword(req:Request,res:Response) {
+
+  try{
+      const {id} = req.params
+      const {password} = req.body
+      const user = UserInstance.findOne({where:{id:id}}) as unknown as {[key:string]:string} as any 
+      if(user){
+          const passwordHash = await bcrypt.hash(password,8)
+          const updatePassword = await user.update({
+          password:passwordHash
+          })
+
+          if(updatePassword){
+              res.json({msg:"password successfully created"})
+          }
+      }
+  }catch(err){
+      console.log(err)
+  }
+
+
 }
