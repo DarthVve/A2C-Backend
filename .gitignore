@@ -30,3 +30,4 @@ coverage
 .env
 .db.env
 Footer
+yarn.lock

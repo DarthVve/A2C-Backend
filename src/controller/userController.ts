@@ -1,10 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { userSchema, options } from '../utility/utils';
+import { Op } from 'sequelize';
+import { userSchema, loginSchema, generateToken, options } from '../utility/utils';
 import { UserInstance } from '../model/userModel';
 import bcrypt from 'bcryptjs';
-import { Op } from 'sequelize';
 
+
+//User Sign up
 export async function registerUser(req: Request, res: Response, next: NextFunction) {
   try {
     const id = uuidv4();
@@ -46,7 +48,64 @@ export async function registerUser(req: Request, res: Response, next: NextFuncti
       record
     });
   } catch (err) {
-    console.log(err)
+    console.error(err)
     res.status(500).json({ msg: 'failed to register', route: '/register' });
   }
 };
+
+
+//User Login
+export async function loginUser(req: Request, res: Response) {
+  try {
+    const validationResult = loginSchema.validate(req.body, options);
+    if (validationResult.error) {
+      return res.status(400).json({ Error: validationResult.error.details[0].message});
+    }
+    const user = await UserInstance.findOne({
+      where: {
+        [Op.or]: [
+          { email: req.body.emailOrUsername },
+          { username: req.body.emailOrUsername }
+        ]
+      }
+    });
+
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    const isMatch = await bcrypt.compare(req.body.password, user.getDataValue('password'));
+    if (isMatch) {
+      if (!user.getDataValue('verified')) {
+        return res.status(401).json({
+          msg: 'Your account has not been verified',
+        });
+      }
+
+      const id = user.getDataValue('id')
+      const token = generateToken({ id }) as string;
+      const production = process.env.NODE_ENV === "production";
+
+      return res.status(200).cookie("token", token, {
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        secure: production,
+        sameSite: production ? "none" : "lax"
+      }).json({
+        msg: 'You have successfully logged in',
+        token,
+        user
+      });
+    }
+
+    return res.status(400).json({
+      msg: 'Invalid credentials',
+    });
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({
+      msg: 'failed to authenticate',
+      route: '/login',
+    });
+  }
+}
