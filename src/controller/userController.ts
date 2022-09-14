@@ -1,49 +1,55 @@
 import { Request, Response, NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { Op } from 'sequelize';
-import { registerSchema, loginSchema, generateToken, options } from '../utility/utils';
+import { userSchema, loginSchema, generateToken, options } from '../utility/utils';
 import { UserInstance } from '../model/userModel';
 import bcrypt from 'bcryptjs';
 
-export async function RegisterUser(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
-  const id = uuidv4();
+export async function registerUser(req: Request, res: Response, next: NextFunction) {
   try {
-    const validationResult = registerSchema.validate(req.body, options);
+    const id = uuidv4();
+    const validationResult = userSchema.validate(req.body, options);
+
     if (validationResult.error) {
-      return res.status(400).json({
-        Error: validationResult.error.details[0].message,
-      });
+      return res.status(400).json({ Error: validationResult.error.details[0].message });
     }
-    const duplicatEmail = await UserInstance.findOne({
-      where: { email: req.body.email },
+
+    const duplicate = await UserInstance.findOne({
+      where: {
+        [Op.or]: [
+          { username: req.body.username },
+          { email: req.body.email },
+          { phonenumber: req.body.phonenumber }
+        ]
+      }
     });
-    if (duplicatEmail) {
-      return res.status(409).json({
-        msg: 'Email is used, please change email',
-      });
+
+    if (duplicate) {
+      return res.status(409).json({ msg: 'Enter a unique username, email, or phonenumber' });
     }
 
     const passwordHash = await bcrypt.hash(req.body.password, 8);
     const record = await UserInstance.create({
       id: id,
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      username: req.body.username,
       email: req.body.email,
+      phonenumber: req.body.phonenumber,
       password: passwordHash,
+      avatar: '',
+      verified: false
     });
+
     res.status(201).json({
-      msg: 'You have successfully created a user',
-      record,
+      msg: 'User created successfully',
+      record
     });
   } catch (err) {
-    res.status(500).json({
-      msg: 'failed to register',
-      route: '/register',
-    });
+    console.log(err)
+    res.status(500).json({ msg: 'failed to register', route: '/register' });
   }
-}
+};
 
 export async function loginUser(req: Request, res: Response) {
   try {
@@ -68,7 +74,7 @@ export async function loginUser(req: Request, res: Response) {
       });
     }
 
-    const noMatch = await users.every(async (user: UserInstance) => {
+    const noMatch = users.every(async (user: UserInstance) => {
       const isMatch = await bcrypt.compare(req.body.password, user.getDataValue('password'));
       if (isMatch)
       {
@@ -76,14 +82,15 @@ export async function loginUser(req: Request, res: Response) {
         const token = generateToken({ id }) as string;
         const production = process.env.NODE_ENV === "production";
         req.headers.authorization = token;
-        res.setHeader('WWW-Authenticate', 'Bearer');
+        res.header('WWW-Authenticate', 'Bearer');
         res.status(200).cookie("token", token, {
           maxAge: 7 * 24 * 60 * 60 * 1000,
           httpOnly: true,
           secure: production,
           sameSite: production ? "none" : "lax"
         }).json({
-          msg: 'You have successfully logged in'
+          msg: 'You have successfully logged in',
+          token
         });
         return false;
       } else return true;
