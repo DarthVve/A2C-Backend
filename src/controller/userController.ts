@@ -69,21 +69,24 @@ export async function loginUser(req: Request, res: Response) {
     });
 
     if (!users[0]) {
-      return res.status(400).json({
-        msg: 'Invalid credentials',
+      return res.status(404).json({
+        msg: 'User not found',
       });
     }
 
-    const noMatch = users.every(async (user: UserInstance) => {
+    for await(const user of users) {
       const isMatch = await bcrypt.compare(req.body.password, user.getDataValue('password'));
       if (isMatch)
       {
+        if(!user.getDataValue('verified')) {
+          return res.status(401).json({
+            msg: 'Your account has not been verified',
+          });
+        }
         const id = user.getDataValue('id')
         const token = generateToken({ id }) as string;
         const production = process.env.NODE_ENV === "production";
-        req.headers.authorization = token;
-        res.header('WWW-Authenticate', 'Bearer');
-        res.status(200).cookie("token", token, {
+        return res.status(200).cookie("token", token, {
           maxAge: 7 * 24 * 60 * 60 * 1000,
           httpOnly: true,
           secure: production,
@@ -92,15 +95,12 @@ export async function loginUser(req: Request, res: Response) {
           msg: 'You have successfully logged in',
           token
         });
-        return false;
-      } else return true;
-    });
-
-    if (noMatch) {
-      return res.status(400).json({
-        msg: 'Invalid credentials',
-      });
+      }
     }
+
+    return res.status(400).json({
+      msg: 'Invalid credentials',
+    });
   } catch (err) {
     res.status(500).json({
       msg: 'failed to authenticate',
