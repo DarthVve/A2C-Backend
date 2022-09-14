@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 database.sqlite
+test.sqlite
+package-lock.json
 
 # Editor directories and files
 .vscode/*

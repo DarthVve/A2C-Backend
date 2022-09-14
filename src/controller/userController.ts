@@ -37,7 +37,7 @@ export async function registerUser(req: Request, res: Response, next: NextFuncti
       email: req.body.email,
       phonenumber: req.body.phonenumber,
       password: passwordHash,
-      avatar: req.body.avatar,
+      avatar: '',
       verified: false
     });
 
