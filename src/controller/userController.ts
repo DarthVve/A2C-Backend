@@ -4,6 +4,11 @@ import { Op } from 'sequelize';
 import { userSchema, loginSchema, generateToken, options } from '../utility/utils';
 import { UserInstance } from '../model/userModel';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+const jwtSecret = process.env.JWT_SECRET as string;
+const fromUser = process.env.POD_GMAIL as string;
+import mailer from '../mailer/SendMail';
+import { emailVerificationView } from '../mailer/EmailTemplate';
 
 
 //User Sign up
@@ -42,11 +47,23 @@ export async function registerUser(req: Request, res: Response, next: NextFuncti
       avatar: '',
       verified: false
     });
+    if(record){
+      const user = await UserInstance.findOne({where: {email: req.body.email }});
+      const token = jwt.sign({id}, jwtSecret, {expiresIn: "30mins"})
+      const html =  emailVerificationView(token)
 
-    res.status(201).json({
-      msg: 'User created successfully',
-      record
-    });
+      await mailer.sendEmail(
+        fromUser, req.body.email, "please verify your email", html
+      )
+
+      res.status(201).json({
+        msg: 'User created successfully',
+        record,
+      });
+    }
+    else{
+      res.status(403).json({ msg:'failed to create user', record });
+    }
   } catch (err) {
     console.error(err)
     res.status(500).json({ msg: 'failed to register', route: '/register' });
@@ -108,4 +125,10 @@ export async function loginUser(req: Request, res: Response) {
       route: '/login',
     });
   }
+}
+export async function verifyUser(
+  req: Request,
+  res: Response,
+) {
+  res.send("VERIFIED!!!")
 }
