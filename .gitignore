@@ -28,3 +28,4 @@ database.sqlite
 .env
 .db.env
 Footer
+yarn.lock

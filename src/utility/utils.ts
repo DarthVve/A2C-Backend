@@ -9,6 +9,12 @@ export const registerSchema = Joi.object()
   })
   .with('password', 'confirm_password');
 
+export const loginSchema = Joi.object()
+  .keys({
+    emailOrUsername: Joi.string().trim().required(),
+    password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
+  })
+
 export const generateToken = (user: { [key: string]: unknown }): unknown => {
   const pass = process.env.JWT_SECRET as string;
   return jwt.sign(user, pass, { expiresIn: '7d' });
