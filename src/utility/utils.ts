@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 
+
 //Joi validation options
 export const options = {
   abortEarly: false,
@@ -10,6 +11,7 @@ export const options = {
     },
   },
 };
+
 
 //User Sign up schema
 export const userSchema = Joi.object().keys({
@@ -22,11 +24,22 @@ export const userSchema = Joi.object().keys({
   confirm_password: Joi.ref('password')
 }).with('password', 'confirm_password');
 
+
 //User Login schema
 export const loginSchema = Joi.object().keys({
     emailOrUsername: Joi.string().trim().required(),
     password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
   })
+
+
+//update User profile
+export const updateUserSchema = Joi.object().keys({
+  firstname:Joi.string(),
+  lastname:Joi.string(),
+  phonenumber:Joi.string().regex(/^[a-zA-Z0-9]{11}$/),
+  avatar:Joi.string()
+});
+
 
 //Token Generator function for login sessions
 export const generateToken = (user: { [key: string]: unknown }): unknown => {
