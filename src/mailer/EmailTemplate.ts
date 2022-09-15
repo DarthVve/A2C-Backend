@@ -57,7 +57,7 @@ export function emailVerificationView(token: string): string {
     style="
       position: relative;
       top: -8rem;
-      left: 2rem;
+      left: 2.1rem;
       display: flex;
       justify-content: center;
       text-align: center;
