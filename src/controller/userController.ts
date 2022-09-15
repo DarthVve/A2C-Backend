@@ -141,9 +141,7 @@ export async function verifyUser(
       if(updateVerified){
         res.json({msg:'User verified',updateVerified})
       }
-
     }
-    // res.send("VERIFIED!!!")
   }
   catch(err) {
     res.status(500).json({message: 'not verified',err});
