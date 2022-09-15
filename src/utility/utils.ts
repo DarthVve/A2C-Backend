@@ -29,8 +29,6 @@ export const userSchema = Joi.object().keys({
 export const updateUserSchema = Joi.object().keys({
   firstname:Joi.string(),
   lastname:Joi.string(),
-  username:Joi.string(),
-  email:Joi.string().trim(),
   phonenumber:Joi.string().regex(/^[a-zA-Z0-9]{11}$/),
   avatar:Joi.string()
 });

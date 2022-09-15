@@ -2,8 +2,10 @@ import { Request, Response, NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { userSchema, options, updateUserSchema } from '../utility/utils';
 import { UserInstance } from '../model/userModel';
+
 import bcrypt from 'bcryptjs';
 import { Op } from 'sequelize';
+import { deleteImg, uploadImg } from '../cloud/config';
 
 export async function registerUser(req: Request, res: Response, next: NextFunction) {
   try {
@@ -53,40 +55,62 @@ export async function registerUser(req: Request, res: Response, next: NextFuncti
 
 
 export async function updateUsers(req:Request, res:Response, next:NextFunction) {
+  
   try{ 
-     const  {id} = req.params
-     const {firstname,lastname,username,email,phonenumber,avatar} = req.body
-     const validationResult = updateUserSchema.validate(req.body,options)
-      if( validationResult.error){
-         return res.status(400).json({
-            Error:validationResult.error.details[0].message
-         })
-      } 
+    const validationResult = updateUserSchema.validate(req.body,options);
+    if ( validationResult.error) {
+      return res.status(400).json({ Error:validationResult.error.details[0].message });
+    }
 
-     const record = await UserInstance.findOne({where: {id}})
-      if(!record){
-        return res.status(404).json({
-           Error:"Cannot find existing user",
-        })
-      }
-      const updatedrecord = await record.update({
-        firstname: firstname,
-        lastname: lastname,
-        username: username,
-        email: email,
-        phonenumber: phonenumber,
-        avatar: avatar
+    const  {id} = req.params
+    const record = await UserInstance.findOne({where: {id}})
+    if (!record) {
+      return res.status(404).json({
+         Error:"Cannot find existing user",
       })
-      res.status(200).json({
-            msg:"You have successfully updated your profile",
-           updatedrecord
-          })
+    }
 
-    }catch(error){
-   res.status(500).json({
-      msg:"failed to update",
-      route:"/update/:id"
-   })
-}
+    let avatar: string = '', temp: string = '';
+    if (req.body.avatar){
+      //check if already db image
+      const previousValue = record.getDataValue("avatar");
+      if(!!previousValue)
+      {
+        temp = previousValue; 
+        console.log('there was some avatar before')
+      }
+
+      avatar = await uploadImg(req.body.avatar) as string;
+      console.log(avatar)
+      if (!avatar) {
+        throw new Error();
+      }
+      console.log("after throw ", avatar)
+    }
+
+    const { firstname, lastname, phonenumber } = req.body; 
+    const updatedrecord = await record.update({
+      firstname,
+      lastname,
+      phonenumber,
+      avatar
+    });
+
+    if(temp) {
+      await deleteImg(temp);
+    }
+
+    res.status(200).json({
+      msg:"You have successfully updated your profile",
+      updatedrecord
+    })
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "failed to update",
+      route: "/update/:id"
+    })
+  }
 
 }

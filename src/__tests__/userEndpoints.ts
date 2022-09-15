@@ -65,3 +65,22 @@ describe('User Sign-up API Integration test', () => {
     expect(body).toHaveProperty('msg');
   });
 });
+
+// it('update user profile', async () => {
+//   const user = await request.post('/user/register').send({
+//     email: 'eunice@gmail.com',
+//     password: '4567',
+//   });
+//   const response = await request.patch(`/user/update/${user.body.User.id}`).set('authorization', `Bearer ${user.body.token}`)
+//     .send({
+//       firstName: 'POD',
+//       lastName: 'E',
+//       username: 'E TESTING',
+//       phoneNumber: '09036036393',
+//       avatar:
+//         'https://static.vecteezy.com/system/resources/thumbnails/005/129/844/small/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg',
+//     });
+//   expect(response.status).toBe(200);
+//   expect(response.body.message).toBe('Update Successful');
+//   expect(response.body).toHaveProperty('record');
+// });
