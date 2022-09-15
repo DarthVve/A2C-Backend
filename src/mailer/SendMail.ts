@@ -1,7 +1,6 @@
 import nodemailer from 'nodemailer';
 const appMail = process.env.POD_GMAIL as string;
 const appMailPassKey = process.env.POD_GMAIL_PASS as string;
-const mailSubject = process.env.SUBJECT as string;
 const transport = nodemailer.createTransport({
     service: 'gmail',
     auth: {

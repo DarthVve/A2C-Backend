@@ -47,10 +47,7 @@ export async function registerUser(req: Request, res: Response) {
     });
 
     if (user) {
-      const user = await UserInstance.findOne({ where: { email: req.body.email }}) as unknown as {[key: string]: string};
-      const { id } = user
-      const token = id
-      const html =  emailVerificationView(token)
+      const html =  emailVerificationView(id)
 
       await mailer.sendEmail(
         appEmail, req.body.email, "please verify your email", html
@@ -150,18 +147,11 @@ export async function forgetPassword ( req: Request, res: Response ) {
       const user = await UserInstance.findOne({where:{email:email}}) as unknown as {[key:string]:string} as any
      
       if (user) {
-          const newPassword = Math.random().toString(36).slice(-8);
-          const passwordHash = await bcrypt.hash(newPassword, 8);
-          const updatePassword = await user.update({ password:passwordHash });
-
-          if (updatePassword) {
-              const { id } = user;
-              const token = id;
-              const html = passwordMailTemplate(token);
-              const subject = "New Account Password";
-              await mailer.sendEmail("AirtimeToCash", email, subject, html);
-              res.status(200).json({ msg:"new password sent", newPassword });
-          }
+        const { id } = user;
+        const html = passwordMailTemplate(id);
+        const subject = "New Account Password";
+        await mailer.sendEmail("AirtimeToCash", email, subject, html);
+        res.status(200).json({ msg:"new password sent" });
       } else {
           res.status(400).json({msg:"invalid email Address"});
       }
@@ -183,7 +173,7 @@ export async function resetPassword(req:Request, res:Response) {
           let updatePassword = await user.update({ password:passwordHash });
 
           if (updatePassword) {
-              res.status(200).json({ msg:"password successfully created" });
+            res.status(200).json({ msg:"password successfully updated" });
           } else {
             res.status(400).json({ msg:"failed to update password" });
           }
