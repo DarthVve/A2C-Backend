@@ -1,29 +1,30 @@
-const cloudinary = require('cloudinary').v2;
+import { v2 as cloudinary } from "cloudinary"
 
 cloudinary.config({
-    cloud_name: "pode-liveproject",
-    api_key: "746935268851445",
-    api_secret: "ZIlqUod81ghMwPWlla7ptSnq5-k"
+    cloud_name: process.env.CLOUDINARY_NAME as string,
+    api_key: process.env.CLOUDINARY_API_KEY as string,
+    api_secret: process.env.CLOUDINARY_API_SECRET as string
 });
-// console.log(cloudinary.config());
-//cloudinary://746935268851445:ZIlqUod81ghMwPWlla7ptSnq5-k@pode-liveproject
 
 export const uploadImg = async(avatar: string) => {
     try {
         const result = await cloudinary.uploader.upload(avatar, {
-            use_filename: true,
-            unique_filename: false,
-            overwrite: true,
+            allowed_formats: ["png", "jpg", "jpeg", "svg"],
+            public_id: "",
+            folder: "airtime2Cash"
         });
 
-        return result.public_id;
+        return result.secure_url;
     } catch(err) {
         console.error(err);
         return null;
     }
 } 
 
-export const deleteImg = async(id: string) => {
+export const deleteImg = async(url: string) => {
+    const parts = url.split("/").slice(-2)
+    parts[1] = parts[1].split(".")[0]
+    const id = parts.join('/');
     try {
         return await cloudinary.uploader.destroy(id) 
     } catch (err) {

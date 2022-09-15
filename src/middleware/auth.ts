@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { verify } from 'jsonwebtoken';
 import { UserInstance } from "../model/userModel";
-// import { userReq } from "../types/express";
 
 const secret = process.env.JWT_SECRET as string;
 
@@ -24,9 +23,9 @@ export async function auth(req: Request, res: Response, next: NextFunction) {
       return res.status(401).json({ message: "User could not be identified" });
     }
     req.user = id;
-    next()
+    next();
   } catch (err) {
-    console.log(err)
+    console.log(err);
     res.status(500).json({ msg: "Unexpected Auth error" });
   }
 }

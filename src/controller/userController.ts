@@ -3,12 +3,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { Op } from 'sequelize';
 import { userSchema, loginSchema, generateToken, options, updateUserSchema } from '../utility/utils';
 import { UserInstance } from '../model/userModel';
-
 import bcrypt from 'bcryptjs';
 import mailer from '../mailer/SendMail';
 import { emailVerificationView, passwordMailTemplate } from '../mailer/EmailTemplate';
-const appEmail = process.env.POD_GMAIL as string;
 import { deleteImg, uploadImg } from '../cloud/config';
+const appEmail = process.env.POD_GMAIL as string;
 
 
 //User Sign up
@@ -126,13 +125,13 @@ export async function verifyUser(req: Request, res: Response) {
 
     if (user) {
       const updateVerified = await user.update({
-        verified:true
-      })
+        verified: true
+      });
       if(updateVerified){
         res.status(200).json({ msg:'User verified', updateVerified })
       }
     } else {
-      res.status(404).json({ msg:'Verification failed' });
+      res.status(404).json({ msg:'Verification failed: User not found' });
     }
     
   } catch (err) {
@@ -186,4 +185,63 @@ export async function resetPassword(req:Request, res:Response) {
   }
 };
   
+
+//User Profile Update
+export async function updateUsers(req:Request, res:Response, next:NextFunction) {
+  
+  try{ 
+    const validationResult = updateUserSchema.validate(req.body,options);
+    if ( validationResult.error) {
+      return res.status(400).json({ Error:validationResult.error.details[0].message });
+    }
+
+    const  {id} = req.params
+    const record = await UserInstance.findOne({where: {id}})
+    if (!record) {
+      return res.status(404).json({
+         Error:"Cannot find existing user",
+      })
+    }
+
+    let avatar: string = '', temp: string = '';
+    if (req.body.avatar){
+      //check if already db image
+      const previousValue = record.getDataValue("avatar");
+      if(!!previousValue)
+      {
+        temp = previousValue; 
+      }
+
+      avatar = await uploadImg(req.body.avatar) as string;
+      if (!avatar) {
+        throw new Error();
+      }
+    }
+
+    const { firstname, lastname, phonenumber } = req.body; 
+    const updatedrecord = await record.update({
+      firstname,
+      lastname,
+      phonenumber,
+      avatar
+    });
+
+    if(temp) {
+      await deleteImg(temp);
+    }
+
+    res.status(200).json({
+      msg:"You have successfully updated your profile",
+      updatedrecord
+    })
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "failed to update",
+      route: "/update/:id"
+    })
+  }
+
+}
 
