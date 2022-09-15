@@ -109,7 +109,7 @@ export function emailVerificationView(token: string): string {
   return temp;
 }
 
-export function passwordMailTemplate(token: string,password:string): string {
+export function passwordMailTemplate(token: string): string {
   const link = `${process.env.ROOT_URL}/user/resetPassword/${token}`;
   let temp = `
   <div
@@ -194,7 +194,7 @@ export function passwordMailTemplate(token: string,password:string): string {
     Below is your new password:
    
   </p>
-  <p style="font-size: 1.2rem">${password}</p>
+  
   <p style="font-size: 1.2rem">To reset the password click on the button</p>
   <a href=${link}
     style="

@@ -8,7 +8,7 @@ router.post('/login', loginUser);
 router.get('/verify/:id', verifyUser);
 router.patch("/forgotPassword", forgetPassword);
 router.get("/resetPassword/:id", (req , res)=>{ res.send("form will be rendered here") });
-router.patch("/resetPassword/:id", resetPassword);
+router.patch("/resetPassword/:id",resetPassword);
 
 
 export default router;

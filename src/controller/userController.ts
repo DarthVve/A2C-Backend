@@ -46,9 +46,9 @@ export async function registerUser(req: Request, res: Response) {
       verified: false
     });
 
-    if(user){
-      const user = await UserInstance.findOne({where: {email: req.body.email }}) as unknown as {[key: string]: string};
-      const {id} = user
+    if (user) {
+      const user = await UserInstance.findOne({ where: { email: req.body.email }}) as unknown as {[key: string]: string};
+      const { id } = user
       const token = id
       const html =  emailVerificationView(token)
 
@@ -59,11 +59,7 @@ export async function registerUser(req: Request, res: Response) {
     else{
       res.status(403).json({ msg:'Verification mail failed to send', user });
     }
-
-    res.status(201).json({
-      msg: 'User created successfully',
-      user,
-    });
+    res.status(201).json({ msg: 'User created successfully' });
   } catch (err) {
     console.error(err)
     res.status(500).json({ msg: 'failed to register', route: '/register' });
@@ -111,7 +107,7 @@ export async function loginUser(req: Request, res: Response) {
       }).json({
         msg: 'You have successfully logged in',
         token,
-        user
+        id
       });
     } else {
       return res.status(400).json({ msg: 'Invalid credentials' });
@@ -161,7 +157,7 @@ export async function forgetPassword ( req: Request, res: Response ) {
           if (updatePassword) {
               const { id } = user;
               const token = id;
-              const html = passwordMailTemplate(token,newPassword);
+              const html = passwordMailTemplate(token);
               const subject = "New Account Password";
               await mailer.sendEmail("AirtimeToCash", email, subject, html);
               res.status(200).json({ msg:"new password sent", newPassword });
@@ -181,10 +177,10 @@ export async function resetPassword(req:Request, res:Response) {
   try {
       const { id } = req.params
       const { password } = req.body
-      const user = UserInstance.findOne({where:{id:id}}) as unknown as {[key:string]:string} as any 
+      const user = await UserInstance.findOne({ where: { id: id } }) 
       if (user) {
           const passwordHash = await bcrypt.hash(password, 8)
-          const updatePassword = await user.update({ password:passwordHash });
+          let updatePassword = await user.update({ password:passwordHash });
 
           if (updatePassword) {
               res.status(200).json({ msg:"password successfully created" });
