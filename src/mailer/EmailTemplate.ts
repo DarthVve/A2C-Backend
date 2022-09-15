@@ -4,8 +4,9 @@ export function emailVerificationView(token: string): string {
   <div
   style="
     background: rgba(243, 137, 84, 0.05);
-    padding: 2rem 5rem;
-    max-width: 700px;
+    padding: 2rem 3rem;
+    width: max-content;
+    max-width: 20rem;
     text-align: center;
     border: 0.5rem dashed purple;
     border-radius: 1rem;
@@ -27,6 +28,7 @@ export function emailVerificationView(token: string): string {
         -ms-transform: rotate(30deg);
         transform: rotate(30deg);
         margin-right: 2rem;
+        margin-bottom: -2rem;
       "
     >
       &nbsp;
@@ -34,7 +36,7 @@ export function emailVerificationView(token: string): string {
     <h3
       style="
         position: relative;
-        top: -2.6rem;
+        top: -3rem;
         left: 0.35rem;
         display: block;
         content: '';
@@ -55,12 +57,14 @@ export function emailVerificationView(token: string): string {
     style="
       position: relative;
       top: -8rem;
-      left: 2rem;
+      left: 2.1rem;
       display: flex;
-      flex: 1;
+      justify-content: center;
+      text-align: center;
+      margin: 0 auto;
       color: rgb(186, 1, 146);
       font-weight: 500;
-      font-size: 2.5rem;
+      font-size: 2rem;
     "
   >
     Airtime<span style="color: orange">2cash</span>
@@ -70,7 +74,7 @@ export function emailVerificationView(token: string): string {
       font-family: Inter;
       font-style: normal;
       font-weight: 700;
-      font-size: 60px;
+      font-size: 3rem;
       margin-top: -9rem;
       background: linear-gradient(89.39deg, #de3d6d 18.77%, #f5844c 91.68%);
       -webkit-background-clip: text;
@@ -81,24 +85,24 @@ export function emailVerificationView(token: string): string {
     "
   >
     Hurray!!!
-
-    <span style="display: block; font-size: 2.2rem">almost there</span>
+    <span style="display: block; font-size: 2rem">almost there</span>
   </h2>
-  <p style="font-size: 1.2rem">Click the button to verify your email</p>
+  <p style="font-size: 1rem">Click the button to verify your email</p>
 
   <a href=${link}
     style="
-      color: #fff;
+      color: white;
       font-size: 1.2rem;
       padding: 0.5rem 1.5rem;
       background: linear-gradient(75deg, rgb(186, 1, 146), orange);
       border-radius: 0.5rem;
       border: none;
       text-transform: capitalize;
-      cursor: pointer; text-styles: none;
+      cursor: pointer;
+      text-decoration: none;
    "
   >
-    login
+    Verify
 </a>
 </div>
       `;
