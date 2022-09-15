@@ -5,7 +5,7 @@ import { userSchema, loginSchema, generateToken, options } from '../utility/util
 import { UserInstance } from '../model/userModel';
 import bcrypt from 'bcryptjs';
 import mailer from '../mailer/SendMail';
-import { emailVerificationView } from '../mailer/EmailTemplate';
+import { emailVerificationView, passwordMailTemplate } from '../mailer/EmailTemplate';
 const appEmail = process.env.POD_GMAIL as string;
 
 
@@ -46,11 +46,8 @@ export async function registerUser(req: Request, res: Response) {
       verified: false
     });
 
-    if(user){
-      const user = await UserInstance.findOne({where: {email: req.body.email }}) as unknown as {[key: string]: string};
-      const {id} = user
-      const token = id
-      const html =  emailVerificationView(token)
+    if (user) {
+      const html =  emailVerificationView(id)
 
       await mailer.sendEmail(
         appEmail, req.body.email, "please verify your email", html
@@ -59,11 +56,7 @@ export async function registerUser(req: Request, res: Response) {
     else{
       res.status(403).json({ msg:'Verification mail failed to send', user });
     }
-
-    res.status(201).json({
-      msg: 'User created successfully',
-      user,
-    });
+    res.status(201).json({ msg: 'User created successfully' });
   } catch (err) {
     console.error(err)
     res.status(500).json({ msg: 'failed to register', route: '/register' });
@@ -111,7 +104,7 @@ export async function loginUser(req: Request, res: Response) {
       }).json({
         msg: 'You have successfully logged in',
         token,
-        user
+        id
       });
     } else {
       return res.status(400).json({ msg: 'Invalid credentials' });
@@ -125,9 +118,9 @@ export async function loginUser(req: Request, res: Response) {
 
 //Verify User
 export async function verifyUser(req: Request, res: Response) {
-  try{
-    const {id} = req.params;
-    const user = await UserInstance.findOne({where: {id: id}});
+  try {
+    const { id } = req.params;
+    const user = await UserInstance.findOne({ where: { id: id } });
 
     if (user) {
       const updateVerified = await user.update({
@@ -139,8 +132,56 @@ export async function verifyUser(req: Request, res: Response) {
     } else {
       res.status(404).json({ msg:'Verification failed' });
     }
+    
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'not verified', route: 'verify/id' });
+  console.error(err);
+  res.status(500).json({ message: 'not verified', route: 'verify/id' });
+  }
+}
+
+
+//Password Reset, Sends an email 
+export async function forgetPassword ( req: Request, res: Response ) {
+  try {
+      const { email } = req.body
+      const user = await UserInstance.findOne({ where: { email: email } }) as unknown as {[key:string]:string} as any
+     
+      if (user) {
+        const { id } = user;
+        const html = passwordMailTemplate(id);
+        const subject = "New Account Password";
+        await mailer.sendEmail("AirtimeToCash", email, subject, html);
+        res.status(200).json({ msg:"new password sent" });
+      } else {
+          res.status(400).json({msg:"invalid email Address"});
+      }
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Failed to send password', route: '/forgetPassword' });
+  }
+}
+
+
+//User password update
+export async function resetPassword(req:Request, res:Response) {
+  try {
+      const { id } = req.params
+      const { password } = req.body
+      const user = await UserInstance.findOne({ where: { id: id } }) 
+      if (user) {
+          const passwordHash = await bcrypt.hash(password, 8)
+          let updatePassword = await user.update({ password:passwordHash });
+
+          if (updatePassword) {
+            res.status(200).json({ msg:"password successfully updated" });
+          } else {
+            res.status(400).json({ msg:"failed to update password" });
+          }
+      }
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Failed to reset password', route: '/resetPassword' });
   }
 };
+  
+
