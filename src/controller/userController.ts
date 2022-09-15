@@ -119,8 +119,8 @@ export async function loginUser(req: Request, res: Response) {
 //Verify User
 export async function verifyUser(req: Request, res: Response) {
   try {
-    const {id} = req.params;
-    const user = await UserInstance.findOne({where: {id: id}});
+    const { id } = req.params;
+    const user = await UserInstance.findOne({ where: { id: id } });
 
     if (user) {
       const updateVerified = await user.update({
@@ -144,7 +144,7 @@ export async function verifyUser(req: Request, res: Response) {
 export async function forgetPassword ( req: Request, res: Response ) {
   try {
       const { email } = req.body
-      const user = await UserInstance.findOne({where:{email:email}}) as unknown as {[key:string]:string} as any
+      const user = await UserInstance.findOne({ where: { email: email } }) as unknown as {[key:string]:string} as any
      
       if (user) {
         const { id } = user;
