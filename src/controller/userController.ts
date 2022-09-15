@@ -4,10 +4,13 @@ import { Op } from 'sequelize';
 import { userSchema, loginSchema, generateToken, options } from '../utility/utils';
 import { UserInstance } from '../model/userModel';
 import bcrypt from 'bcryptjs';
+import mailer from '../mailer/SendMail';
+import { emailVerificationView } from '../mailer/EmailTemplate';
+const appEmail = process.env.POD_GMAIL as string;
 
 
 //User Sign up
-export async function registerUser(req: Request, res: Response, next: NextFunction) {
+export async function registerUser(req: Request, res: Response) {
   try {
     const id = uuidv4();
     const validationResult = userSchema.validate(req.body, options);
@@ -31,7 +34,7 @@ export async function registerUser(req: Request, res: Response, next: NextFuncti
     }
 
     const passwordHash = await bcrypt.hash(req.body.password, 8);
-    const record = await UserInstance.create({
+    const user = await UserInstance.create({
       id: id,
       firstname: req.body.firstname,
       lastname: req.body.lastname,
@@ -43,9 +46,23 @@ export async function registerUser(req: Request, res: Response, next: NextFuncti
       verified: false
     });
 
+    if(user){
+      const user = await UserInstance.findOne({where: {email: req.body.email }}) as unknown as {[key: string]: string};
+      const {id} = user
+      const token = id
+      const html =  emailVerificationView(token)
+
+      await mailer.sendEmail(
+        appEmail, req.body.email, "please verify your email", html
+      )
+    }
+    else{
+      res.status(403).json({ msg:'Verification mail failed to send', user });
+    }
+
     res.status(201).json({
       msg: 'User created successfully',
-      record
+      user,
     });
   } catch (err) {
     console.error(err)
@@ -96,16 +113,34 @@ export async function loginUser(req: Request, res: Response) {
         token,
         user
       });
+    } else {
+      return res.status(400).json({ msg: 'Invalid credentials' });
     }
-
-    return res.status(400).json({
-      msg: 'Invalid credentials',
-    });
   } catch (err) {
     console.error(err)
-    res.status(500).json({
-      msg: 'failed to authenticate',
-      route: '/login',
-    });
+    res.status(500).json({ msg: 'failed to authenticate', route: '/login' });
   }
-}
+};
+
+
+//Verify User
+export async function verifyUser(req: Request, res: Response) {
+  try{
+    const {id} = req.params;
+    const user = await UserInstance.findOne({where: {id: id}});
+
+    if (user) {
+      const updateVerified = await user.update({
+        verified:true
+      })
+      if(updateVerified){
+        res.status(200).json({ msg:'User verified', updateVerified })
+      }
+    } else {
+      res.status(404).json({ msg:'Verification failed' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'not verified', route: 'verify/id' });
+  }
+};
