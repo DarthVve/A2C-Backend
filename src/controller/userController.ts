@@ -53,9 +53,9 @@ export async function registerUser(req: Request, res: Response) {
       await mailer.sendEmail(appEmail, req.body.email, "please verify your email", html)
     }
     else {
-      res.status(403).json({ msg: 'Verification mail failed to send', user });
+      res.status(403).json({ msg: 'Verification mail failed to send' });
     }
-    res.status(201).json({ msg: 'User created successfully' });
+    res.status(201).json({ msg: `User created successfully, welcome ${req.body.username} your id is ${id}` });
   } catch (err) {
     console.error(err)
     res.status(500).json({ msg: 'failed to register', route: '/register' });
