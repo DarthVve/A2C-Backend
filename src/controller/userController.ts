@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { Op } from 'sequelize';
-import { userSchema, loginSchema, generateToken, options } from '../utility/utils';
+import { userSchema, loginSchema, generateToken, options, updateUserSchema } from '../utility/utils';
 import { UserInstance } from '../model/userModel';
 import bcrypt from 'bcryptjs';
 import mailer from '../mailer/SendMail';
 import { emailVerificationView, passwordMailTemplate } from '../mailer/EmailTemplate';
+import { deleteImg, uploadImg } from '../cloud/config';
 const appEmail = process.env.POD_GMAIL as string;
 
 
@@ -49,9 +50,7 @@ export async function registerUser(req: Request, res: Response) {
     if (user) {
       const html = emailVerificationView(id)
 
-      await mailer.sendEmail(
-        appEmail, req.body.email, "please verify your email", html
-      )
+      await mailer.sendEmail(appEmail, req.body.email, "please verify your email", html)
     }
     else {
       res.status(403).json({ msg: 'Verification mail failed to send', user });
@@ -80,16 +79,12 @@ export async function loginUser(req: Request, res: Response) {
       }
     });
 
-    if (!user) {
-      return res.status(404).json({ msg: 'User not found' });
-    }
+    if (!user) { return res.status(404).json({ msg: 'User not found' }) };
 
     const isMatch = await bcrypt.compare(req.body.password, user.getDataValue('password'));
     if (isMatch) {
       if (!user.getDataValue('verified')) {
-        return res.status(401).json({
-          msg: 'Your account has not been verified',
-        });
+        return res.status(401).json({ msg: 'Your account has not been verified' });
       }
 
       const id = user.getDataValue('id')
@@ -128,14 +123,14 @@ export async function verifyUser(req: Request, res: Response) {
         res.status(200).json({ msg: 'User verified', updateVerified })
       }
     } else {
-      res.status(404).json({ msg: 'Verification failed' });
+      res.status(404).json({ msg: 'Verification failed: User not found' });
     }
 
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'not verified', route: 'verify/id' });
   }
-}
+};
 
 
 //Password Reset, Sends an email
@@ -157,7 +152,7 @@ export async function forgetPassword(req: Request, res: Response) {
     console.error(err);
     res.status(500).json({ message: 'Failed to send password', route: '/forgetPassword' });
   }
-}
+};
 
 
 //User password update
@@ -183,3 +178,47 @@ export async function resetPassword(req: Request, res: Response) {
 };
 
 
+//User Profile Update
+export async function updateUsers(req: Request, res: Response, next: NextFunction) {
+  try {
+    const validationResult = updateUserSchema.validate(req.body, options);
+    if (validationResult.error) {
+      return res.status(400).json({ Error: validationResult.error.details[0].message });
+    }
+
+    const { id } = req.params
+    const record = await UserInstance.findOne({ where: { id } })
+    if (!record) {
+      return res.status(404).json({ Error: "Cannot find existing user" })
+    }
+
+    let avatar: string = '', temp: string = '';
+    if (req.body.avatar) {
+      const previousValue = record.getDataValue("avatar");
+
+      if (!!previousValue) { temp = previousValue };
+
+      avatar = await uploadImg(req.body.avatar) as string;
+      if (!avatar) { throw new Error('Avatar failed to upload') };
+    }
+
+    const { firstname, lastname, phonenumber } = req.body;
+    const updatedrecord = await record.update({
+      firstname,
+      lastname,
+      phonenumber,
+      avatar
+    });
+
+    if (temp) { await deleteImg(temp) };
+
+    res.status(200).json({
+      msg: "You have successfully updated your profile",
+      updatedrecord
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "failed to update", route: "/update/:id" });
+  }
+};
