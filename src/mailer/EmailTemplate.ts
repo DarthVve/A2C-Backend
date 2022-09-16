@@ -1,5 +1,5 @@
-export function emailVerificationView(token: string): string {
-  const link =`${process.env.ROOT_URL}/user/verify/${token}`;
+export function emailVerificationView(id: string, token: unknown): string {
+  const link = `${process.env.ROOT_URL}/user/verify/${id}`;
   let temp = `
   <div
   style="
@@ -89,28 +89,28 @@ export function emailVerificationView(token: string): string {
   </h2>
   <p style="font-size: 1rem">Click the button to verify your email</p>
 
-  <a href=${link}
-    style="
-      color: white;
-      font-size: 1.2rem;
-      padding: 0.5rem 1.5rem;
-      background: linear-gradient(75deg, rgb(186, 1, 146), orange);
-      border-radius: 0.5rem;
-      border: none;
-      text-transform: capitalize;
-      cursor: pointer;
-      text-decoration: none;
-   "
-  >
-    Verify
-</a>
+  <form action='${link}' method='post'>
+    <input type='hidden' name='token' value='${token}' />
+    <input type='submit' value='Verify Email'
+      style="
+        color: white;
+        font-size: 1.2rem;
+        padding: 0.5rem 1.5rem;
+        background: linear-gradient(75deg, rgb(186, 1, 146), orange);
+        border-radius: 0.5rem;
+        border: none;
+        text-transform: capitalize;
+        cursor: pointer;
+        text-decoration: none;"
+    >
+  </form>
 </div>
       `;
   return temp;
 }
 
-export function passwordMailTemplate(token: string): string {
-  const link = `${process.env.ROOT_URL}/user/resetPassword/${token}`;
+export function passwordMailTemplate(id: string, token: unknown): string {
+  const link = `${process.env.ROOT_URL}/user/resetPassword/${id}`;
   let temp = `
   <div
   style="
@@ -192,11 +192,13 @@ export function passwordMailTemplate(token: string): string {
     "
   >
     Below is your new password:
-   
+
   </p>
-  
+
   <p style="font-size: 1.2rem">To reset the password click on the button</p>
-  <a href=${link}
+  <form action='${link}' method='post'>
+  <input type='hidden' name='token' value='${token}' />
+  <input type='submit' value='Reset Password'
     style="
       color: #fff;
       font-size: 1.2rem;
@@ -205,11 +207,9 @@ export function passwordMailTemplate(token: string): string {
       border-radius: 0.5rem;
       border: none;
       text-transform: capitalize;
-      cursor: pointer; text-styles: none;
-   "
+      cursor: pointer; text-styles: none;"
   >
-    reset password
-</a>
+  </form>
 </div>
       `;
   return temp;

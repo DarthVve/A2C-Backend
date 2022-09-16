@@ -1,14 +1,16 @@
 import express from 'express';
-import { registerUser, loginUser, verifyUser, forgetPassword, resetPassword, updateUsers } from '../controller/userController';
+import { registerUser, loginUser, verifyUser, forgetPassword, resetPassword, updateUsers, setResetToken, logoutUser } from '../controller/userController';
+import { auth, oneTimeTokenAuth } from '../middleware/auth';
 const router = express.Router();
 
 router.post('/register', registerUser);
 router.post('/login', loginUser);
-router.get('/verify/:id', verifyUser);
-router.patch("/forgotPassword", forgetPassword);
-router.get('/resetPassword/:id', (req, res) => { res.send("form will be rendered here") });
-router.patch('/resetPassword/:id', resetPassword);
-router.patch('/update/:id', updateUsers)
+router.post('/verify/:id', oneTimeTokenAuth, verifyUser);
+router.patch('/forgotPassword', forgetPassword);
+router.post('/resetPassword/:id', setResetToken);
+router.patch('/resetPassword/:id', oneTimeTokenAuth, resetPassword);
+router.patch('/update/:id', auth, updateUsers);
+router.get('/logout', logoutUser)
 
 
 export default router;

@@ -48,14 +48,16 @@ export async function registerUser(req: Request, res: Response) {
     });
 
     if (user) {
-      const html = emailVerificationView(id)
+      const verifyContext = await bcrypt.hash(passwordHash, 8);
+      const verifyToken = generateToken({ reset: verifyContext }, '1d');
+      const html = emailVerificationView(id, verifyToken)
 
-      await mailer.sendEmail(appEmail, req.body.email, "please verify your email", html)
+      await mailer.sendEmail(appEmail, req.body.email, "please verify your email", html);
+      return res.status(201).json({ msg: `User created successfully, welcome ${req.body.username} your id is ${id}` });
     }
     else {
-      res.status(403).json({ msg: 'Verification mail failed to send' });
+      return res.status(403).json({ msg: 'Verification mail failed to send' });
     }
-    res.status(201).json({ msg: `User created successfully, welcome ${req.body.username} your id is ${id}` });
   } catch (err) {
     console.error(err)
     res.status(500).json({ msg: 'failed to register', route: '/register' });
@@ -120,15 +122,16 @@ export async function verifyUser(req: Request, res: Response) {
     if (user) {
       const updateVerified = await user.update({ verified: true });
       if (updateVerified) {
-        res.status(200).json({ msg: 'User verified', updateVerified })
+        return res.status(200).json({ msg: 'User verified', updateVerified })
+      } else {
+        throw new Error('failed to update user')
       }
     } else {
-      res.status(404).json({ msg: 'Verification failed: User not found' });
+      return res.status(404).json({ msg: 'Verification failed: User not found' });
     }
-
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'not verified', route: 'verify/id' });
+    res.status(500).json({ msg: 'failed to verify', route: 'verify/id' });
   }
 };
 
@@ -140,19 +143,39 @@ export async function forgetPassword(req: Request, res: Response) {
     const user = await UserInstance.findOne({ where: { email: email } }) as unknown as { [key: string]: string } as any
 
     if (user) {
-      const { id } = user;
-      const html = passwordMailTemplate(id);
+      const id = user.getDataValue('id');
+      const resetContext = await bcrypt.hash(user.getDataValue('password'), 8);
+      const resetToken = generateToken({ reset: resetContext }, '10m');
+      const html = passwordMailTemplate(id, resetToken);
       const subject = "New Account Password";
       await mailer.sendEmail("AirtimeToCash", email, subject, html);
-      res.status(200).json({ msg: "new password sent" });
+      return res.status(200).json({ msg: "email for password reset sent" });
     } else {
-      res.status(400).json({ msg: "invalid email Address" });
+      return res.status(400).json({ msg: "invalid email Address" });
     }
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Failed to send password', route: '/forgetPassword' });
   }
 };
+
+
+export async function setResetToken(req: Request, res: Response) {
+  try {
+    const { token } = req.body;
+    const production = process.env.NODE_ENV === "production";
+    res.cookie('reset', token, {
+      maxAge: 10 * 60 * 1000,
+      httpOnly: true,
+      secure: production,
+      sameSite: production ? "none" : "lax"
+    }).send(token)
+    //remember to redirect to reset form
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to set reset token', route: '/resetPassword' });
+  }
+}
 
 
 //User password update
@@ -166,9 +189,9 @@ export async function resetPassword(req: Request, res: Response) {
       let updatePassword = await user.update({ password: passwordHash });
 
       if (updatePassword) {
-        res.status(200).json({ msg: "password successfully updated" });
+        return res.status(200).json({ msg: "password successfully updated" });
       } else {
-        res.status(400).json({ msg: "failed to update password" });
+        return res.status(400).json({ msg: "failed to update password" });
       }
     }
   } catch (err) {
@@ -212,7 +235,7 @@ export async function updateUsers(req: Request, res: Response, next: NextFunctio
 
     if (temp) { await deleteImg(temp) };
 
-    res.status(200).json({
+    return res.status(200).json({
       msg: "You have successfully updated your profile",
       updatedrecord
     });
@@ -222,3 +245,14 @@ export async function updateUsers(req: Request, res: Response, next: NextFunctio
     res.status(500).json({ msg: "failed to update", route: "/update/:id" });
   }
 };
+
+
+export async function logoutUser(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.clearCookie('token');
+    res.status(200).json({ msg: 'You have successfully logged out' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: 'failed to logout', route: '/logout' });
+  }
+}
