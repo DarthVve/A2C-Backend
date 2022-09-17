@@ -1,3 +1,4 @@
+//Mail Template for user verificatiion
 export function emailVerificationView(id: string, token: unknown): string {
   const link = `${process.env.ROOT_URL}/user/verify/${id}`;
   let temp = `
@@ -109,6 +110,8 @@ export function emailVerificationView(id: string, token: unknown): string {
   return temp;
 }
 
+
+//Mail Template for user password reset
 export function passwordMailTemplate(id: string, token: unknown): string {
   const link = `${process.env.ROOT_URL}/user/resetPassword/${id}`;
   let temp = `

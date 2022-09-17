@@ -160,6 +160,7 @@ export async function forgetPassword(req: Request, res: Response) {
 };
 
 
+//Creates a token for authentication
 export async function setResetToken(req: Request, res: Response) {
   try {
     const { token } = req.body;
@@ -247,6 +248,7 @@ export async function updateUsers(req: Request, res: Response, next: NextFunctio
 };
 
 
+//Logout User
 export async function logoutUser(req: Request, res: Response, next: NextFunction) {
   try {
     res.clearCookie('token');
