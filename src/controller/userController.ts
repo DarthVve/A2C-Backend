@@ -52,7 +52,7 @@ export async function registerUser(req: Request, res: Response) {
       const verifyToken = generateToken({ reset: verifyContext }, '1d');
       const html = emailVerificationView(id, verifyToken)
 
-      await mailer.sendEmail(appEmail, req.body.email, "please verify your email", html);
+      process.env.NODE_ENV !== 'test' && await mailer.sendEmail(appEmail, req.body.email, "please verify your email", html);
       return res.status(201).json({ msg: `User created successfully, welcome ${req.body.username} your id is ${id}` });
     }
     else {
@@ -63,6 +63,29 @@ export async function registerUser(req: Request, res: Response) {
     res.status(500).json({ msg: 'failed to register', route: '/register' });
   }
 };
+
+export async function resendVerificationEmail(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const user = await UserInstance.findOne({ where: { id } });
+    if (user) {
+      const email = user.getDataValue('email');
+      const passwordHash = user.getDataValue("password");
+      const verifyContext = await bcrypt.hash(passwordHash, 8);
+      const verifyToken = generateToken({ reset: verifyContext }, '1d');
+      const html = emailVerificationView(id, verifyToken)
+
+      await mailer.sendEmail(appEmail, email, "please verify your email", html);
+      return res.status(200).json({ msg: 'Verification email sent'})
+    }
+    else {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+  } catch(err) {
+    console.error(err)
+    res.status(500).json({ msg: 'failed to resend verification email', route: '/resendVerification' });
+  }
+}
 
 
 //User Login

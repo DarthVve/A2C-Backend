@@ -1,16 +1,19 @@
+process.env.NODE_ENV = 'test';
+process.env.JWT_SECRET = 'test';
+
 import express from 'express';
 import request from 'supertest';
 import userRouter from '../routes/user';
 import db from '../db/database.config';
-
-// process.env.JWT_SECRET = 'secret';
+import { config } from 'dotenv'
 
 beforeAll(async () => {
+  console.log(process.env)
   await db.sync({ force: true })
     .then(() => {
       console.info("Test Db Connected")
     })
-    .catch((err) => {
+    .catch((err: any) => {
       console.error(err)
     })
 });
@@ -25,15 +28,14 @@ describe('User Sign-up API Integration test', () => {
       firstname: "John",
       lastname: "Doe",
       username: "jasydizzy",
-      email: "jds@gmail.com",
+      email: "jds@example.com",
       phonenumber: "08023780045",
       password: "test",
       confirm_password: "test"
     })
 
     expect(statusCode).toBe(201);
-    expect(body.msg).toBe('User created successfully');
-    expect(body).toHaveProperty('record');
+    expect(body.msg).toContain('User created successfully');
   });
 
   test('POST /user/register - failure - request body invalid', async () => {
@@ -56,7 +58,7 @@ describe('User Sign-up API Integration test', () => {
       firstname: "John",
       lastname: "Doe",
       username: "jasydizzy",
-      email: "jds@gmail.com",
+      email: "jds@example.com",
       phonenumber: "08023780045",
       password: "test",
       confirm_password: "test"
@@ -73,18 +75,18 @@ describe('User Login API Integration test', () => {
       firstname: "John",
       lastname: "Doe",
       username: "jasydizzy",
-      email: "jds@gmail.com",
+      email: "jds@example.com",
       phonenumber: "08023780045",
       password: "test",
       confirm_password: "test"
     })
 
-    const [results] =  await db.query('UPDATE usertable SET verified = true WHERE email = "jds@gmail.com";')
+    const [results] =  await db.query('UPDATE usertable SET verified = true WHERE email = "jds@example.com";')
   })
 
   test('POST /user/login - success - login a user with email', async () => {
     const { body, statusCode } = await request(app).post('/user/login').send({
-      emailOrUsername: "jds@gmail.com",
+      emailOrUsername: "jds@example.com",
       password: "test",
     })
 
@@ -135,7 +137,7 @@ describe('User Login API Integration test', () => {
   });
 
   test('POST /user/login - failure - user not verified', async () => {
-    const [results] = await db.query('UPDATE usertable SET verified = false WHERE email = "jds@gmail.com";')
+    const [results] = await db.query('UPDATE usertable SET verified = false WHERE email = "jds@example.com";')
 
     const { body, statusCode } = await request(app).post('/user/login').send({
       emailOrUsername: "jasydizzy",

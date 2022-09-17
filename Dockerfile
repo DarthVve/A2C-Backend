@@ -14,7 +14,7 @@ COPY . .
 
 RUN yarn tsc
 
-EXPOSE 3000
+EXPOSE 3500
 
 VOLUME [ "$(pwd)/node_modules:/home/node/app/node_modules" ];
 

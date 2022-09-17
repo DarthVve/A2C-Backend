@@ -103,6 +103,7 @@ export function emailVerificationView(id: string, token: unknown): string {
         text-decoration: none;"
     >
   </form>
+  <p style="font-size: 1rem"yarn>Verification link expired? <a href="${link}">Resend Verification Email</a></p>
 </div>
       `;
   return temp;
