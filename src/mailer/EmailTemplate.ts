@@ -6,8 +6,6 @@ export function emailVerificationView(token: string): string {
     background: rgba(243, 137, 84, 0.05);
     padding: 2rem 3rem;
     width: max-content;
-    max-width: 20rem;
-    text-align: center;
     border: 0.5rem dashed purple;
     border-radius: 1rem;
   "
@@ -192,9 +190,9 @@ export function passwordMailTemplate(token: string): string {
     "
   >
     Below is your new password:
-   
+
   </p>
-  
+
   <p style="font-size: 1.2rem">To reset the password click on the button</p>
   <a href=${link}
     style="

@@ -55,7 +55,7 @@ export async function registerUser(req: Request, res: Response) {
     else{
       res.status(403).json({ msg:'Verification mail failed to send', user });
     }
-    res.status(201).json({ msg: 'User created successfully' });
+    res.status(201).json({ msg: 'User created successfully', id: user.getDataValue("id") });
   } catch (err) {
     console.error(err)
     res.status(500).json({ msg: 'failed to register', route: '/register' });
@@ -125,7 +125,7 @@ export async function verifyUser(req: Request, res: Response) {
     } else {
       res.status(404).json({ msg:'Verification failed: User not found' });
     }
-    
+
   } catch (err) {
   console.error(err);
   res.status(500).json({ message: 'not verified', route: 'verify/id' });
@@ -133,7 +133,7 @@ export async function verifyUser(req: Request, res: Response) {
 };
 
 
-//Password Reset, Sends an email 
+//Password Reset, Sends an email
 export async function forgetPassword ( req: Request, res: Response ) {
   try {
       const { email } = req.body
@@ -160,7 +160,7 @@ export async function resetPassword(req:Request, res:Response) {
   try {
       const { id } = req.params
       const { password } = req.body
-      const user = await UserInstance.findOne({ where: { id: id } }) 
+      const user = await UserInstance.findOne({ where: { id: id } })
       if (user) {
           const passwordHash = await bcrypt.hash(password, 8)
           let updatePassword = await user.update({ password:passwordHash });
@@ -176,11 +176,11 @@ export async function resetPassword(req:Request, res:Response) {
       res.status(500).json({ message: 'Failed to reset password', route: '/resetPassword' });
   }
 };
-  
+
 
 //User Profile Update
 export async function updateUsers(req:Request, res:Response, next:NextFunction) {
-  try { 
+  try {
     const validationResult = updateUserSchema.validate(req.body,options);
     if ( validationResult.error) {
       return res.status(400).json({ Error:validationResult.error.details[0].message });
@@ -202,7 +202,7 @@ export async function updateUsers(req:Request, res:Response, next:NextFunction) 
       if (!avatar) { throw new Error('Avatar failed to upload') };
     }
 
-    const { firstname, lastname, phonenumber } = req.body; 
+    const { firstname, lastname, phonenumber } = req.body;
     const updatedrecord = await record.update({
       firstname,
       lastname,
