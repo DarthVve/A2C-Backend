@@ -4,9 +4,9 @@ import { auth, oneTimeTokenAuth } from '../middleware/auth';
 const router = express.Router();
 
 router.post('/register', registerUser);
-router.post('/login', loginUser);
 router.get('/verify/:id', resendVerificationEmail);
 router.post('/verify/:id', oneTimeTokenAuth, verifyUser);
+router.post('/login', loginUser);
 router.patch('/forgotPassword', forgetPassword);
 router.post('/resetPassword/:id', setResetToken);
 router.patch('/resetPassword/:id', oneTimeTokenAuth, resetPassword);
