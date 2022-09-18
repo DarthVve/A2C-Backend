@@ -5,10 +5,8 @@ import express from 'express';
 import request from 'supertest';
 import userRouter from '../routes/user';
 import db from '../db/database.config';
-import { config } from 'dotenv'
 
 beforeAll(async () => {
-  console.log(process.env)
   await db.sync({ force: true })
     .then(() => {
       console.info("Test Db Connected")
@@ -22,6 +20,7 @@ const app = express();
 app.use(express.json());
 app.use('/user', userRouter);
 
+//Tests user sign-up
 describe('User Sign-up API Integration test', () => {
   test('POST /user/register - success - sign-up a user', async () => {
     const { body, statusCode } = await request(app).post('/user/register').send({
@@ -69,6 +68,8 @@ describe('User Sign-up API Integration test', () => {
   });
 });
 
+
+//Tests user login
 describe('User Login API Integration test', () => {
   beforeAll(async () => {
     await request(app).post('/user/register').send({
