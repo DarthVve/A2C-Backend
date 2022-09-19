@@ -5,6 +5,7 @@ import logger from 'morgan';
 import db from './db/database.config';
 import userRouter from './routes/user';
 import cors from 'cors';
+import corsOptions from './utility/corsOptions';
 
 db.sync()
   .then(() => {
@@ -23,7 +24,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', userRouter)
+app.use(cors(corsOptions));
+
 app.use('/user', userRouter);
 
 export default app;

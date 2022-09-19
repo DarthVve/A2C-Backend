@@ -52,7 +52,7 @@ export async function registerUser(req: Request, res: Response) {
       const verifyToken = generateToken({ reset: verifyContext }, '1d');
       const html = emailVerificationView(id, verifyToken)
 
-      await mailer.sendEmail(appEmail, req.body.email, "please verify your email", html);
+      process.env.NODE_ENV !== 'test' && await mailer.sendEmail(appEmail, req.body.email, "please verify your email", html);
       return res.status(201).json({ msg: `User created successfully, welcome ${req.body.username} your id is ${id}` });
     }
     else {
@@ -63,6 +63,31 @@ export async function registerUser(req: Request, res: Response) {
     res.status(500).json({ msg: 'failed to register', route: '/register' });
   }
 };
+
+
+//Resends verification mail if user failed to verify at the alloted time
+export async function resendVerificationEmail(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const user = await UserInstance.findOne({ where: { id } });
+    if (user) {
+      const email = user.getDataValue('email');
+      const passwordHash = user.getDataValue("password");
+      const verifyContext = await bcrypt.hash(passwordHash, 8);
+      const verifyToken = generateToken({ reset: verifyContext }, '1d');
+      const html = emailVerificationView(id, verifyToken)
+
+      await mailer.sendEmail(appEmail, email, "please verify your email", html);
+      return res.status(200).json({ msg: 'Verification email sent' })
+    }
+    else {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+  } catch(err) {
+    console.error(err)
+    res.status(500).json({ msg: 'failed to resend verification email', route: '/resendVerification' });
+  }
+}
 
 
 //User Login
@@ -160,7 +185,7 @@ export async function forgetPassword(req: Request, res: Response) {
 };
 
 
-//Creates a token for authentication
+//Creates a token for authentication, redirects to reset form
 export async function setResetToken(req: Request, res: Response) {
   try {
     const { token } = req.body;
@@ -176,7 +201,7 @@ export async function setResetToken(req: Request, res: Response) {
     console.error(err);
     res.status(500).json({ message: 'Failed to set reset token', route: '/resetPassword' });
   }
-}
+};
 
 
 //User password update
@@ -282,4 +307,4 @@ export async function logoutUser(req: Request, res: Response, next: NextFunction
     console.error(err);
     res.status(500).json({ msg: 'failed to logout', route: '/logout' });
   }
-}
+};
