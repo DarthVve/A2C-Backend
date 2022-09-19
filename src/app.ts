@@ -8,7 +8,7 @@ import cors from 'cors';
 
 db.sync()
   .then(() => {
-    console.log('Database connected succcesfully');
+    console.log('Database connected succesfully');
   })
   .catch((err) => {
     console.log(err);

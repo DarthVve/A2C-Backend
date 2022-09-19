@@ -27,23 +27,23 @@ export const userSchema = Joi.object().keys({
 
 //User Login schema
 export const loginSchema = Joi.object().keys({
-    emailOrUsername: Joi.string().trim().required(),
-    password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
-  })
+  emailOrUsername: Joi.string().trim().required(),
+  password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required(),
+})
 
 
 //update User profile
 export const updateUserSchema = Joi.object().keys({
-  firstname:Joi.string(),
-  lastname:Joi.string(),
-  phonenumber:Joi.string().regex(/^[a-zA-Z0-9]{11}$/),
-  avatar:Joi.string()
+  firstname: Joi.string(),
+  lastname: Joi.string(),
+  phonenumber: Joi.string().regex(/^[a-zA-Z0-9]{11}$/),
+  avatar: Joi.string()
 });
 
 
 //Token Generator function for login sessions
-export const generateToken = (user: { [key: string]: unknown }): unknown => {
+export const generateToken = (user: { [key: string]: unknown }, time: string = '7d'): unknown => {
   const pass = process.env.JWT_SECRET as string;
-  return jwt.sign(user, pass, { expiresIn: '7d' });
+  return jwt.sign(user, pass, { expiresIn: time });
 };
 
