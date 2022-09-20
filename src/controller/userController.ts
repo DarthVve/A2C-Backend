@@ -7,7 +7,8 @@ import bcrypt from 'bcryptjs';
 import mailer from '../mailer/SendMail';
 import { emailVerificationView, passwordMailTemplate } from '../mailer/EmailTemplate';
 import { deleteImg, uploadImg } from '../cloud/config';
-const appEmail = process.env.POD_GMAIL as string;
+const APP_EMAIL = process.env.POD_GMAIL as string;
+const APP_URL = process.env.APP_URL as string;
 
 
 //User Sign up
@@ -52,8 +53,11 @@ export async function registerUser(req: Request, res: Response) {
       const verifyToken = generateToken({ reset: verifyContext }, '1d');
       const html = emailVerificationView(id, verifyToken)
 
-      await mailer.sendEmail(appEmail, req.body.email, "please verify your email", html);
-      return res.status(201).json({ msg: `User created successfully, welcome ${req.body.username} your id is ${id}` });
+      process.env.NODE_ENV !== 'test' && await mailer.sendEmail(APP_EMAIL, req.body.email, "please verify your email", html);
+      return res.status(201).json({
+        msg: `User created successfully, welcome ${req.body.username}`,
+        id
+      });
     }
     else {
       return res.status(403).json({ msg: 'Verification mail failed to send' });
@@ -63,6 +67,31 @@ export async function registerUser(req: Request, res: Response) {
     res.status(500).json({ msg: 'failed to register', route: '/register' });
   }
 };
+
+
+//Resends verification mail if user failed to verify at the alloted time
+export async function resendVerificationEmail(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const user = await UserInstance.findOne({ where: { id } });
+    if (user) {
+      const email = user.getDataValue('email');
+      const passwordHash = user.getDataValue("password");
+      const verifyContext = await bcrypt.hash(passwordHash, 8);
+      const verifyToken = generateToken({ reset: verifyContext }, '1d');
+      const html = emailVerificationView(id, verifyToken)
+
+      await mailer.sendEmail(APP_EMAIL, email, "please verify your email", html);
+      return res.status(200).json({ msg: 'Verification email sent' })
+    }
+    else {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ msg: 'failed to resend verification email', route: '/resendVerification' });
+  }
+}
 
 
 //User Login
@@ -89,7 +118,14 @@ export async function loginUser(req: Request, res: Response) {
         return res.status(401).json({ msg: 'Your account has not been verified' });
       }
 
-      const id = user.getDataValue('id')
+      const id = user.getDataValue('id');
+      const firstname = user.getDataValue('firstname');
+      const lastname = user.getDataValue('lastname');
+      const username = user.getDataValue('username');
+      const email = user.getDataValue('email');
+      const phonenumber = user.getDataValue('phonenumber');
+      const avatar = user.getDataValue('avatar');
+      const userInfo = { id, firstname, lastname, username, email, phonenumber, avatar };
       const token = generateToken({ id }) as string;
       const production = process.env.NODE_ENV === "production";
 
@@ -100,8 +136,7 @@ export async function loginUser(req: Request, res: Response) {
         sameSite: production ? "none" : "lax"
       }).json({
         msg: 'You have successfully logged in',
-        token,
-        id
+        userInfo
       });
     } else {
       return res.status(400).json({ msg: 'Invalid credentials' });
@@ -122,7 +157,7 @@ export async function verifyUser(req: Request, res: Response) {
     if (user) {
       const updateVerified = await user.update({ verified: true });
       if (updateVerified) {
-        return res.status(200).json({ msg: 'User verified', updateVerified })
+        return res.status(200).redirect(`${APP_URL}/login`);
       } else {
         throw new Error('failed to update user')
       }
@@ -147,8 +182,7 @@ export async function forgetPassword(req: Request, res: Response) {
       const resetContext = await bcrypt.hash(user.getDataValue('password'), 8);
       const resetToken = generateToken({ reset: resetContext }, '10m');
       const html = passwordMailTemplate(id, resetToken);
-      const subject = "New Account Password";
-      await mailer.sendEmail("AirtimeToCash", email, subject, html);
+      await mailer.sendEmail(APP_EMAIL, email, "New Account Password", html);
       return res.status(200).json({ msg: "email for password reset sent" });
     } else {
       return res.status(400).json({ msg: "invalid email Address" });
@@ -160,7 +194,7 @@ export async function forgetPassword(req: Request, res: Response) {
 };
 
 
-//Creates a token for authentication
+//Creates a token for authentication, redirects to reset form
 export async function setResetToken(req: Request, res: Response) {
   try {
     const { token } = req.body;
@@ -170,13 +204,12 @@ export async function setResetToken(req: Request, res: Response) {
       httpOnly: true,
       secure: production,
       sameSite: production ? "none" : "lax"
-    }).send(token)
-    //remember to redirect to reset form
+    }).redirect(`${APP_URL}/forgotPassword/update`);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Failed to set reset token', route: '/resetPassword' });
   }
-}
+};
 
 
 //User password update
@@ -227,7 +260,7 @@ export async function updateUsers(req: Request, res: Response, next: NextFunctio
     }
 
     const { firstname, lastname, phonenumber } = req.body;
-    const updatedrecord = await record.update({
+    await record.update({
       firstname,
       lastname,
       phonenumber,
@@ -238,7 +271,10 @@ export async function updateUsers(req: Request, res: Response, next: NextFunctio
 
     return res.status(200).json({
       msg: "You have successfully updated your profile",
-      updatedrecord
+      firstname,
+      lastname,
+      phonenumber,
+      avatar
     });
 
   } catch (error) {
@@ -257,4 +293,4 @@ export async function logoutUser(req: Request, res: Response, next: NextFunction
     console.error(err);
     res.status(500).json({ msg: 'failed to logout', route: '/logout' });
   }
-}
+};

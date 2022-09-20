@@ -7,8 +7,6 @@ export function emailVerificationView(id: string, token: unknown): string {
     background: rgba(243, 137, 84, 0.05);
     padding: 2rem 3rem;
     width: max-content;
-    max-width: 20rem;
-    text-align: center;
     border: 0.5rem dashed purple;
     border-radius: 1rem;
   "
@@ -105,6 +103,7 @@ export function emailVerificationView(id: string, token: unknown): string {
         text-decoration: none;"
     >
   </form>
+  <p style="font-size: 1rem"yarn>Verification link expired? <a href="${link}">Resend Verification Email</a></p>
 </div>
       `;
   return temp;
