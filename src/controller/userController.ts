@@ -198,13 +198,14 @@ export async function forgetPassword(req: Request, res: Response) {
 export async function setResetToken(req: Request, res: Response) {
   try {
     const { token } = req.body;
+    const { id } = req.params;
     const production = process.env.NODE_ENV === "production";
     res.cookie('reset', token, {
       maxAge: 10 * 60 * 1000,
       httpOnly: true,
       secure: production,
       sameSite: production ? "none" : "lax"
-    }).redirect(`${APP_URL}/forgotPassword/update`);
+    }).redirect(`${APP_URL}/forgotPassword/update/${id}`);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Failed to set reset token', route: '/resetPassword' });
