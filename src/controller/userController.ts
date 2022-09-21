@@ -185,7 +185,7 @@ export async function forgetPassword(req: Request, res: Response) {
       await mailer.sendEmail(APP_EMAIL, email, "New Account Password", html);
       return res.status(200).json({ msg: "email for password reset sent" });
     } else {
-      return res.status(400).json({ msg: "invalid email Address" });
+      return res.status(404).json({ msg: "Invalid Email Address, User Not Found" });
     }
   } catch (err) {
     console.error(err);
@@ -223,7 +223,7 @@ export async function resetPassword(req: Request, res: Response) {
       let updatePassword = await user.update({ password: passwordHash });
 
       if (updatePassword) {
-        return res.status(200).json({ msg: "password successfully updated" });
+        return res.status(200).json({ msg: "password updated successfully" });
       } else {
         return res.status(400).json({ msg: "failed to update password" });
       }
