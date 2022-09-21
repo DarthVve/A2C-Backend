@@ -250,7 +250,7 @@ export async function updateUsers(req: Request, res: Response, next: NextFunctio
       return res.status(404).json({ Error: "Cannot find existing user" })
     }
 
-    let avatar: string = '', temp: string = '';
+    let avatar: string | undefined = undefined, temp: string = '';
     if (req.body.avatar) {
       const previousValue = record.getDataValue("avatar");
 
@@ -275,7 +275,7 @@ export async function updateUsers(req: Request, res: Response, next: NextFunctio
       firstname,
       lastname,
       phonenumber,
-      avatar
+      avatar: record.getDataValue('avatar')
     });
 
   } catch (error) {
