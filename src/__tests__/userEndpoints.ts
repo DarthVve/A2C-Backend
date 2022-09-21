@@ -65,6 +65,7 @@ describe('User Sign-up API Integration test', () => {
 
     expect(statusCode).toBe(409);
     expect(body).toHaveProperty('msg');
+    expect(body).toHaveProperty('id');
   });
 });
 
@@ -82,7 +83,7 @@ describe('User Login API Integration test', () => {
       confirm_password: "test"
     })
 
-    const [results] =  await db.query('UPDATE usertable SET verified = true WHERE email = "jds@example.com";')
+    const [results] = await db.query('UPDATE usertable SET verified = true WHERE email = "jds@example.com";')
   })
 
   test('POST /user/login - success - login a user with email', async () => {
