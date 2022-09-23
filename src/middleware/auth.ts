@@ -9,19 +9,19 @@ export async function auth(req: Request, res: Response, next: NextFunction) {
   try {
     const authorization = req.headers.authorization;
     if (!authorization && !req.cookies.token) {
-      return res.status(401).json({ message: "Authentication required. Please login" })
+      return res.status(401).json({ msg: "Authentication required. Please login" })
     }
 
     const token = authorization?.slice(7) || req.cookies.token as string;
     const verified = verify(token, secret);
     if (!verified) {
-      return res.status(401).json({ message: "Token expired/invalid. Please login" });
+      return res.status(401).json({ msg: "Token expired/invalid. Please login" });
     }
 
     const { id } = verified as { [key: string]: string };
     const user = await UserInstance.findOne({ where: { id } });
     if (!user) {
-      return res.status(401).json({ message: "User could not be identified" });
+      return res.status(401).json({ msg: "User could not be identified" });
     }
     req.user = id;
     next();
@@ -31,23 +31,24 @@ export async function auth(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+
 export async function oneTimeTokenAuth(req: Request, res: Response, next: NextFunction) {
   try {
     const { id } = req.params;
     if (!req.cookies.reset && !req.body.token) {
-      return res.status(401).json({ message: "Resend the mail you requested and use it in less than 10 minutes" })
+      return res.status(401).json({ msg: "Resend the mail you requested and use it in less than 10 minutes" })
     }
 
     const token = req.cookies.reset || req.body.token;
     const verified = verify(token, secret);
     if (!verified) {
-      return res.status(401).json({ message: "Token expired/invalid. Please request a new email" });
+      return res.status(401).json({ msg: "Token expired/invalid. Please request a new email" });
     }
 
     const { reset } = verified as { [key: string]: string };
     const user = await UserInstance.findOne({ where: { id } });
     if (!user) {
-      return res.status(401).json({ message: "User could not be identified" });
+      return res.status(401).json({ msg: "User could not be identified" });
     }
 
     const hash = user?.getDataValue('password');
@@ -56,7 +57,7 @@ export async function oneTimeTokenAuth(req: Request, res: Response, next: NextFu
       res.clearCookie('reset');
       next();
     } else {
-      return res.status(401).json({ message: "Token expired/invalid. Please request a new email" });
+      return res.status(401).json({ msg: "Token expired/invalid. Please request a new email" });
     }
   } catch (err) {
     console.log(err);

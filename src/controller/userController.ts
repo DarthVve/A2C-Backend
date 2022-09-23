@@ -185,7 +185,7 @@ export async function forgetPassword(req: Request, res: Response) {
       await mailer.sendEmail(APP_EMAIL, email, "New Account Password", html);
       return res.status(200).json({ msg: "email for password reset sent" });
     } else {
-      return res.status(400).json({ msg: "invalid email Address" });
+      return res.status(404).json({ msg: "Invalid Email Address, User Not Found" });
     }
   } catch (err) {
     console.error(err);
@@ -198,13 +198,14 @@ export async function forgetPassword(req: Request, res: Response) {
 export async function setResetToken(req: Request, res: Response) {
   try {
     const { token } = req.body;
+    const { id } = req.params;
     const production = process.env.NODE_ENV === "production";
     res.cookie('reset', token, {
       maxAge: 10 * 60 * 1000,
       httpOnly: true,
       secure: production,
       sameSite: production ? "none" : "lax"
-    }).redirect(`${APP_URL}/forgotPassword/update`);
+    }).redirect(`${APP_URL}/forgotPassword/update/${id}`);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Failed to set reset token', route: '/resetPassword' });
@@ -223,7 +224,7 @@ export async function resetPassword(req: Request, res: Response) {
       let updatePassword = await user.update({ password: passwordHash });
 
       if (updatePassword) {
-        return res.status(200).json({ msg: "password successfully updated" });
+        return res.status(200).json({ msg: "password updated successfully" });
       } else {
         return res.status(400).json({ msg: "failed to update password" });
       }
@@ -249,7 +250,7 @@ export async function updateUsers(req: Request, res: Response, next: NextFunctio
       return res.status(404).json({ Error: "Cannot find existing user" })
     }
 
-    let avatar: string = '', temp: string = '';
+    let avatar: string | undefined = undefined, temp: string = '';
     if (req.body.avatar) {
       const previousValue = record.getDataValue("avatar");
 
@@ -274,7 +275,7 @@ export async function updateUsers(req: Request, res: Response, next: NextFunctio
       firstname,
       lastname,
       phonenumber,
-      avatar
+      avatar: record.getDataValue('avatar')
     });
 
   } catch (error) {
@@ -283,6 +284,31 @@ export async function updateUsers(req: Request, res: Response, next: NextFunctio
   }
 };
 
+export async function getSingleUser(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { id } = req.params;
+
+    const record = await UserInstance.findOne({ where: { id } });
+
+    if (!record) {
+      return res.status(500).json({ message: 'Invalid ID' });
+    }
+
+    return res.status(202).json({
+      message: 'User successfully fetched',
+      record,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Failed to get',
+      route: '/getOne',
+    });
+  }
+}
 
 //Logout User
 export async function logoutUser(req: Request, res: Response, next: NextFunction) {
