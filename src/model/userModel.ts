@@ -12,6 +12,7 @@ interface UsersAttributes {
   password: string;
   avatar: string;
   verified: boolean;
+  wallet?: string;
 }
 
 export class UserInstance extends Model<UsersAttributes> { }
@@ -105,6 +106,10 @@ UserInstance.init(
     verified: {
       type: DataTypes.BOOLEAN,
       allowNull: false
+    },
+    wallet: {
+      type: DataTypes.NUMBER,
+      defaultValue: 0
     }
   },
   {

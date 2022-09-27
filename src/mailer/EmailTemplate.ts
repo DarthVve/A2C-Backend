@@ -1,111 +1,97 @@
 //Mail Template for user verificatiion
 export function emailVerificationView(id: string, token: unknown): string {
   const link = `${process.env.ROOT_URL}/user/verify/${id}`;
+  const home = `${process.env.APP_URL}`;
   let temp = `
-  <div
-  style="
-    background: rgba(243, 137, 84, 0.05);
-    padding: 2rem 3rem;
-    width: max-content;
-    border: 0.5rem dashed purple;
-    border-radius: 1rem;
-  "
-  position="relative"
->
-  <div>
-    <h3
-      style="
-        position: relative;
-        top: -1rem;
-        width: 1.3rem;
-        height: 2.3rem;
-        background: linear-gradient(
-          145deg,
-          rgb(244, 185, 76) 70%,
-          rgb(237, 155, 3) 70% 30%
-        );
-        -ms-transform: rotate(30deg);
-        transform: rotate(30deg);
-        margin-right: 2rem;
-        margin-bottom: -2rem;
-      "
-    >
-      &nbsp;
-    </h3>
-    <h3
-      style="
-        position: relative;
-        top: -3rem;
-        left: 0.35rem;
-        display: block;
-        content: '';
-        width: 1.3rem;
-        height: 2.3rem;
-        transform: rotate(33deg);
-        background: linear-gradient(
-          325deg,
-          rgb(186, 1, 146) 70%,
-          purple 70% 30%
-        );
-      "
-    >
-      &nbsp;
-    </h3>
-  </div>
-  <h4
-    style="
-      position: relative;
-      top: -8rem;
-      left: 2.1rem;
-      display: flex;
-      justify-content: center;
-      text-align: center;
-      margin: 0 auto;
-      color: rgb(186, 1, 146);
-      font-weight: 500;
-      font-size: 2rem;
-    "
-  >
-    Airtime<span style="color: orange">2cash</span>
-  </h4>
-  <h2
-    style="
-      font-family: Inter;
-      font-style: normal;
-      font-weight: 700;
-      font-size: 3rem;
-      margin-top: -9rem;
-      background: linear-gradient(89.39deg, #de3d6d 18.77%, #f5844c 91.68%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      -text-fill-color: transparent;
-      text-transform: capitalize;
-    "
-  >
-    Hurray!!!
-    <span style="display: block; font-size: 2rem">almost there</span>
-  </h2>
-  <p style="font-size: 1rem">Click the button to verify your email</p>
-
-  <form action='${link}' method='post'>
-    <input type='hidden' name='token' value='${token}' />
-    <input type='submit' value='Verify Email'
-      style="
-        color: white;
-        font-size: 1.2rem;
-        padding: 0.5rem 1.5rem;
-        background: linear-gradient(75deg, rgb(186, 1, 146), orange);
-        border-radius: 0.5rem;
-        border: none;
-        text-transform: capitalize;
-        cursor: pointer;
-        text-decoration: none;"
-    >
-  </form>
-  <p style="font-size: 1rem"yarn>Verification link expired? <a href="${link}">Resend Verification Email</a></p>
-</div>
-      `;
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <!--[if (gte mso 9)|(IE)]><!-->
+        <link rel="noopener" target="_blank" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+      <!--<![endif]-->
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+      </style>
+    </head>
+    <body>
+      <div style="position: relative;
+      background: #E5E5E5;
+      height: 100vh;
+      min-width: 200px;
+      font-family: 'Inter', sans-serif;
+      box-sizing: border-box;">
+        <div style="position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        width: 745px;
+        max-width: 90%;
+        height: 626px;
+        background: #FFFFFF;
+        box-sizing: border-box;
+        display: table;
+        text-align: center;
+        padding-top: 20%;">
+          <a href="${home}" style="text-decoration: none;">
+            <div style="width: 151px;
+            height: 56px;
+            display: flex;
+            margin: 0 auto 20px;
+            justify-content: space-between;
+            font-family: 'Inter', sans-serif;
+            font-style: normal;
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 19px;">
+              <img src="https://res.cloudinary.com/deqb447mp/image/upload/v1664044669/airtime2Cash/u8pxu0260n2wumj3wpkj.png" alt="logo" border="0" width=32 height=56 style="width: 32px; height: 56px;">
+              <p style="
+              display: flex;">
+                <span style="color: #DE3D6D;">Airtime</span>
+                <span style="color: #F5844C;">2Cash</span>
+              </p>
+            </div>
+          </a>
+          <h1 style="color: #21334F;
+          font-family: 'Inter', sans-serif;
+          font-weight: 700;
+          font-size: 25px;
+          margin: 0 0 20px;
+          padding: 0;">Hurray! Almost There</h1>
+          <p style="font-family: 'Inter', sans-serif;
+          font-style: normal;
+          font-weight: 400;
+          font-size: 16px;
+          line-height: 15px;
+          margin: 15px 0 20px;">Click the button to verify your email and activate your account</p>
+          <form action='${link}' method='post'>
+            <input type='hidden' name='token' value='${token}' />
+            <input type='submit' value='Verify Email' style="font-family: 'Inter', sans-serif;
+            border: none;
+            align-self: stretch;
+            padding: 16.5px 32px;
+            margin-bottom: 20px;
+            gap: 10px;
+            background: linear-gradient(92.1deg, #DE3D6D 55.67%, #F5844C 101.51%);
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;">
+          </form>
+          <p style="font-family: 'Inter', sans-serif;
+          font-style: normal;
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 15px;
+          margin: 10px 0 0 0;">Verification link expired? <a href="${link}" style="color: rgb(223, 62, 110); cursor: pointer;">Resend Verification Email</a></p>
+        </div>
+      </div>
+    </body>
+  </html>
+  `;
   return temp;
 }
 
@@ -113,106 +99,96 @@ export function emailVerificationView(id: string, token: unknown): string {
 //Mail Template for user password reset
 export function passwordMailTemplate(id: string, token: unknown): string {
   const link = `${process.env.ROOT_URL}/user/resetPassword/${id}`;
+  const home = `${process.env.APP_URL}`;
   let temp = `
-  <div
-  style="
-    background: rgba(243, 137, 84, 0.05);
-    padding: 2rem 5rem;
-    max-width: 700px;
-    text-align: center;
-    border: 0.5rem dashed purple;
-    border-radius: 1rem;
-  "
-  position="relative"
->
-  <div>
-    <h3
-      style="
-        position: relative;
-        top: -1rem;
-        width: 1.3rem;
-        height: 2.3rem;
-        background: linear-gradient(
-          145deg,
-          rgb(244, 185, 76) 70%,
-          rgb(237, 155, 3) 70% 30%
-        );
-        -ms-transform: rotate(30deg);
-        transform: rotate(30deg);
-        margin-right: 2rem;
-      "
-    >
-      &nbsp;
-    </h3>
-    <h3
-      style="
-        position: relative;
-        top: -2.6rem;
-        left: 0.35rem;
-        display: block;
-        content: '';
-        width: 1.3rem;
-        height: 2.3rem;
-        transform: rotate(33deg);
-        background: linear-gradient(
-          325deg,
-          rgb(186, 1, 146) 70%,
-          purple 70% 30%
-        );
-      "
-    >
-      &nbsp;
-    </h3>
-  </div>
-  <h4
-    style="
-      position: relative;
-      top: -8rem;
-      left: 2rem;
-      display: flex;
-      flex: 1;
-      color: rgb(186, 1, 146);
-      font-weight: 500;
-      font-size: 2.5rem;
-    "
-  >
-    Airtime<span style="color: orange">2cash</span>
-  </h4>
-  <p
-    style="
-      font-family: Inter;
-      font-style: normal;
-      font-weight: 500;
-      font-size: 20px;
-      margin-top: -9rem;
-      background: linear-gradient(89.39deg, #de3d6d 18.77%, #f5844c 91.68%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      -text-fill-color: transparent;
-      text-transform: capitalize;
-    "
-  >
-    Below is your new password:
-
-  </p>
-
-  <p style="font-size: 1.2rem">To reset the password click on the button</p>
-  <form action='${link}' method='post'>
-  <input type='hidden' name='token' value='${token}' />
-  <input type='submit' value='Reset Password'
-    style="
-      color: #fff;
-      font-size: 1.2rem;
-      padding: 0.5rem 1.5rem;
-      background: linear-gradient(75deg, rgb(186, 1, 146), orange);
-      border-radius: 0.5rem;
-      border: none;
-      text-transform: capitalize;
-      cursor: pointer; text-styles: none;"
-  >
-  </form>
-</div>
-      `;
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <!--[if (gte mso 9)|(IE)]><!-->
+        <link rel="noopener" target="_blank" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+      <!--<![endif]-->
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+      </style>
+    </head>
+    <body>
+      <div style="position: relative;
+      background: #E5E5E5;
+      height: 100vh;
+      min-width: 200px;
+      font-family: 'Inter', sans-serif;
+      box-sizing: border-box;">
+        <div style="position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        width: 745px;
+        max-width: 90%;
+        height: 626px;
+        background: #FFFFFF;
+        box-sizing: border-box;
+        display: table;
+        text-align: center;
+        padding-top: 20%;">
+          <a href="${home}" style="text-decoration: none;">
+            <div style="width: 151px;
+            height: 56px;
+            display: flex;
+            margin: 0 auto 20px;
+            justify-content: space-between;
+            font-family: 'Inter', sans-serif;
+            font-style: normal;
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 19px;">
+              <img src="https://res.cloudinary.com/deqb447mp/image/upload/v1664044669/airtime2Cash/u8pxu0260n2wumj3wpkj.png" alt="logo" border="0" width=32 height=56 style="width: 32px; height: 56px;">
+              <p style="
+              display: flex;">
+                <span style="color: #DE3D6D;">Airtime</span>
+                <span style="color: #F5844C;">2Cash</span>
+              </p>
+            </div>
+          </a>
+          <h1 style="color: #21334F;
+          font-family: 'Inter', sans-serif;
+          font-weight: 700;
+          font-size: 25px;
+          margin: 0 0 20px;
+          padding: 0;">Set Your New Password</h1>
+          <p style="font-family: 'Inter', sans-serif;
+          font-style: normal;
+          font-weight: 400;
+          font-size: 16px;
+          line-height: 15px;
+          margin: 15px 0 20px;">To reset your password click on the button below</p>
+          <form action='${link}' method='post'>
+            <input type='hidden' name='token' value='${token}' />
+            <input type='submit' value='Reset Password' style="font-family: 'Inter', sans-serif;
+            border: none;
+            align-self: stretch;
+            padding: 16.5px 32px;
+            margin-bottom: 20px;
+            gap: 10px;
+            background: linear-gradient(92.1deg, #DE3D6D 55.67%, #F5844C 101.51%);
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;">
+          </form>
+          <p style="font-family: 'Inter', sans-serif;
+          font-style: normal;
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 15px;
+          margin: 10px 0 0 0;">Set your new password within 10 minutes of receiving this mail</p>
+        </div>
+      </div>
+    </body>
+  </html>
+  `;
   return temp;
 }

@@ -40,6 +40,19 @@ export const updateUserSchema = Joi.object().keys({
   avatar: Joi.string()
 });
 
+//add Account details
+export const accountSchema = Joi.object().keys({
+  bank: Joi.string().required(),
+  name: Joi.string().required(),
+  number: Joi.string().length(10).required()
+});
+
+//update Account details
+export const updateAccountSchema = Joi.object().keys({
+  bank: Joi.string(),
+  name: Joi.string(),
+  number: Joi.string().length(10)
+});
 
 //Token Generator function for login sessions
 export const generateToken = (user: { [key: string]: unknown }, time: string = '7d'): unknown => {

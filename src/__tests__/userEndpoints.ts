@@ -65,7 +65,6 @@ describe('User Sign-up API Integration test', () => {
 
     expect(statusCode).toBe(409);
     expect(body).toHaveProperty('msg');
-    expect(body).toHaveProperty('id');
   });
 });
 
@@ -94,7 +93,7 @@ describe('User Login API Integration test', () => {
 
     expect(statusCode).toBe(200);
     expect(body.msg).toBe('You have successfully logged in');
-    expect(body).toHaveProperty('token');
+    expect(body).toHaveProperty('userInfo');
   });
 
   test('POST /user/login - success - login a user with username', async () => {
@@ -105,7 +104,7 @@ describe('User Login API Integration test', () => {
 
     expect(statusCode).toBe(200);
     expect(body.msg).toBe('You have successfully logged in');
-    expect(body).toHaveProperty('token');
+    expect(body).toHaveProperty('userInfo');
   });
 
   test('POST /user/login - failure - improper request body', async () => {
