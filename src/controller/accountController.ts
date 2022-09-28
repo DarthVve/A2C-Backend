@@ -4,6 +4,7 @@ import { accountSchema, updateAccountSchema, options } from '../utility/utils';
 import { AccountInstance } from '../model/accountModel';
 import { UserInstance } from '../model/userModel';
 
+//Create Account
 export async function createAccount(req: Request, res: Response) {
   try {
     const validationResult = accountSchema.validate(req.body, options);
@@ -55,6 +56,7 @@ export async function createAccount(req: Request, res: Response) {
 }
 
 
+//Get Account
 export async function getAccounts(req: Request, res: Response) {
   try {
     const accounts = await AccountInstance.findAll({
@@ -79,6 +81,7 @@ export async function getAccounts(req: Request, res: Response) {
 }
 
 
+//Update Account
 export async function updateAccount(req: Request, res: Response) {
   try {
     const validationResult = updateAccountSchema.validate(req.body, options);
@@ -111,6 +114,7 @@ export async function updateAccount(req: Request, res: Response) {
 }
 
 
+//Delete Account
 export async function deleteAccount(req: Request, res: Response) {
   try {
     const { id } = req.params;

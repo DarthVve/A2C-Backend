@@ -284,31 +284,6 @@ export async function updateUsers(req: Request, res: Response, next: NextFunctio
   }
 };
 
-export async function getSingleUser(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
-  try {
-    const { id } = req.params;
-
-    const record = await UserInstance.findOne({ where: { id } });
-
-    if (!record) {
-      return res.status(500).json({ message: 'Invalid ID' });
-    }
-
-    return res.status(202).json({
-      message: 'User successfully fetched',
-      record,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      message: 'Failed to get',
-      route: '/getOne',
-    });
-  }
-}
 
 //Logout User
 export async function logoutUser(req: Request, res: Response, next: NextFunction) {
