@@ -246,8 +246,8 @@ export async function updateUsers(req: Request, res: Response, next: NextFunctio
 
     const { id } = req.params
     const record = await UserInstance.findOne({ where: { id } })
-    if (!record) {
-      return res.status(404).json({ Error: "Cannot find existing user" })
+    if (!record || id !== req.user) {
+      return res.status(404).json({ msg: "User not found" })
     }
 
     let avatar: string | undefined = undefined, temp: string = '';

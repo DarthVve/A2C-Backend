@@ -62,7 +62,7 @@ export async function getAccounts(req: Request, res: Response) {
         user: req.user
       }
     });
-    if (!accounts) {
+    if (!accounts.length) {
       return res.status(404).json({
         msg: 'No accounts found',
       });

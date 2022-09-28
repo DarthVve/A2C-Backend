@@ -24,6 +24,7 @@ app.use(cookieParser());
 app.use('/user', userRouter);
 app.use('/account', accountRouter);
 let cookie: string;
+let id: string;
 
 describe('Account Creation API Integration test', () => {
   beforeAll(async () => {
@@ -44,7 +45,6 @@ describe('Account Creation API Integration test', () => {
     cookie = results.header["set-cookie"].map((ck: string) => {
       return ck.split(";")[0];
     }).join(";");
-    console.log("Cookie", cookie);
   })
 
   test('POST /account/add - failure - invalid account details', async() => {
@@ -103,3 +103,164 @@ describe('Account Creation API Integration test', () => {
     expect(body.msg).toContain('login');
   })
 });
+
+describe('Account Retrieval API Integration test', () => {
+  beforeAll(async () => {
+    await request(app).post('/user/register').send({
+      firstname: "Peter",
+      lastname: "Pan",
+      username: "petey",
+      email: "peterpan@example.com",
+      phonenumber: "08001234567",
+      password: "test",
+      confirm_password: "test"
+    })
+    await db.query('UPDATE usertable SET verified = true WHERE email = "peterpan@example.com";')
+    const results = await request(app).post('/user/login').send({
+      emailOrUsername: "peterpan@example.com",
+      password: "test",
+    })
+    cookie = results.header["set-cookie"].map((ck: string) => {
+      return ck.split(";")[0];
+    }).join(";");
+  })
+
+  test('GET /account/ - failure - no accounts found', async() => {
+    const { body, statusCode } = await request(app).get('/account').set("Cookie", cookie).send()
+    expect(statusCode).toBe(404);
+    expect(body).toHaveProperty('msg');
+  })
+
+  test('GET /account/ - failure - not logged in', async () => {
+    const { body, statusCode } = await request(app).get('/account').send()
+    expect(statusCode).toBe(401);
+    expect(body).toHaveProperty('msg');
+    expect(body.msg).toContain('login');
+  })
+
+  test('GET /account - success - accounts retrieved', async () => {
+    await request(app).post('/account/add').set("Cookie", cookie).send({
+      name: "Peter Pan",
+      bank: "Access Bank",
+      number: "1112223334"
+    })
+    const { body, statusCode } = await request(app).get('/account').set("Cookie", cookie).send()
+    expect(statusCode).toBe(200);
+    expect(body).toHaveProperty('msg');
+    expect(body.msg).toContain('retrieved');
+    expect(body).toHaveProperty('accounts');
+    expect(body.accounts).toHaveLength(1);
+  })
+});
+
+describe('Account Deletion API Integration test', () => {
+  beforeAll(async () => {
+    await request(app).post('/user/register').send({
+      firstname: "James",
+      lastname: "Bond",
+      username: "james007",
+      email: "jamesbond@example.com",
+      phonenumber: "08001234007",
+      password: "test",
+      confirm_password: "test"
+    })
+    await db.query('UPDATE usertable SET verified = true WHERE email = "jamesbond@example.com";')
+    const results = await request(app).post('/user/login').send({
+      emailOrUsername: "james007",
+      password: "test",
+    })
+    cookie = results.header["set-cookie"].map((ck: string) => {
+      return ck.split(";")[0];
+    }).join(";");
+    const { body } = await request(app).post('/account/add').set("Cookie", cookie).send({
+      name: "James Bond",
+      bank: "First Bank",
+      number: "1112223335"
+    })
+    id = body.data.id;
+  })
+
+  test('DELETE /account/:id - failure - account does not exist', async () => {
+    const { body, statusCode } = await request(app).delete('/account/delete/1').set("Cookie", cookie).send()
+    expect(statusCode).toBe(404);
+    expect(body).toHaveProperty('msg');
+    expect(body.msg).toContain('not found');
+  })
+
+  test('DELETE /account/:id - failure - not logged in', async () => {
+    const { body, statusCode } = await request(app).delete(`/account/delete/${id}`).send()
+    expect(statusCode).toBe(401);
+    expect(body).toHaveProperty('msg');
+    expect(body.msg).toContain('login');
+  })
+
+  test('DELETE /account/:id - success - account deleted', async () => {
+    const { body, statusCode } = await request(app).delete(`/account/delete/${id}`).set("Cookie", cookie).send()
+    expect(statusCode).toBe(200);
+    expect(body).toHaveProperty('msg');
+    expect(body.msg).toContain('deleted');
+  })
+})
+
+describe('Account Update API Integration test', () => {
+  beforeAll(async () => {
+    await request(app).post('/user/register').send({
+      firstname: "Peter",
+      lastname: "Parker",
+      username: "spidey",
+      email: "peterparker@example.com",
+      phonenumber: "08001231234",
+      password: "test",
+      confirm_password: "test"
+    })
+    await db.query('UPDATE usertable SET verified = true WHERE email = "peterparker@example.com";')
+    const results = await request(app).post('/user/login').send({
+      emailOrUsername: "spidey",
+      password: "test",
+    })
+    cookie = results.header["set-cookie"].map((ck: string) => {
+      return ck.split(";")[0];
+    }).join(";");
+    const { body } = await request(app).post('/account/add').set("Cookie", cookie).send({
+      name: "Peter Parker",
+      bank: "UBA",
+      number: "1112223336"
+    })
+    id = body.data.id;
+  })
+
+  test('PATCH /account/:id - failure - account does not exist', async () => {
+    const { body, statusCode } = await request(app).patch('/account/update/1').set("Cookie", cookie).send({
+      name: "Peter Parker",
+      bank: "VFD",
+      number: "1112223367"
+    })
+    expect(statusCode).toBe(404);
+    expect(body).toHaveProperty('msg');
+    expect(body.msg).toContain('not found');
+  })
+
+  test('PATCH /account/:id - failure - not logged in', async () => {
+    const { body, statusCode } = await request(app).patch(`/account/update/${id}`).send({
+      name: "Peter Parker",
+      bank: "VFD",
+      number: "1112223367"
+    })
+    expect(statusCode).toBe(401);
+    expect(body).toHaveProperty('msg');
+    expect(body.msg).toContain('login');
+  })
+
+  test('PATCH /account/:id - success - account updated', async () => {
+    const { body, statusCode } = await request(app).patch(`/account/update/${id}`).set("Cookie", cookie).send({
+      name: "Peter Parker",
+      bank: "VFD",
+      number: "1112223367"
+    })
+    expect(statusCode).toBe(200);
+    expect(body).toHaveProperty('msg');
+    expect(body.msg).toContain('updated');
+    expect(body).toHaveProperty('data');
+  })
+})
+

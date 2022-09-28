@@ -5,6 +5,10 @@ import express from 'express';
 import request from 'supertest';
 import userRouter from '../routes/user';
 import db from '../db/database.config';
+import cookieParser from 'cookie-parser';
+
+let cookie: string;
+let id: string;
 
 beforeAll(async () => {
   await db.sync({ force: true })
@@ -18,6 +22,7 @@ beforeAll(async () => {
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 app.use('/user', userRouter);
 
 //Tests user sign-up
@@ -82,7 +87,7 @@ describe('User Login API Integration test', () => {
       confirm_password: "test"
     })
 
-    const [results] = await db.query('UPDATE usertable SET verified = true WHERE email = "jds@example.com";')
+    await db.query('UPDATE usertable SET verified = true WHERE email = "jds@example.com";')
   })
 
   test('POST /user/login - success - login a user with email', async () => {
@@ -138,7 +143,7 @@ describe('User Login API Integration test', () => {
   });
 
   test('POST /user/login - failure - user not verified', async () => {
-    const [results] = await db.query('UPDATE usertable SET verified = false WHERE email = "jds@example.com";')
+    await db.query('UPDATE usertable SET verified = false WHERE email = "jds@example.com";')
 
     const { body, statusCode } = await request(app).post('/user/login').send({
       emailOrUsername: "jasydizzy",
@@ -148,3 +153,104 @@ describe('User Login API Integration test', () => {
     expect(body.msg).toBe('Your account has not been verified');
   });
 });
+
+//Tests user update
+describe('User Update API Integration test', () => {
+  beforeAll(async () => {
+    await request(app).post('/user/register').send({
+      firstname: "John",
+      lastname: "Doe",
+      username: "jasydizzy",
+      email: "jds@example.com",
+      phonenumber: "08023780045",
+      password: "test",
+      confirm_password: "test"
+    })
+    await db.query('UPDATE usertable SET verified = true WHERE email = "jds@example.com";')
+    const results = await request(app).post('/user/login').send({
+      emailOrUsername: "jasydizzy",
+      password: "test"
+    })
+    cookie = results.header["set-cookie"].map((ck: string) => {
+      return ck.split(";")[0];
+    }).join(";");
+    id = results.body.userInfo.id;
+  })
+
+  test('PATCH /user/update/:id - success - update user details', async () => {
+    const { body, statusCode } = await request(app).patch(`/user/update/${id}`).set("Cookie", cookie).send({
+      firstname: "Jane",
+      lastname: "Austen",
+      phonenumber: "08023780049"
+    })
+    expect(statusCode).toBe(200);
+    expect(body).toHaveProperty('msg');
+    expect(body.msg).toContain('updated');
+    expect(body).toHaveProperty('firstname');
+    expect(body.firstname).toBe('Jane');
+    expect(body).toHaveProperty('lastname');
+    expect(body.lastname).toBe('Austen');
+    expect(body).toHaveProperty('phonenumber');
+    expect(body.phonenumber).toBe('08023780049');
+    expect(body).toHaveProperty('avatar');
+  })
+
+  test('PATCH /user/update/:id - failure - user not found', async () => {
+    const { body, statusCode } = await request(app).patch(`/user/update/100`).set("Cookie", cookie).send({
+      firstname: "Jane",
+      lastname: "Austen",
+      phonenumber: "08023780049"
+    })
+    expect(statusCode).toBe(404);
+    expect(body).toHaveProperty('msg');
+    expect(body.msg).toContain('not found');
+  })
+
+  test('PATCH /user/update/:id - failure - invalid details', async () => {
+    const { body, statusCode } = await request(app).patch(`/user/update/${id}`).set("Cookie", cookie).send({
+      username: "janey",
+      phonenumber: "08023780049"
+    })
+    expect(statusCode).toBe(400);
+    expect(body).toHaveProperty('Error');
+  })
+
+  test('PATCH /user/update/:id - failure - not logged in', async () => {
+    const { body, statusCode } = await request(app).patch(`/user/update/${id}`).send({
+      firstname: "Jane",
+      lastname: "Austen",
+      phonenumber: "08023780049"
+    })
+    expect(statusCode).toBe(401);
+    expect(body).toHaveProperty('msg');
+    expect(body.msg).toContain('login');
+  })
+})
+
+//Tests user logout
+describe('User Logout API Integration test', () => {
+  test('POST /user/logout - success', async () => {
+    await request(app).post('/user/register').send({
+      firstname: "John",
+      lastname: "Doe",
+      username: "jasydizzy",
+      email: "jds@example.com",
+      phonenumber: "08023780045",
+      password: "test",
+      confirm_password: "test"
+    })
+    await db.query('UPDATE usertable SET verified = true WHERE email = "jds@example.com";')
+    const results = await request(app).post('/user/login').send({
+      emailOrUsername: "jds@example.com",
+      password: "test"
+    })
+    cookie = results.header["set-cookie"].map((ck: string) => {
+      return ck.split(";")[0];
+    }).join(";");
+    id = results.body.userInfo.id;
+    const { body, statusCode } = await request(app).get('/user/logout').set("Cookie", cookie).send();
+    expect(statusCode).toBe(200);
+    expect(body).toHaveProperty('msg');
+    expect(body.msg).toContain('logged out');
+  })
+})
