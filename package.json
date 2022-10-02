@@ -6,7 +6,8 @@
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
     "compile": "tsc -w",
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "npm run compile"
   },
   "dependencies": {
     "@types/nodemailer": "^6.4.6",
