@@ -3,17 +3,19 @@ import db from '../db/database.config';
 import { UserInstance } from './userModel';
 
 
-interface AccountAttributes {
+interface WithdrawAttributes {
   id: string;
   bank: string;
   name: string;
   number: string;
+  amount: string;
+  status: string;
   user: string;
 }
 
-export class AccountInstance extends Model<AccountAttributes> { }
+export class WithdrawInstance extends Model<WithdrawAttributes> { }
 
-AccountInstance.init(
+WithdrawInstance.init(
   {
     id: {
       type: DataTypes.UUIDV4,
@@ -56,6 +58,22 @@ AccountInstance.init(
         }
       }
     },
+    amount: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'An amount is required'
+        },
+        notEmpty: {
+          msg: 'Amount cannot be empty'
+        }
+      }
+    },
+    status: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     user: {
       type: DataTypes.UUIDV4,
       allowNull: false,
@@ -71,10 +89,10 @@ AccountInstance.init(
   },
   {
     sequelize: db,
-    tableName: 'accounts'
+    tableName: 'withdrawals'
   }
 );
 
-UserInstance.hasMany(AccountInstance, { foreignKey: "user", as: "accounts" });
+UserInstance.hasMany(WithdrawInstance, { foreignKey: "user", as: "withdrawals" });
 
-AccountInstance.belongsTo(UserInstance, { foreignKey: "user", as: "holder" });
+WithdrawInstance.belongsTo(UserInstance, { foreignKey: "user", as: "holder" });
