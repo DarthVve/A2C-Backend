@@ -114,6 +114,6 @@ UserInstance.init(
   },
   {
     sequelize: db,
-    tableName: 'usertable'
+    tableName: 'users'
   }
 );

@@ -9,27 +9,15 @@ export async function createAccount(req: Request, res: Response) {
   try {
     const validationResult = accountSchema.validate(req.body, options);
     if (validationResult.error) {
-      return res.status(400).json({ Error: validationResult.error.details[0].message });
+      return res.status(400).json({ msg: validationResult.error.details[0].message });
     }
-
     const { bank, name, number } = req.body;
-
-    const account = await AccountInstance.findOne({
-      where: {
-        number
-      }
-    });
+    const account = await AccountInstance.findOne({ where: { number } });
     if (account) {
-      return res.status(409).json({
-        msg: 'Account already exists',
-      });
+      return res.status(409).json({ msg: 'Account already exists' });
     }
 
-    const holder = await UserInstance.findOne({
-      where: {
-        id: req.user
-      }
-    }) as UserInstance;
+    const holder = await UserInstance.findOne({ where: { id: req.user } }) as UserInstance;
     if (!name.includes(holder.getDataValue('firstname')) || !name.includes(holder.getDataValue('lastname'))) {
       return res.status(400).json({
         msg: 'Account name does not match user details',
@@ -51,23 +39,17 @@ export async function createAccount(req: Request, res: Response) {
     });
   } catch (error) {
     console.error(error)
-    res.status(500).json({ msg: 'failed to add account', route: '/add' });
+    res.status(500).json({ msg: 'failed to add account', route: '/account/add' });
   }
-}
+};
 
 
 //Get Account
 export async function getAccounts(req: Request, res: Response) {
   try {
-    const accounts = await AccountInstance.findAll({
-      where: {
-        user: req.user
-      }
-    });
+    const accounts = await AccountInstance.findAll({ where: { user: req.user } });
     if (!accounts.length) {
-      return res.status(404).json({
-        msg: 'No accounts found',
-      });
+      return res.status(404).json({ msg: 'No accounts found' });
     }
 
     return res.status(200).json({
@@ -76,9 +58,9 @@ export async function getAccounts(req: Request, res: Response) {
     });
   } catch (error) {
     console.error(error)
-    res.status(500).json({ msg: 'failed to get accounts', route: '/' });
+    res.status(500).json({ msg: 'failed to get accounts', route: '/account' });
   }
-}
+};
 
 
 //Update Account
@@ -86,20 +68,14 @@ export async function updateAccount(req: Request, res: Response) {
   try {
     const validationResult = updateAccountSchema.validate(req.body, options);
     if (validationResult.error) {
-      return res.status(400).json({ Error: validationResult.error.details[0].message });
+      return res.status(400).json({ msg: validationResult.error.details[0].message });
     }
 
     const { id } = req.params;
-    const account = await AccountInstance.findOne({
-      where: {
-        id,
-        user: req.user
-      }
-    });
+    const account = await AccountInstance.findOne({ where: { id, user: req.user } });
+
     if (!account) {
-      return res.status(404).json({
-        msg: 'Account not found',
-      });
+      return res.status(404).json({ msg: 'Account not found' });
     }
 
     const updatedAccount = await account.update(req.body);
@@ -109,38 +85,26 @@ export async function updateAccount(req: Request, res: Response) {
     });
   } catch (error) {
     console.error(error)
-    res.status(500).json({ msg: 'failed to update account', route: '/update/'+req.params.id });
+    res.status(500).json({ msg: 'failed to update account', route: 'account/update/' + req.params.id });
   }
-}
+};
 
 
 //Delete Account
 export async function deleteAccount(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const account = await AccountInstance.findOne({
-      where: {
-        id,
-        user: req.user
-      }
-    });
+    const account = await AccountInstance.findOne({ where: { id, user: req.user } });
+
     if (!account) {
-      return res.status(404).json({
-        msg: 'Account not found',
-      });
+      return res.status(404).json({ msg: 'Account not found' });
     }
 
-    await AccountInstance.destroy({
-      where: {
-        id
-      }
-    });
+    await AccountInstance.destroy({ where: { id } });
 
-    return res.status(200).json({
-      msg: 'Account deleted successfully',
-    });
+    return res.status(200).json({ msg: 'Account deleted successfully' });
   } catch (error) {
     console.error(error)
-    res.status(500).json({ msg: 'failed to delete account', route: '/delete/'+ req.params.id });
+    res.status(500).json({ msg: 'failed to delete account', route: 'account/delete/' + req.params.id });
   }
-}
+};
