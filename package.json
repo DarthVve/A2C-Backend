@@ -7,8 +7,9 @@
     "dev": "nodemon ./bin/www",
     "compile": "tsc -w",
     "test": "jest",
-    "tsc": "tsc",
-    "postinstall": "npm run tsc"
+    "tsc": "./node_modules/typescript/bin/tsc",
+    "build": "tsc",
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "@types/nodemailer": "^6.4.6",
