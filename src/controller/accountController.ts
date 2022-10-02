@@ -11,7 +11,7 @@ export async function createAccount(req: Request, res: Response) {
     if (validationResult.error) {
       return res.status(400).json({ msg: validationResult.error.details[0].message });
     }
-    const { bank, name, number } = req.body;
+    const { bank, name, number, bankCode } = req.body;
     const account = await AccountInstance.findOne({ where: { number } });
     if (account) {
       return res.status(409).json({ msg: 'Account already exists' });
@@ -31,7 +31,7 @@ export async function createAccount(req: Request, res: Response) {
       name,
       number,
       user: holder.getDataValue('id'),
-      bankCode: ''
+      bankCode
     });
 
     return res.status(201).json({
