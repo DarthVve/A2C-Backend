@@ -44,14 +44,16 @@ export const updateUserSchema = Joi.object().keys({
 export const accountSchema = Joi.object().keys({
   bank: Joi.string().required(),
   name: Joi.string().required(),
-  number: Joi.string().length(10).required()
+  number: Joi.string().length(10).required(),
+  bankCode: Joi.string().required()
 });
 
 //update Account details
 export const updateAccountSchema = Joi.object().keys({
   bank: Joi.string(),
   name: Joi.string(),
-  number: Joi.string().length(10)
+  number: Joi.string().length(10),
+  bankCode: Joi.string()
 });
 
 //withdrawal schema

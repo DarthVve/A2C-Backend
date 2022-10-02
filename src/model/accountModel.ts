@@ -9,6 +9,7 @@ interface AccountAttributes {
   name: string;
   number: string;
   user: string;
+  bankCode: string;
 }
 
 export class AccountInstance extends Model<AccountAttributes> { }
@@ -67,6 +68,9 @@ AccountInstance.init(
           msg: 'User id cannot be empty'
         }
       }
+    },
+    bankCode: {
+      type: DataTypes.STRING,
     }
   },
   {

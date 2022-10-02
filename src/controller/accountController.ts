@@ -30,7 +30,8 @@ export async function createAccount(req: Request, res: Response) {
       bank,
       name,
       number,
-      user: holder.getDataValue('id')
+      user: holder.getDataValue('id'),
+      bankCode: ''
     });
 
     return res.status(201).json({
