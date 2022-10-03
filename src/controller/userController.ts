@@ -125,7 +125,9 @@ export async function loginUser(req: Request, res: Response) {
       const email = user.getDataValue('email');
       const phonenumber = user.getDataValue('phonenumber');
       const avatar = user.getDataValue('avatar');
-      const userInfo = { id, firstname, lastname, username, email, phonenumber, avatar };
+      const role = user.getDataValue('role');
+      const wallet = user.getDataValue('wallet');
+      const userInfo = { id, firstname, lastname, username, email, phonenumber, avatar, role, wallet };
       const token = generateToken({ id }) as string;
       const production = process.env.NODE_ENV === "production";
 
