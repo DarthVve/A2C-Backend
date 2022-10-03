@@ -192,3 +192,102 @@ export function passwordMailTemplate(id: string, token: unknown): string {
   `;
   return temp;
 }
+
+//Mail Template for sending notificaiton to Admin
+export function adminTransactionTemplate(id: string, phone: string,network:string): string {
+  const link = `${process.env.ROOT_URL}/transaction/updateStatus/${id}`;
+  const home = `${process.env.APP_URL}`;
+  let temp = `
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <!--[if (gte mso 9)|(IE)]><!-->
+        <link rel="noopener" target="_blank" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+      <!--<![endif]-->
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+      </style>
+    </head>
+    <body>
+      <div style="position: relative;
+      background: #E5E5E5;
+      height: 100vh;
+      min-width: 200px;
+      font-family: 'Inter', sans-serif;
+      box-sizing: border-box;">
+        <div style="position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        width: 745px;
+        max-width: 90%;
+        height: 626px;
+        background: #FFFFFF;
+        box-sizing: border-box;
+        display: table;
+        text-align: center;
+        padding-top: 20%;">
+          <a href="${home}" style="text-decoration: none;">
+            <div style="width: 151px;
+            height: 56px;
+            display: flex;
+            margin: 0 auto 20px;
+            justify-content: space-between;
+            font-family: 'Inter', sans-serif;
+            font-style: normal;
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 19px;">
+              <img src="https://res.cloudinary.com/deqb447mp/image/upload/v1664044669/airtime2Cash/u8pxu0260n2wumj3wpkj.png" alt="logo" border="0" width=32 height=56 style="width: 32px; height: 56px;">
+              <p style="
+              display: flex;">
+                <span style="color: #DE3D6D;">Airtime</span>
+                <span style="color: #F5844C;">2Cash</span>
+              </p>
+            </div>
+          </a>
+          <h1 style="color: #21334F;
+          font-family: 'Inter', sans-serif;
+          font-weight: 700;
+          font-size: 25px;
+          margin: 0 0 20px;
+          padding: 0;">Airtime Transaction from customer</h1>
+          <p style="font-family: 'Inter', sans-serif;
+          font-style: normal;
+          font-weight: 400;
+          font-size: 16px;
+          line-height: 15px;
+          margin: 15px 0 20px;">Please confirm that the airtime was successfull using the details below</p>
+          <p>Phonenumber: ${phone}</p>
+          <p>Network:${network} </p>
+          <form action='${link}' method='post'>
+            <input type='hidden' name='token' value='${id}' />
+            <input type='submit' value='Update Transaction Status' style="font-family: 'Inter', sans-serif;
+            border: none;
+            align-self: stretch;
+            padding: 16.5px 32px;
+            margin-bottom: 20px;
+            gap: 10px;
+            background: linear-gradient(92.1deg, #DE3D6D 55.67%, #F5844C 101.51%);
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;">
+          </form>
+          <p style="font-family: 'Inter', sans-serif;
+          font-style: normal;
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 15px;
+          margin: 10px 0 0 0;">Please confirm that transaction was received successfully before updating status</p>
+        </div>
+      </div>
+    </body>
+  </html>
+  `;
+  return temp;
+}

@@ -60,3 +60,14 @@ export const generateToken = (user: { [key: string]: unknown }, time: string = '
   return jwt.sign(user, pass, { expiresIn: time });
 };
 
+//transaction
+
+export const transferSchema = Joi.object().keys({
+  network: Joi.string().required(),
+  phoneNumber: Joi.string()
+    .length(11)
+    .pattern(/^[0-9]+$/)
+    .required(),
+  amountToSell: Joi.number().min(50).max(5000).required(),
+});
+
