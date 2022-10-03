@@ -12,12 +12,7 @@ export async function createTransaction(req: Request | any, res: Response) {
     const id = uuidv4();
     const userId = req.user;
 
-
     const { network, phoneNumber, amountToSell, amountToReceive } = req.body;
-
-
-
-
     const validateInput = await transferSchema.validate(req.body, options);
     if (validateInput.error) {
       return res.status(400).json(validateInput.error.details[0].message);
