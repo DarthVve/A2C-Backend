@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { accountSchema, updateAccountSchema, options } from '../utility/utils';
 import { AccountInstance } from '../model/accountModel';
 import { UserInstance } from '../model/userModel';
+import { getBanks, cachedBanks } from '../utility/flutter';
 
 //Create Account
 export async function createAccount(req: Request, res: Response) {
@@ -11,7 +12,11 @@ export async function createAccount(req: Request, res: Response) {
     if (validationResult.error) {
       return res.status(400).json({ msg: validationResult.error.details[0].message });
     }
-    const { bank, name, number, bankCode } = req.body;
+
+    const { bank, name, number } = req.body;
+    await getBanks();
+    const { code } = cachedBanks.find((bankObj: any) => bankObj.name === bank);
+
     const account = await AccountInstance.findOne({ where: { number } });
     if (account) {
       return res.status(409).json({ msg: 'Account already exists' });
@@ -31,7 +36,7 @@ export async function createAccount(req: Request, res: Response) {
       name,
       number,
       user: holder.getDataValue('id'),
-      bankCode
+      bankCode: code
     });
 
     return res.status(201).json({

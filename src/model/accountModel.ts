@@ -71,6 +71,7 @@ AccountInstance.init(
     },
     bankCode: {
       type: DataTypes.STRING,
+      allowNull: false
     }
   },
   {

@@ -1,3 +1,4 @@
+require('dotenv').config();
 process.env.NODE_ENV = 'test';
 process.env.JWT_SECRET = 'test';
 
@@ -223,7 +224,6 @@ describe('Account Update API Integration test', () => {
     }).join(";");
     const { body } = await request(app).post('/account/add').set("Cookie", cookie).send({
       name: "Peter Parker",
-      bank: "UBA",
       number: "1112223336"
     })
     id = body.data.id;
@@ -232,7 +232,6 @@ describe('Account Update API Integration test', () => {
   test('PATCH /account/:id - failure - account does not exist', async () => {
     const { body, statusCode } = await request(app).patch('/account/update/1').set("Cookie", cookie).send({
       name: "Peter Parker",
-      bank: "VFD",
       number: "1112223367"
     })
     expect(statusCode).toBe(404);
@@ -243,7 +242,6 @@ describe('Account Update API Integration test', () => {
   test('PATCH /account/:id - failure - not logged in', async () => {
     const { body, statusCode } = await request(app).patch(`/account/update/${id}`).send({
       name: "Peter Parker",
-      bank: "VFD",
       number: "1112223367"
     })
     expect(statusCode).toBe(401);
@@ -254,7 +252,6 @@ describe('Account Update API Integration test', () => {
   test('PATCH /account/:id - success - account updated', async () => {
     const { body, statusCode } = await request(app).patch(`/account/update/${id}`).set("Cookie", cookie).send({
       name: "Peter Parker",
-      bank: "VFD",
       number: "1112223367"
     })
     expect(statusCode).toBe(200);

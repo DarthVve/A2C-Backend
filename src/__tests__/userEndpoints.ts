@@ -1,5 +1,4 @@
-process.env.NODE_ENV = 'test';
-process.env.JWT_SECRET = 'test';
+require('dotenv').config();
 
 import express from 'express';
 import request from 'supertest';
@@ -11,6 +10,8 @@ let cookie: string;
 let id: string;
 
 beforeAll(async () => {
+  process.env.NODE_ENV = 'test';
+  process.env.JWT_SECRET = 'test';
   await db.sync({ force: true })
     .then(() => {
       console.info("Test Db Connected")

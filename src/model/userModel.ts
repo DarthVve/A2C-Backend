@@ -113,8 +113,7 @@ UserInstance.init(
       defaultValue: 0
     },
     role: {
-      type: DataTypes.STRING,
-      defaultValue: 'user'
+      type: DataTypes.STRING
     }
   },
   {
@@ -133,26 +132,24 @@ const superadmin = {
   password: process.env.SUPERADMIN_PASSWORD as string,
 }
 
-UserInstance.findOrCreate({
-  where: {
-    id: superadmin.id,
-    firstname: superadmin.firstname,
-    lastname: superadmin.lastname,
-    username: superadmin.username,
-    email: superadmin.email,
-    phonenumber: superadmin.phonenumber,
-    password: bcrypt.hashSync(superadmin.password, 8),
-    avatar: '',
-    verified: true,
-    role: 'superadmin'
-  }
-}).then(([user, created]) => {
-  if (created || user) {
+UserInstance.create({
+  id: superadmin.id,
+  firstname: superadmin.firstname,
+  lastname: superadmin.lastname,
+  username: superadmin.username,
+  email: superadmin.email,
+  phonenumber: superadmin.phonenumber,
+  password: bcrypt.hashSync(superadmin.password, 8),
+  avatar: '',
+  verified: true,
+  role: 'superadmin'
+}).then((created) => {
+  if (created) {
     console.log('Super Admin created successfully');
   }
 }, (err) => {
   if(err.name === "SequelizeUniqueConstraintError"){
-    console.log('Super Admin already exists');
+    console.log('Super Admin seeded');
   }
   else {
     console.log(err);

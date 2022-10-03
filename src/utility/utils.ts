@@ -45,15 +45,12 @@ export const accountSchema = Joi.object().keys({
   bank: Joi.string().required(),
   name: Joi.string().required(),
   number: Joi.string().length(10).required(),
-  bankCode: Joi.string().required()
 });
 
 //update Account details
 export const updateAccountSchema = Joi.object().keys({
-  bank: Joi.string(),
   name: Joi.string(),
-  number: Joi.string().length(10),
-  bankCode: Joi.string()
+  number: Joi.string().length(10)
 });
 
 //withdrawal schema
@@ -61,6 +58,7 @@ export const withdrawalSchema = Joi.object().keys({
   bank: Joi.string(),
   name: Joi.string(),
   number: Joi.string().length(10),
+  code: Joi.string().length(3),
   amount: Joi.string().required().regex(/^[0-9]{3,6}$/),
   password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required()
 });
