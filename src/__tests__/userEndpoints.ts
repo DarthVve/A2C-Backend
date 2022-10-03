@@ -1,4 +1,7 @@
 require('dotenv').config();
+process.env.NODE_ENV = 'test';
+process.env.JWT_SECRET = 'test';
+
 
 import express from 'express';
 import request from 'supertest';
@@ -10,8 +13,6 @@ let cookie: string;
 let id: string;
 
 beforeAll(async () => {
-  process.env.NODE_ENV = 'test';
-  process.env.JWT_SECRET = 'test';
   await db.sync({ force: true })
     .then(() => {
       console.info("Test Db Connected")
@@ -55,7 +56,7 @@ describe('User Sign-up API Integration test', () => {
     })
 
     expect(statusCode).toBe(400);
-    expect(body).toHaveProperty('Error');
+    expect(body).toHaveProperty('msg');
   });
 
   test('POST /user/register - failure - User already exists', async () => {
@@ -88,7 +89,7 @@ describe('User Login API Integration test', () => {
       confirm_password: "test"
     })
 
-    await db.query('UPDATE usertable SET verified = true WHERE email = "jds@example.com";')
+    await db.query('UPDATE users SET verified = true WHERE email = "jds@example.com";')
   })
 
   test('POST /user/login - success - login a user with email', async () => {
@@ -120,7 +121,7 @@ describe('User Login API Integration test', () => {
     })
 
     expect(statusCode).toBe(400);
-    expect(body).toHaveProperty('Error');
+    expect(body).toHaveProperty('msg');
   });
 
   test('POST /user/login - failure - user does not exist', async () => {
@@ -144,7 +145,7 @@ describe('User Login API Integration test', () => {
   });
 
   test('POST /user/login - failure - user not verified', async () => {
-    await db.query('UPDATE usertable SET verified = false WHERE email = "jds@example.com";')
+    await db.query('UPDATE users SET verified = false WHERE email = "jds@example.com";')
 
     const { body, statusCode } = await request(app).post('/user/login').send({
       emailOrUsername: "jasydizzy",
@@ -167,7 +168,7 @@ describe('User Update API Integration test', () => {
       password: "test",
       confirm_password: "test"
     })
-    await db.query('UPDATE usertable SET verified = true WHERE email = "jds@example.com";')
+    await db.query('UPDATE users SET verified = true WHERE email = "jds@example.com";')
     const results = await request(app).post('/user/login').send({
       emailOrUsername: "jasydizzy",
       password: "test"
@@ -213,7 +214,7 @@ describe('User Update API Integration test', () => {
       phonenumber: "08023780049"
     })
     expect(statusCode).toBe(400);
-    expect(body).toHaveProperty('Error');
+    expect(body).toHaveProperty('msg');
   })
 
   test('PATCH /user/update/:id - failure - not logged in', async () => {
@@ -240,7 +241,7 @@ describe('User Logout API Integration test', () => {
       password: "test",
       confirm_password: "test"
     })
-    await db.query('UPDATE usertable SET verified = true WHERE email = "jds@example.com";')
+    await db.query('UPDATE users SET verified = true WHERE email = "jds@example.com";')
     const results = await request(app).post('/user/login').send({
       emailOrUsername: "jds@example.com",
       password: "test"

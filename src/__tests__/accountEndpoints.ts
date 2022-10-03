@@ -8,6 +8,7 @@ import userRouter from '../routes/user';
 import accountRouter from '../routes/account';
 import db from '../db/database.config';
 import cookieParser from 'cookie-parser';
+import { getRandomBankName } from '../utility/getRandomBank';
 
 beforeAll(async () => {
   await db.sync({ force: true })
@@ -38,7 +39,7 @@ describe('Account Creation API Integration test', () => {
       password: "test",
       confirm_password: "test"
     })
-    await db.query('UPDATE usertable SET verified = true WHERE email = "johndoe@example.com";')
+    await db.query('UPDATE users SET verified = true WHERE email = "johndoe@example.com";')
     const results = await request(app).post('/user/login').send({
       emailOrUsername: "johndoe@example.com",
       password: "test",
@@ -55,14 +56,14 @@ describe('Account Creation API Integration test', () => {
       name: "John Doe",
     })
     expect(statusCode).toBe(400);
-    expect(body).toHaveProperty('Error');
-    expect(body.Error).toContain('bank');
+    expect(body).toHaveProperty('msg');
+    expect(body.msg).toContain('bank');
   })
 
   test('POST /account/add - failure - account name does not match user details', async() => {
     const { body, statusCode } = await request(app).post('/account/add').set("Cookie", cookie).send({
       name: "John Lennon",
-      bank: "GTB",
+      bank: getRandomBankName(),
       number: "1234567890"
     })
     expect(statusCode).toBe(400);
@@ -73,7 +74,7 @@ describe('Account Creation API Integration test', () => {
   test('POST /account/add - success - account created', async () => {
     const { body, statusCode } = await request(app).post('/account/add').set("Cookie", cookie).send({
       name: "John Doe",
-      bank: "GTB",
+      bank: getRandomBankName(),
       number: "1234567890"
     })
     expect(statusCode).toBe(201);
@@ -85,7 +86,7 @@ describe('Account Creation API Integration test', () => {
   test('POST /account/add - failure - account already exists', async() => {
     const { body, statusCode } = await request(app).post('/account/add').set("Cookie", cookie).send({
       name: "John Doe",
-      bank: "GTB",
+      bank: getRandomBankName(),
       number: "1234567890"
     })
     expect(statusCode).toBe(409);
@@ -96,7 +97,7 @@ describe('Account Creation API Integration test', () => {
   test('POST /account/add - failure - not logged in', async () => {
     const { body, statusCode } = await request(app).post('/account/add').send({
       name: "John Doe",
-      bank: "Sterling Bank",
+      bank: getRandomBankName(),
       number: "0987654321"
     })
     expect(statusCode).toBe(401);
@@ -116,7 +117,7 @@ describe('Account Retrieval API Integration test', () => {
       password: "test",
       confirm_password: "test"
     })
-    await db.query('UPDATE usertable SET verified = true WHERE email = "peterpan@example.com";')
+    await db.query('UPDATE users SET verified = true WHERE email = "peterpan@example.com";')
     const results = await request(app).post('/user/login').send({
       emailOrUsername: "peterpan@example.com",
       password: "test",
@@ -142,7 +143,7 @@ describe('Account Retrieval API Integration test', () => {
   test('GET /account - success - accounts retrieved', async () => {
     await request(app).post('/account/add').set("Cookie", cookie).send({
       name: "Peter Pan",
-      bank: "Access Bank",
+      bank: getRandomBankName(),
       number: "1112223334"
     })
     const { body, statusCode } = await request(app).get('/account').set("Cookie", cookie).send()
@@ -165,7 +166,7 @@ describe('Account Deletion API Integration test', () => {
       password: "test",
       confirm_password: "test"
     })
-    await db.query('UPDATE usertable SET verified = true WHERE email = "jamesbond@example.com";')
+    await db.query('UPDATE users SET verified = true WHERE email = "jamesbond@example.com";')
     const results = await request(app).post('/user/login').send({
       emailOrUsername: "james007",
       password: "test",
@@ -175,7 +176,7 @@ describe('Account Deletion API Integration test', () => {
     }).join(";");
     const { body } = await request(app).post('/account/add').set("Cookie", cookie).send({
       name: "James Bond",
-      bank: "First Bank",
+      bank: getRandomBankName(),
       number: "1112223335"
     })
     id = body.data.id;
@@ -214,7 +215,7 @@ describe('Account Update API Integration test', () => {
       password: "test",
       confirm_password: "test"
     })
-    await db.query('UPDATE usertable SET verified = true WHERE email = "peterparker@example.com";')
+    await db.query('UPDATE users SET verified = true WHERE email = "peterparker@example.com";')
     const results = await request(app).post('/user/login').send({
       emailOrUsername: "spidey",
       password: "test",
@@ -224,7 +225,8 @@ describe('Account Update API Integration test', () => {
     }).join(";");
     const { body } = await request(app).post('/account/add').set("Cookie", cookie).send({
       name: "Peter Parker",
-      number: "1112223336"
+      number: "1112223336",
+      bank: getRandomBankName()
     })
     id = body.data.id;
   })
