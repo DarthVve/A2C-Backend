@@ -63,10 +63,10 @@ export const generateToken = (user: { [key: string]: unknown }, time: string = '
 //
 
 export const transferAirtimeSchema = Joi.object().keys({
-  amountTransfered: Joi.number().min(50).max(5000),
-  amountRecieved: Joi.number(),
-  phone: Joi.string().regex(/^[a-zA-Z0-9]{11}$/),
-  network: Joi.string()
+  network: Joi.string().required(),
+  phoneNumber: Joi.string().regex(/^[a-zA-Z0-9]{11}$/).required(),
+  amountToSell: Joi.number().min(50).max(5000).required(),
+  amountToReceive: Joi.number(),
 });
 
 //function for paginating transactions

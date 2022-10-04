@@ -6,9 +6,9 @@ interface TransactionAttributes {
   id:string;
   network:string;
   userId: string;
-  amountTransfered: string;
-  amountRecieved: number;
-  phone:string;
+  amountToSell: string;
+  amountToReceive: number;
+  phoneNumber:string;
   status: boolean;
 
 }
@@ -26,17 +26,17 @@ TransactionInstance.init(
       type:DataTypes.STRING,
       allowNull:false
     },
-    amountTransfered: {
+    amountToSell: {
       type: DataTypes.NUMBER,
       allowNull: false,
 
     },
-    amountRecieved: {
+    amountToReceive: {
       type: DataTypes.NUMBER,
       allowNull: false,
 
     },
-    phone:{
+    phoneNumber:{
       type:DataTypes.STRING,
       allowNull:false
     },
