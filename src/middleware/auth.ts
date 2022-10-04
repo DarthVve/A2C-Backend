@@ -31,6 +31,36 @@ export async function auth(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+export async function creditAuth(req: Request, res: Response, next: NextFunction) {
+  try {
+    const authorization = req.headers.authorization;
+    if (!req.cookies && !req.body.token) {
+      return res.status(401).json({msg: 'Authentication required, Please login'})
+    }
+
+
+    const token = authorization?.slice(7) || req.cookies.token as string;
+
+    const verified = verify(token, secret);
+    if (!verified) {
+      return res.status(401).json({
+        msg: 'Session timeout, please login'
+      })
+    }
+
+    const { id } = verified as { [key: string]: string };
+    const user = await UserInstance.findOne({ where: { id } });
+    if (!user) {
+      return res.status(401).json({msg:'User not found'})
+    }
+    req.user = id;
+    next()
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({msg: 'Unexpected error'})
+  }
+}
+
 
 export async function oneTimeTokenAuth(req: Request, res: Response, next: NextFunction) {
   try {

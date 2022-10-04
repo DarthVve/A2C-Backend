@@ -37,7 +37,8 @@ export const updateUserSchema = Joi.object().keys({
   firstname: Joi.string(),
   lastname: Joi.string(),
   phonenumber: Joi.string().regex(/^[a-zA-Z0-9]{11}$/),
-  avatar: Joi.string()
+  avatar: Joi.string(),
+  
 });
 
 //add Account details
