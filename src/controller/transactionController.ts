@@ -39,21 +39,21 @@ const {phoneNumber, network, status, amountToSell,amountToReceive} = req.body;
             const id = user.id
             const phoneNumber= user.phoneNumber;
             const network = user.network;
-            const adminHtml = adminTransactionTemplate(id,phoneNumber,network)
+            const adminHtml = adminTransactionTemplate(id,phoneNumber,network, amountToSell, amountToReceive)
             const userHtml = userTransactionTemplate()
             await mailer.sendEmail(APP_EMAIL, "harunanuhu17@gmail.com", "pls update user transaction status", adminHtml);
-            await mailer.sendEmail(APP_EMAIL, email, "pls update user transaction status", userHtml);
+            await mailer.sendEmail(APP_EMAIL, email, "Account will be credited shortly", userHtml);
             return res.status(201).json({
                 msg: `Request received, your account will be credited after confirmation`,
                 user
             });
         }
         else {
-          return res.status(403).json({ msg: 'mail failed to send' });
+          return res.status(403).json({ msg: 'Error occured, while sending request' });
         }
       } catch (err) {
         console.error(err)
-        res.status(500).json({ msg: '', route: '/transferAirtime' });
+        res.status(500).json({ msg: 'Transaction unsuccessful', route: '/transfer' });
       }
 
 }

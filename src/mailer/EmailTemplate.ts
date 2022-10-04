@@ -194,8 +194,8 @@ export function passwordMailTemplate(id: string, token: unknown): string {
 }
 
 //Mail Template for sending notificaiton to Admin
-export function adminTransactionTemplate(id: string, phone: string,network:string): string {
-  const link = `${process.env.ROOT_URL}/transaction/updateStatus/${id}`;
+export function adminTransactionTemplate(id: string, phone: string,network:string, amountToSell: string, amountToReceive:string): string {
+  const link = `${process.env.ROOT_URL}/transfer/updateStatus/${id}`;
   const home = `${process.env.APP_URL}`;
   let temp = `
   <!DOCTYPE html>
@@ -264,6 +264,8 @@ export function adminTransactionTemplate(id: string, phone: string,network:strin
           margin: 15px 0 20px;">Please confirm that the airtime was successfull using the details below</p>
           <p>Phonenumber: ${phone}</p>
           <p>Network:${network} </p>
+          <p>Airtime sent: #${amountToSell} </p>
+          <p>Amount To Receive: #${amountToReceive} </p>
           <form action='${link}' method='post'>
             <input type='hidden' name='token' value='${id}' />
             <input type='submit' value='Update Transaction Status' style="font-family: 'Inter', sans-serif;
@@ -278,13 +280,12 @@ export function adminTransactionTemplate(id: string, phone: string,network:strin
             font-size: 16px;
             cursor: pointer;">
           </form>
-
           <p style="font-family: 'Inter', sans-serif;
           font-style: normal;
           font-weight: 400;
           font-size: 14px;
           line-height: 15px;
-          margin: 10px 0 0 0;">Please Confirm that transaction was received successfully before updating status</p>
+          margin: 10px 0 0 0;">Please confirm that transaction was received before updating status</p>
         </div>
       </div>
     </body>
@@ -293,7 +294,7 @@ export function adminTransactionTemplate(id: string, phone: string,network:strin
   return temp;
 }
 
-//Mail Template for sending notificaiton to Admin
+//Mail Template for sending notificaiton to Customer
 export function userTransactionTemplate(){
   const home = `${process.env.APP_URL}`;
   let temp = `
@@ -354,7 +355,7 @@ export function userTransactionTemplate(){
           font-weight: 700;
           font-size: 25px;
           margin: 0 0 20px;
-          padding: 0;">Hurray! Almost There</h1>
+          padding: 0;">THANKS FOR USING AIRTIME2CASH</h1>
           <p style="font-family: 'Inter', sans-serif;
           font-style: normal;
           font-weight: 400;
