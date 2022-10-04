@@ -215,4 +215,4 @@ export function walletNotification(updatedWallet: number, amount: number) {
     </div>
   `;
   return temp
-}
+};
