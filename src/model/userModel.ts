@@ -109,7 +109,7 @@ UserInstance.init(
       allowNull: false
     },
     wallet: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.FLOAT,
       defaultValue: 0
     },
     role: {
