@@ -60,14 +60,20 @@ export const generateToken = (user: { [key: string]: unknown }, time: string = '
   return jwt.sign(user, pass, { expiresIn: time });
 };
 
-//transaction
+//
 
-export const transferSchema = Joi.object().keys({
-  network: Joi.string().required(),
-  phoneNumber: Joi.string()
-    .length(11)
-    .pattern(/^[0-9]+$/)
-    .required(),
-  amountToSell: Joi.number().min(50).max(5000).required(),
+export const transferAirtimeSchema = Joi.object().keys({
+  amountTransfered: Joi.number().min(50).max(5000),
+  amountRecieved: Joi.number(),
+  phone: Joi.string().regex(/^[a-zA-Z0-9]{11}$/),
+  network: Joi.string()
 });
+
+//function for paginating transactions
+export const getPagination = (page:number, size:number) => {
+  const limit = size ? size : 2;
+  const offset = page ? page * limit : 0;
+
+  return { limit, offset };
+};
 

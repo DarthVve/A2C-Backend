@@ -1,18 +1,19 @@
 import { DataTypes, Model } from 'sequelize';
 import db from '../db/database.config';
-import { UserInstance } from './userModel';
+
 
 interface TransactionAttributes {
-  id: string;
-  network: string;
-  phoneNumber: number;
-  amountToSell: number;
-  amountToReceive: number;
+  id:string;
+  network:string;
   userId: string;
-  transactionStatus?: boolean;
+  amountTransfered: string;
+  amountRecieved: number;
+  phone:string;
+  status: boolean;
+
 }
 
-export class TransactionInstance extends Model<TransactionAttributes> {}
+export class TransactionInstance extends Model<TransactionAttributes> { }
 
 TransactionInstance.init(
   {
@@ -21,38 +22,37 @@ TransactionInstance.init(
       primaryKey: true,
       allowNull: false,
     },
-    network: {
-      type: DataTypes.STRING,
-      allowNull: false,
+    network:{
+      type:DataTypes.STRING,
+      allowNull:false
     },
-    phoneNumber: {
+    amountTransfered: {
       type: DataTypes.NUMBER,
       allowNull: false,
+
     },
-    amountToSell: {
+    amountRecieved: {
       type: DataTypes.NUMBER,
       allowNull: false,
+
     },
-    amountToReceive: {
-      type: DataTypes.NUMBER,
+    phone:{
+      type:DataTypes.STRING,
+      allowNull:false
+    },
+
+    status: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
+      defaultValue:false,
     },
     userId: {
-      type: DataTypes.UUIDV4,
-      allowNull: false,
-    },
-    transactionStatus: {
-      type: DataTypes.BOOLEAN,
-      allowNull: true,
-      defaultValue: false,
-    },
+        type: DataTypes.UUIDV4,
+        allowNull: false,
+      },
   },
   {
     sequelize: db,
-    tableName: 'Transactions',
-  },
+    tableName: 'transactiontable'
+  }
 );
-
-UserInstance.hasMany(TransactionInstance, { foreignKey: "userId", as: "transactions" });
-
-TransactionInstance.belongsTo(UserInstance, { foreignKey: "userId", as: "sender" });

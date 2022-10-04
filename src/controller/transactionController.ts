@@ -1,77 +1,102 @@
 import { Request, Response, NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
+import { Op } from 'sequelize';
 import { TransactionInstance } from '../model/transactionModel';
 import { UserInstance } from '../model/userModel';
-import { transferSchema, options } from '../utility/utils';
+import mailer from '../mailer/SendMail'
+import { getPagination,transferAirtimeSchema,options,generateToken } from '../utility/utils';
+import { adminTransactionTemplate,userTransactionTemplate } from '../mailer/EmailTemplate';
+import { number } from 'joi';
 
-const adminNumber = ['09011111111', '09022222222', '09033333333', '09088888888'];
-const selectedNetwork = ['MTN', 'GLO', '9MOBILE', 'AIRTEL'];
+const APP_EMAIL = process.env.POD_GMAIL as string;
+const APP_URL = process.env.APP_URL as string;
 
-export async function createTransaction(req: Request | any, res: Response) {
-  try {
-    const id = uuidv4();
-    const userId = req.user;
 
-    const { network, phoneNumber, amountToSell, amountToReceive } = req.body;
-    const validateInput = await transferSchema.validate(req.body, options);
-    if (validateInput.error) {
-      return res.status(400).json(validateInput.error.details[0].message);
-    }
-    const validatedUser = await UserInstance.findOne({ where: { id: userId } });
 
-    if (!validatedUser) {
-      return res.status(401).json({ message: 'Sorry user does not exist!' });
-    }
+export async function addTransaction(req:Request,res:Response) {
+    try {
+        const id = uuidv4();
+        const userId = req.params.id
+        const validationResult = transferAirtimeSchema.validate(req.body, options);
 
-    // let destinationPhoneNumber;
-    // let USSD;
-    // const amountToRecieve = 0.7 * amountToSell;
+        if (validationResult.error) {
+          return res.status(400).json({ Error: validationResult.error.details[0].message });
+        }
+const {phone, network, status, amountTransfered,amountRecieved} = req.body;
+        const user = await TransactionInstance.create({
+          id,
+          userId,
+          phone,
+          network,
+          status,
+          amountTransfered,
+          amountRecieved: Math.ceil(amountTransfered * 0.7)
+        }) as unknown as { [key: string]: string }
 
-    // switch (network) {
-    //   case 'MTN':
-    //     destinationPhoneNumber = adminNumber[0];
-    //     USSD = `*600*${destinationPhoneNumber}*${amountToSell}*${sharePin}#`;
-    //     break;
+        if (user) {
+            const userDetails = await UserInstance.findOne({where:{id:userId}})  as unknown as { [key: string]: string }
+            const email = userDetails.email
+            const id = user.id
+            const phone= user.phone;
+            const network = user.network;
+            const adminHtml = adminTransactionTemplate(id,phone,network)
+            const userHtml = userTransactionTemplate()
+            await mailer.sendEmail(APP_EMAIL, "harunanuhu17@gmail.com", "pls update user transaction status", adminHtml);
+            await mailer.sendEmail(APP_EMAIL, email, "pls update user transaction status", userHtml);
+            return res.status(201).json({
+                msg: `Request received, your account will be credited after confirmation`,
+                user
+            });
+        }
+        else {
+          return res.status(403).json({ msg: 'mail failed to send' });
+        }
+      } catch (err) {
+        console.error(err)
+        res.status(500).json({ msg: '', route: '/transferAirtime' });
+      }
 
-    //   case 'GLO':
-    //     destinationPhoneNumber = adminNumber[1];
-    //     USSD = `*131*${destinationPhoneNumber}*${amountToSell}*${sharePin}#`;
-    //     break;
-
-    //   case '9MOBILE':
-    //     destinationPhoneNumber = adminNumber[2];
-    //     USSD = `*223*${sharePin}*${amountToSell}*${destinationPhoneNumber}#`;
-    //     break;
-
-    //   case 'AIRTEL':
-    //     destinationPhoneNumber = adminNumber[3];
-    //     USSD = `*432*${destinationPhoneNumber}*${amountToSell}*${sharePin}#`;
-    //     break;
-
-    //   default:
-    //     res.status(400).json({ message: 'Please select a network' });
-    //     break;
-    // }
-    // const amountToRecieve = 0.7 * amountToSell;
-
-    const transaction = await TransactionInstance.create({
-      id,
-      network,
-      phoneNumber,
-      amountToSell,
-      amountToReceive: Math.ceil(amountToSell * 0.7),
-      userId,
-    });
-
-    if (!transaction) {
-      return res.status(404).json({ msg: 'Sorry, transaction was not successful!' });
-    }
-
-    return res.status(201).json({msg:"transfer successful", transaction});
-  } catch (err) {
-    console.log(err);
-  }
 }
 
+export async function getAllTransactions(req:Request,res:Response) {
+    try{
+        const { page, size } = req.query
+        const { limit, offset } = getPagination(Number(page), Number(size));
+        const transactions = await TransactionInstance.findAndCountAll({where:{},limit,offset});
 
+        return res.status(200).json({
+            msg:"transaction successful",
+            totalPages: Math.ceil(transactions.count/Number(size)),
+            transactions
+        });
+
+
+    }catch(err){
+        res.status(500).json({
+            msg:"Transaction failed",
+
+        });
+    }
+
+}
+export async function getPendingTransactions(req:Request,res:Response){
+    try{
+        const { page, size } = req.query;
+        const { limit, offset } = getPagination(Number(page), Number(size));
+        const pending = await TransactionInstance.findAndCountAll({
+        where: { status: false }, limit, offset
+    });
+    return res.status(200).json({
+        msg:"successfully gotten all Pending transactions",
+        totalPages: Math.ceil(pending.count/Number(size)),
+        pending,
+
+    })
+    }catch(err){
+        res.status(500).json({
+            msg:"pending transactions failed"
+        });
+    }
+
+}
 
