@@ -1,7 +1,17 @@
 import { Router } from 'express';
-import { registerUser, loginUser, verifyUser, forgetPassword, resetPassword, updateUsers, setResetToken, logoutUser, resendVerificationEmail } from '../controller/userController';
+import {
+  registerUser,
+  loginUser,
+  verifyUser,
+  forgetPassword,
+  resetPassword,
+  updateUsers,
+  setResetToken,
+  logoutUser,
+  resendVerificationEmail
+} from '../controller/userController';
 import { creditWallet } from '../controller/walletController';
-import { auth, creditAuth, oneTimeTokenAuth } from '../middleware/auth';
+import { auth, oneTimeTokenAuth } from '../middleware/auth';
 const router = Router();
 
 router.post('/register', registerUser);
@@ -18,6 +28,3 @@ router.get('/logout', logoutUser)
 
 
 export default router;
-
-
-

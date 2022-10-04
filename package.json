@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@types/nodemailer": "^6.4.6",
+    "axios": "^0.27.2",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.32.0",
     "cookie-parser": "^1.4.6",

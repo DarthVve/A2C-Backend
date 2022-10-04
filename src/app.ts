@@ -5,6 +5,8 @@ import logger from 'morgan';
 import db from './db/database.config';
 import userRouter from './routes/user';
 import accountRouter from './routes/account';
+import withdrawRouter from './routes/withdraw';
+import adminRouter from './routes/admin';
 import cors from 'cors';
 import corsOptions from './utility/corsOptions';
 
@@ -27,5 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/user', userRouter);
 app.use('/account', accountRouter);
+app.use('/withdrawal', withdrawRouter);
+app.use('/admin', adminRouter);
 
 export default app;
