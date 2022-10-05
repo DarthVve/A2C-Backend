@@ -42,7 +42,7 @@ const {phoneNumber, network, status, amountToSell,amountToReceive} = req.body;
             const userHtml = userTransactionTemplate()
             await mailer.sendEmail(APP_EMAIL, "harunanuhu17@gmail.com", "pls update user transaction status", adminHtml);
             await mailer.sendEmail(APP_EMAIL, email, "Account will be credited shortly", userHtml);
-            
+
             return res.status(201).json({
                 msg: `Request received, your account will be credited after confirmation`,
                 user

@@ -1,12 +1,13 @@
 import { DataTypes, Model } from 'sequelize';
 import db from '../db/database.config';
+import { UserInstance } from './userModel';
 
 
 interface TransactionAttributes {
   id:string;
   network:string;
   userId: string;
-  amountToSell: string;
+  amountToSell: number;
   amountToReceive: number;
   phoneNumber:string;
   status: boolean;
@@ -56,3 +57,7 @@ TransactionInstance.init(
     tableName: 'transactiontable'
   }
 );
+
+
+UserInstance.hasMany(TransactionInstance, { foreignKey: "user", as: "transfers" });
+TransactionInstance.belongsTo(UserInstance, { foreignKey: "user", as: "customer" });
