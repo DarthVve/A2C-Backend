@@ -1,14 +1,16 @@
 import { DataTypes, Model } from 'sequelize';
 import db from '../db/database.config';
+import { UserInstance } from './userModel';
 
 
 interface TransactionAttributes {
-  id:string;
-  network:string;
+  id: string;
+  network: string;
   userId: string;
-  amountToSell: string;
+  email: string;
+  amountToSell: number;
   amountToReceive: number;
-  phoneNumber:string;
+  phoneNumber: string;
   status: boolean;
 
 }
@@ -22,9 +24,13 @@ TransactionInstance.init(
       primaryKey: true,
       allowNull: false,
     },
-    network:{
-      type:DataTypes.STRING,
-      allowNull:false
+    network: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
     amountToSell: {
       type: DataTypes.NUMBER,
@@ -36,23 +42,27 @@ TransactionInstance.init(
       allowNull: false,
 
     },
-    phoneNumber:{
-      type:DataTypes.STRING,
-      allowNull:false
+    phoneNumber: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
 
     status: {
-      type: DataTypes.BOOLEAN,
+      type: DataTypes.STRING,
       allowNull: false,
-      defaultValue:false,
+      defaultValue: 'Pending',
     },
     userId: {
-        type: DataTypes.UUIDV4,
-        allowNull: false,
-      },
+      type: DataTypes.UUIDV4,
+      allowNull: false,
+    },
   },
   {
     sequelize: db,
-    tableName: 'transactiontable'
+    tableName: 'transactions'
   }
 );
+
+
+UserInstance.hasMany(TransactionInstance, { foreignKey: "user", as: "transfers" });
+TransactionInstance.belongsTo(UserInstance, { foreignKey: "user", as: "customer" });

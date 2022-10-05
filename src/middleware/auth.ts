@@ -23,13 +23,33 @@ export async function auth(req: Request, res: Response, next: NextFunction) {
     if (!user) {
       return res.status(401).json({ msg: "User could not be identified" });
     }
+
+    req.role = user.getDataValue('role');
     req.user = id;
     next();
   } catch (err) {
     console.log(err);
     res.status(500).json({ msg: "Unexpected Auth error" });
   }
-}
+};
+
+
+export async function adminAuth(req: Request, res: Response, next: NextFunction) {
+  if (req.role === 'admin' || req.role === 'superadmin') {
+    next();
+  } else {
+    return res.status(401).json({ msg: "You are not authorized to access this route" });
+  }
+};
+
+
+export async function superAdminAuth(req: Request, res: Response, next: NextFunction) {
+  if (req.role === 'superadmin') {
+    next();
+  } else {
+    return res.status(401).json({ msg: "You are not authorized to access this route" });
+  }
+};
 
 
 export async function oneTimeTokenAuth(req: Request, res: Response, next: NextFunction) {
@@ -63,4 +83,4 @@ export async function oneTimeTokenAuth(req: Request, res: Response, next: NextFu
     console.log(err);
     res.status(500).json({ msg: "Unexpected Auth error" });
   }
-}
+};

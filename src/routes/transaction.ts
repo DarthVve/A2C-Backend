@@ -1,10 +1,10 @@
 
-import { Router,Request,Response } from 'express';
-import { createTransaction,getAllTransactions,getPendingTransactions,uniqueTransaction } from '../controller/transactionController';
+import { Router, Request, Response } from 'express';
+import { createTransaction, getAllTransactions, getPendingTransactions } from '../controller/transactionController';
 import { auth } from '../middleware/auth';
 const router = Router();
 
-router.post('/:id',createTransaction)
+router.post('/:id', auth, createTransaction)
 router.get('/transactions/:status',async(req:Request,res:Response)=>{
     if(req.params.status === "allTransactions"){
         return await getAllTransactions(req,res)

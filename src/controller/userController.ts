@@ -18,7 +18,7 @@ export async function registerUser(req: Request, res: Response) {
     const validationResult = userSchema.validate(req.body, options);
 
     if (validationResult.error) {
-      return res.status(400).json({ Error: validationResult.error.details[0].message });
+      return res.status(400).json({ msg: validationResult.error.details[0].message });
     }
 
     const duplicate = await UserInstance.findOne({
@@ -64,7 +64,7 @@ export async function registerUser(req: Request, res: Response) {
     }
   } catch (err) {
     console.error(err)
-    res.status(500).json({ msg: 'failed to register', route: '/register' });
+    res.status(500).json({ msg: 'failed to register', route: '/user/register' });
   }
 };
 
@@ -89,7 +89,7 @@ export async function resendVerificationEmail(req: Request, res: Response) {
     }
   } catch (err) {
     console.error(err)
-    res.status(500).json({ msg: 'failed to resend verification email', route: '/resendVerification' });
+    res.status(500).json({ msg: 'failed to resend verification email', route: '/user/resendVerification' });
   }
 }
 
@@ -99,7 +99,7 @@ export async function loginUser(req: Request, res: Response) {
   try {
     const validationResult = loginSchema.validate(req.body, options);
     if (validationResult.error) {
-      return res.status(400).json({ Error: validationResult.error.details[0].message });
+      return res.status(400).json({ msg: validationResult.error.details[0].message });
     }
     const user = await UserInstance.findOne({
       where: {
@@ -125,7 +125,9 @@ export async function loginUser(req: Request, res: Response) {
       const email = user.getDataValue('email');
       const phonenumber = user.getDataValue('phonenumber');
       const avatar = user.getDataValue('avatar');
-      const userInfo = { id, firstname, lastname, username, email, phonenumber, avatar };
+      const role = user.getDataValue('role');
+      const wallet = user.getDataValue('wallet');
+      const userInfo = { id, firstname, lastname, username, email, phonenumber, avatar, role, wallet };
       const token = generateToken({ id }) as string;
       const production = process.env.NODE_ENV === "production";
 
@@ -143,7 +145,7 @@ export async function loginUser(req: Request, res: Response) {
     }
   } catch (err) {
     console.error(err)
-    res.status(500).json({ msg: 'failed to authenticate', route: '/login' });
+    res.status(500).json({ msg: 'failed to authenticate', route: '/user/login' });
   }
 };
 
@@ -166,7 +168,7 @@ export async function verifyUser(req: Request, res: Response) {
     }
   } catch (err) {
     console.error(err);
-    res.status(500).json({ msg: 'failed to verify', route: 'verify/id' });
+    res.status(500).json({ msg: 'failed to verify', route: '/user/verify/id' });
   }
 };
 
@@ -189,7 +191,7 @@ export async function forgetPassword(req: Request, res: Response) {
     }
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to send password', route: '/forgetPassword' });
+    res.status(500).json({ msg: 'Failed to send password', route: '/user/forgetPassword' });
   }
 };
 
@@ -208,7 +210,7 @@ export async function setResetToken(req: Request, res: Response) {
     }).redirect(`${APP_URL}/forgotPassword/update/${id}`);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to set reset token', route: '/resetPassword' });
+    res.status(500).json({ msg: 'Failed to set reset token', route: '/user/resetPassword' });
   }
 };
 
@@ -231,7 +233,7 @@ export async function resetPassword(req: Request, res: Response) {
     }
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to reset password', route: '/resetPassword' });
+    res.status(500).json({ msg: 'Failed to reset password', route: '/user/resetPassword' });
   }
 };
 
@@ -241,7 +243,7 @@ export async function updateUsers(req: Request, res: Response, next: NextFunctio
   try {
     const validationResult = updateUserSchema.validate(req.body, options);
     if (validationResult.error) {
-      return res.status(400).json({ Error: validationResult.error.details[0].message });
+      return res.status(400).json({ msg: validationResult.error.details[0].message });
     }
 
     const { id } = req.params
@@ -277,10 +279,9 @@ export async function updateUsers(req: Request, res: Response, next: NextFunctio
       phonenumber,
       avatar: record.getDataValue('avatar')
     });
-
   } catch (error) {
     console.error(error);
-    res.status(500).json({ msg: "failed to update", route: "/update/:id" });
+    res.status(500).json({ msg: "failed to update", route: "/user/update/:id" });
   }
 };
 
@@ -292,6 +293,6 @@ export async function logoutUser(req: Request, res: Response, next: NextFunction
     res.status(200).json({ msg: 'You have successfully logged out' });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ msg: 'failed to logout', route: '/logout' });
+    res.status(500).json({ msg: 'failed to logout', route: '/user/logout' });
   }
 };
