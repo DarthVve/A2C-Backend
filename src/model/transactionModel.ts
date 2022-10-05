@@ -7,6 +7,7 @@ interface TransactionAttributes {
   id: string;
   network: string;
   userId: string;
+  email: string;
   amountToSell: number;
   amountToReceive: number;
   phoneNumber: string;
@@ -27,6 +28,10 @@ TransactionInstance.init(
       type: DataTypes.STRING,
       allowNull: false
     },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     amountToSell: {
       type: DataTypes.NUMBER,
       allowNull: false,
@@ -43,9 +48,9 @@ TransactionInstance.init(
     },
 
     status: {
-      type: DataTypes.BOOLEAN,
+      type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: false,
+      defaultValue: 'Pending',
     },
     userId: {
       type: DataTypes.UUIDV4,

@@ -20,9 +20,12 @@ export async function createTransaction(req: Request, res: Response) {
       return res.status(400).json({ Error: validationResult.error.details[0].message });
     }
     const { phoneNumber, network, status, amountToSell, amountToReceive } = req.body;
+    const userDetails = await UserInstance.findOne({ where: { id: userId } }) as unknown as { [key: string]: string };
+    const email = userDetails.email;
     const transaction = await TransactionInstance.create({
       id,
       userId,
+      email,
       phoneNumber,
       network,
       status,
@@ -31,8 +34,6 @@ export async function createTransaction(req: Request, res: Response) {
     }) as unknown as { [key: string]: string };
 
     if (transaction) {
-      const userDetails = await UserInstance.findOne({ where: { id: userId } }) as unknown as { [key: string]: string }
-      const email = userDetails.email
       const id = transaction.id
       const phoneNumber = transaction.phoneNumber;
       const network = transaction.network;
