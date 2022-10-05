@@ -67,9 +67,26 @@ export const withdrawalSchema = Joi.object().keys({
 });
 
 
+//Transaction schema
+export const transferAirtimeSchema = Joi.object().keys({
+  network: Joi.string().required(),
+  phoneNumber: Joi.string().regex(/^[a-zA-Z0-9]{11}$/).required(),
+  amountToSell: Joi.number().min(50).max(5000).required(),
+  amountToReceive: Joi.number(),
+});
+
+
 //Token Generator function for login sessions
 export const generateToken = (user: { [key: string]: unknown }, time: string = '7d'): unknown => {
   const pass = process.env.JWT_SECRET as string;
   return jwt.sign(user, pass, { expiresIn: time });
+};
+
+
+//function for paginating transactions
+export const getPagination = (page: number, size: number) => {
+  const limit = size ? size : 2;
+  const offset = page ? page * limit : 0;
+  return { limit, offset };
 };
 

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { UserInstance } from '../model/userModel';
-import { walletNotification } from '../mailer/walletTemplate';
+import { walletNotification } from '../mailer/EmailTemplate';
 import mailer from '../mailer/SendMail'
 const APP_EMAIL = process.env.POD_GMAIL as string;
 
