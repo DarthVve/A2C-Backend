@@ -58,4 +58,55 @@ const {phoneNumber, network, status, amountToSell,amountToReceive} = req.body;
 
 }
 
+export async function getAllTransactions(req:Request,res:Response) {
+  try {
+      const { page, size } = req.query ;
+      const { limit, offset } = getPagination(Number(page), Number(size));
+      const transactions = await TransactionInstance.findAndCountAll({where:{},limit,offset});
+      
+      return res.status(200).json({
+          msg:"transaction successful",
+          totalPages: Math.ceil(transactions.count/Number(size)),
+          transactions  
+      });
 
+  } catch (err) {
+      res.status(500).json({ msg:"Transaction failed" });
+  }  
+};
+
+
+export async function getPendingTransactions(req:Request,res:Response){
+  try{
+      const { page, size } = req.query;
+      const { limit, offset } = getPagination(Number(page), Number(size));
+      const pending = await TransactionInstance.findAndCountAll({
+      where: { status: false }, limit, offset 
+  });
+  return res.status(200).json({
+      msg:"successfully gotten all Pending transactions",
+      totalPages: Math.ceil(pending.count/Number(size)),
+      pending,
+   
+  })
+  } catch (err) {
+      res.status(500).json({ msg:"pending transactions failed" });
+  }
+};
+
+export async function uniqueTransaction(req:Request,res:Response) {
+  try{
+      const { page, size } = req.query ;
+      const {id} = req.params
+      const { limit, offset } = getPagination(Number(page), Number(size));
+      const transactions = await TransactionInstance.findAndCountAll({where:{id},limit,offset});
+      
+     res.status(200).json({
+          msg:"Unique transactions",
+          totalPages: Math.ceil(transactions.count/Number(size)),
+          transactions  
+      });
+  }catch(err){
+      res.status(500).json({ msg:"transactions failed" });
+  }
+}
