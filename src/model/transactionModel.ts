@@ -4,12 +4,12 @@ import { UserInstance } from './userModel';
 
 
 interface TransactionAttributes {
-  id:string;
-  network:string;
+  id: string;
+  network: string;
   userId: string;
   amountToSell: number;
   amountToReceive: number;
-  phoneNumber:string;
+  phoneNumber: string;
   status: boolean;
 
 }
@@ -23,9 +23,9 @@ TransactionInstance.init(
       primaryKey: true,
       allowNull: false,
     },
-    network:{
-      type:DataTypes.STRING,
-      allowNull:false
+    network: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
     amountToSell: {
       type: DataTypes.NUMBER,
@@ -37,24 +37,24 @@ TransactionInstance.init(
       allowNull: false,
 
     },
-    phoneNumber:{
-      type:DataTypes.STRING,
-      allowNull:false
+    phoneNumber: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
 
     status: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue:false,
+      defaultValue: false,
     },
     userId: {
-        type: DataTypes.UUIDV4,
-        allowNull: false,
-      },
+      type: DataTypes.UUIDV4,
+      allowNull: false,
+    },
   },
   {
     sequelize: db,
-    tableName: 'transactiontable'
+    tableName: 'transactions'
   }
 );
 
