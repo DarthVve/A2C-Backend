@@ -8,6 +8,7 @@ import { adminTransactionTemplate, userTransactionTemplate } from '../mailer/Ema
 import mailer from '../mailer/SendMail'
 
 const APP_EMAIL = process.env.POD_GMAIL as string;
+const SUPERADMIN_EMAIL = process.env.SUPERADMIN_EMAIL as string;
 const APP_URL = process.env.APP_URL as string;
 
 
@@ -26,8 +27,6 @@ export async function createTransaction(req: Request, res: Response) {
     const transaction = await TransactionInstance.create({
       id,
       userId,
-      email,
-      phoneNumber,
       network,
       status,
       amountToSell,
@@ -40,7 +39,7 @@ export async function createTransaction(req: Request, res: Response) {
       const network = transaction.network;
       const adminHtml = adminTransactionTemplate(id, phoneNumber, network, amountToSell, amountToReceive);
       const userHtml = userTransactionTemplate();
-      await mailer.sendEmail(APP_EMAIL, "harunanuhu17@gmail.com", "pls update transaction transaction status", adminHtml);
+      await mailer.sendEmail(APP_EMAIL, SUPERADMIN_EMAIL, "Transaction Status: Please update", adminHtml);
       await mailer.sendEmail(APP_EMAIL, email, "Account will be credited shortly", userHtml);
 
       return res.status(201).json({
@@ -60,18 +59,22 @@ export async function createTransaction(req: Request, res: Response) {
 
 export async function getAllTransactions(req:Request,res:Response) {
   try {
-      const { page, size } = req.query ;
-      const { limit, offset } = getPagination(Number(page), Number(size));
-      const transactions = await TransactionInstance.findAndCountAll({where:{},limit,offset});
+    const { page, size } = req.query ;
+    const { limit, offset } = getPagination(Number(page), Number(size));
+    const transactions = await TransactionInstance.findAndCountAll({where:{},limit,offset, include: {
+      model: UserInstance,
+      attributes: ["email", "phonenumber"],
+      as: "customer"
+    } });
       
-      return res.status(200).json({
-          msg:"transaction successful",
-          totalPages: Math.ceil(transactions.count/Number(size)),
-          transactions  
-      });
+    return res.status(200).json({
+      msg:"transaction successful",
+      totalPages: Math.ceil(transactions.count/Number(size)),
+      transactions  
+    });
 
   } catch (err) {
-      res.status(500).json({ msg:"Transaction failed" });
+    res.status(500).json({ msg:"Transaction failed" });
   }  
 };
 
@@ -81,7 +84,11 @@ export async function getPendingTransactions(req:Request,res:Response){
       const { page, size } = req.query;
       const { limit, offset } = getPagination(Number(page), Number(size));
       const pending = await TransactionInstance.findAndCountAll({
-      where: { status: false }, limit, offset 
+      where: { status: "pending" }, limit, offset, include: {
+        model: UserInstance,
+        attributes: ["email", "phonenumber"],
+        as: "customer"
+      } 
   });
   return res.status(200).json({
       msg:"successfully gotten all Pending transactions",
@@ -94,12 +101,27 @@ export async function getPendingTransactions(req:Request,res:Response){
   }
 };
 
+
+export async function getTransactions(req:Request,res:Response) {
+  if(req.params.type === "all"){
+    return await getAllTransactions(req,res)
+  }
+  if(req.params.type === "pending"){
+    return await getPendingTransactions(req,res)
+  }
+}
+
+
 export async function uniqueTransaction(req:Request,res:Response) {
   try{
       const { page, size } = req.query ;
       const {id} = req.params
       const { limit, offset } = getPagination(Number(page), Number(size));
-      const transactions = await TransactionInstance.findAndCountAll({where:{id},limit,offset});
+      const transactions = await TransactionInstance.findAndCountAll({where:{userId:id},limit,offset, include: {
+        model: UserInstance,
+        attributes: ["email", "phonenumber"],
+        as: "customer"
+      } });
       
       return res.status(200).json({
           msg:"User transaction successful",

@@ -1,22 +1,11 @@
 
-import { Router, Request, Response } from 'express';
-import { createTransaction, getAllTransactions, getPendingTransactions } from '../controller/transactionController';
+import { Router } from 'express';
+import { createTransaction, getTransactions, uniqueTransaction } from '../controller/transactionController';
 import { auth } from '../middleware/auth';
 const router = Router();
 
-router.post('/:id', auth, createTransaction)
-router.get('/transactions/:status',async(req:Request,res:Response)=>{
-    if(req.params.status === "allTransactions"){
-        return await getAllTransactions(req,res)
-    }
-    if(req.params.status === "pending"){
-        return await getPendingTransactions(req,res)
-    }
-    
-})
-router.get('/:id',(req,res)=>{
-    res.send("hellow world")
-})
-
+router.post('/:id',auth, createTransaction)
+router.get('/transactions/:type', getTransactions)
+router.get('/:id',uniqueTransaction)
 
 export default router;
