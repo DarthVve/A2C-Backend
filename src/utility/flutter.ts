@@ -13,6 +13,9 @@ export const getBanks = async () => {
           'Authorization': 'Bearer ' + process.env.FLW_SECRET_KEY
         }
       });
+      if (data.status === 'error') {
+        console.log('Check status code it may 500, a flutterwave error');
+      }
       cachedBanks.push(...data.data);
       return data.data;
     }

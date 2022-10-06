@@ -13,9 +13,9 @@ export async function createAccount(req: Request, res: Response) {
       return res.status(400).json({ msg: validationResult.error.details[0].message });
     }
 
-    const { bank, name, number } = req.body;
+    const { bank, name, number, code } = req.body;
     await getBanks();
-    const { code } = cachedBanks.find((bankObj: any) => bankObj.name === bank);
+    //const { code } = cachedBanks.find((bankObj: any) => bankObj.name === bank);
 
     const account = await AccountInstance.findOne({ where: { number } });
     if (account) {
@@ -36,7 +36,7 @@ export async function createAccount(req: Request, res: Response) {
       name,
       number,
       user: holder.getDataValue('id'),
-      bankCode: code
+      bankCode: code,
     });
 
     return res.status(201).json({

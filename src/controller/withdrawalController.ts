@@ -23,7 +23,7 @@ export async function withdrawal(req: Request, res: Response) {
     }
 
     const wallet = 10000 //user?.getDataValue('wallet') as number;
-    const { bank, name, number, amount, code } = req.body;
+    const { number, amount, code } = req.body;
 
     if (wallet < amount) {
       return res.status(400).json({ msg: 'Insufficient funds' });
@@ -31,18 +31,20 @@ export async function withdrawal(req: Request, res: Response) {
 
     const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY);
     const details = {
-      account_bank: "044",
-      account_number: "0690000040",
-      amount: 200,
+      account_bank: code,
+      account_number: number,
+      amount: amount,
       currency: "NGN",
       narration: "Airtime Transfer",
-      reference: "dfs29254fhr7ntg0293039_PMCK",
-      callback_url: "https://www.flutterwave.com/ng/"
+      reference: "dfs23orm7ntg01293939_PMCKDU_1",
+      callback_url: `${process.env.ROOT_URL}/withdrawal/wallet`,
     };
 
     const payment = await flw.Transfer.initiate(details).then((data: any) => { return data }).catch(console.log);
 
-    if (payment.data !== null) {
+    if (payment.status === 'error') {
+      return res.status(400).json({ msg: payment.message });
+    } else {
       await WithdrawInstance.create({
         id: payment.data.id,
         code: payment.data.bank_code,
@@ -85,25 +87,22 @@ export async function getWithdrawals(req: Request, res: Response) {
 //Withdraw form Wallet
 export async function withdraw(req: Request, res: Response) {
   try {
+    console.log(req.body);
     const { id } = req.body;
     const withdrawal = await WithdrawInstance.findOne({ where: { id } }) as WithdrawInstance;
     if (!withdrawal) {
       return res.status(404).json({ msg: 'Withdrawal not found' });
     }
 
-    // const user = await UserInstance.findOne({ where: { id: req.user } }) as UserInstance;
-    // const wallet = user?.getDataValue('wallet');
-
-    // if (wallet < withdrawal.getDataValue('amount')) {
-    //   return res.status(400).json({ msg: 'Insufficient funds' });
-    // }
+    const user = await UserInstance.findOne({ where: { id: req.user } }) as UserInstance;
+    const wallet = user?.getDataValue('wallet');
 
     // const newWallet = wallet - withdrawal.getDataValue('amount');
     // await user.update({ wallet: newWallet });
 
     // await withdrawal.update({ status: 'completed' });
 
-    // return res.status(200).json({ msg: 'Withdrawal successful' });
+    return res.status(200).json({ msg: 'Withdrawal successful' });
   } catch (error) {
     console.error(error)
     res.status(500).json({ msg: 'failed to get withdrawals', route: '/' });

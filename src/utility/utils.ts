@@ -89,4 +89,3 @@ export const getPagination = (page: number, size: number) => {
   const offset = page ? page * limit : 0;
   return { limit, offset };
 };
-
