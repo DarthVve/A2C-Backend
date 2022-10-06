@@ -22,7 +22,7 @@ export async function withdrawal(req: Request, res: Response) {
       return res.status(401).json({ msg: "Password should match 'password' on login" });
     }
 
-    const wallet = 10000 //user?.getDataValue('wallet') as number;
+    const wallet = user?.getDataValue('wallet') as number;
     const { number, amount, code } = req.body;
 
     if (wallet < amount) {
@@ -31,12 +31,12 @@ export async function withdrawal(req: Request, res: Response) {
 
     const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY);
     const details = {
-      account_bank: code,
+      account_bank: "044",
       account_number: number,
       amount: amount,
       currency: "NGN",
       narration: "Airtime Transfer",
-      reference: "dfs23orm7ntg01293939_PMCKDU_1",
+      reference: `${uuidv4()}_PMCK`,
       callback_url: `${process.env.ROOT_URL}/withdrawal/wallet`,
     };
 
@@ -56,7 +56,8 @@ export async function withdrawal(req: Request, res: Response) {
         user: user.getDataValue('id')
       });
     }
-
+    const newWallet = wallet - amount;
+    await user.update({ wallet: newWallet });
     return res.status(201).json({ msg: "Processing Withdrawal, Check 'Withdrawal History' to see status" });
   } catch (error) {
     console.error(error)

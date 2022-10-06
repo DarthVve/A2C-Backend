@@ -61,7 +61,7 @@ export const withdrawalSchema = Joi.object().keys({
   bank: Joi.string(),
   name: Joi.string(),
   number: Joi.string().length(10),
-  code: Joi.string().length(3),
+  code: Joi.string(),
   amount: Joi.string().required().regex(/^[0-9]{3,6}$/),
   password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required()
 });
