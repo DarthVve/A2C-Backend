@@ -11,9 +11,12 @@ export const getBanks = async () => {
       const { data } = await axios.get('https://api.flutterwave.com/v3/banks/NG', {
         headers: {
           "Content-Type": "application/json",
-          'Authorization': 'Bearer '+ process.env.FLUTTERWAVE_SECRET_KEY
+          'Authorization': 'Bearer ' + process.env.FLW_SECRET_KEY
         }
       });
+      if (data.status === 'error') {
+        console.log('Check status code it may 500, a flutterwave error');
+      }
       cachedBanks.push(...data.data);
       return data.data;
     }
