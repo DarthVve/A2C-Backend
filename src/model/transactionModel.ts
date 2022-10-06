@@ -64,5 +64,5 @@ TransactionInstance.init(
 );
 
 
-UserInstance.hasMany(TransactionInstance, { foreignKey: "user", as: "transfers" });
-TransactionInstance.belongsTo(UserInstance, { foreignKey: "user", as: "customer" });
+UserInstance.hasMany(TransactionInstance, { foreignKey: "userId", as: "transfers" });
+TransactionInstance.belongsTo(UserInstance, { foreignKey: "userId", as: "customer" });
