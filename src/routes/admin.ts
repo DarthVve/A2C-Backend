@@ -6,6 +6,6 @@ const router = Router();
 
 router.post('/add', auth, superAdminAuth, elevateToAdmin);
 router.post('/revoke', auth, superAdminAuth, revokeAdmin);
-router.patch('/wallet', creditWallet)
+router.patch('/wallet', auth, adminAuth, creditWallet)
 
 export default router;

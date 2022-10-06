@@ -28,6 +28,7 @@ export async function createTransaction(req: Request, res: Response) {
       id,
       userId,
       network,
+      phoneNumber,
       status,
       amountToSell,
       amountToReceive: Math.ceil(amountToSell * 0.7)
@@ -66,35 +67,34 @@ export async function getAllTransactions(req:Request,res:Response) {
       attributes: ["email", "phonenumber"],
       as: "customer"
     } });
-      
+
     return res.status(200).json({
       msg:"transaction successful",
       totalPages: Math.ceil(transactions.count/Number(size)),
-      transactions  
+      transactions
     });
 
   } catch (err) {
     res.status(500).json({ msg:"Transaction failed" });
-  }  
+  }
 };
 
 
 export async function getPendingTransactions(req:Request,res:Response){
   try{
-      const { page, size } = req.query;
-      const { limit, offset } = getPagination(Number(page), Number(size));
-      const pending = await TransactionInstance.findAndCountAll({
-      where: { status: "pending" }, limit, offset, include: {
-        model: UserInstance,
-        attributes: ["email", "phonenumber"],
-        as: "customer"
-      } 
+    const { page, size } = req.query;
+    const { limit, offset } = getPagination(Number(page), Number(size));
+    const pending = await TransactionInstance.findAndCountAll({
+    where: { status: "pending" }, limit, offset, include: {
+      model: UserInstance,
+      attributes: ["email", "phonenumber"],
+      as: "customer"
+    }
   });
   return res.status(200).json({
       msg:"successfully gotten all Pending transactions",
       totalPages: Math.ceil(pending.count/Number(size)),
-      pending,
-   
+      pending
   })
   } catch (err) {
       res.status(500).json({ msg:"pending transactions failed" });
@@ -122,13 +122,71 @@ export async function uniqueTransaction(req:Request,res:Response) {
         attributes: ["email", "phonenumber"],
         as: "customer"
       } });
-      
+
       return res.status(200).json({
           msg:"User transaction successful",
           totalPages: Math.ceil(transactions.count/Number(size)),
-          transactions  
+          transactions
       });
   }catch(err){
       res.status(500).json({ msg:"user transactions failed" });
+  }
+}
+
+
+export async function confirmTransaction(req:Request,res:Response) {
+  try{
+    const { id } = req.params;
+    const { amountToSell, amountToReceive } = req.body;
+    const transaction = await TransactionInstance.findOne({where:{id:id}});
+    if(!transaction || transaction.getDataValue("status") !== "pending"){
+      return res.status(404).json({ msg:"Transaction not found" });
+    }
+    const updatedTransaction = await transaction.update({
+      status: "confirmed",
+      amountToReceive,
+      amountToSell
+    });
+    return res.status(200).json({
+      msg:"Transaction confirmed successfully",
+      transaction: updatedTransaction
+    });
+  }catch(err){
+      res.status(500).json({ msg:"Transaction confirmation failed" });
+  }
+}
+
+
+export async function cancelTransaction(req:Request,res:Response) {
+  try{
+      const {id} = req.params
+      const transaction = await TransactionInstance.findOne({where:{ id }});
+      if(!transaction || transaction.getDataValue("status") !== "pending"){
+          return res.status(404).json({ msg:"Transaction not found" });
+      }
+      const updatedTransaction = await transaction.update({status:"cancelled"});
+      return res.status(200).json({
+          msg:"Transaction cancelled successfully",
+          transaction: updatedTransaction
+      });
+  }catch(err){
+      res.status(500).json({ msg:"Transaction cancellation failed" });
+  }
+}
+
+
+export async function getOneTransaction(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const transaction = await TransactionInstance.findOne({ where: { id: id } });
+    if (!transaction) {
+      return res.status(404).json({ msg: 'Transaction not found' });
+    }
+    return res.status(200).json({
+      msg: 'Transaction found',
+      transaction
+    });
+  } catch (err) {
+    res.status(500).json({ msg: 'Transaction failed' });
   }
 }

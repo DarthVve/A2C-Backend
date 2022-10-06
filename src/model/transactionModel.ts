@@ -6,6 +6,7 @@ import { UserInstance } from './userModel';
 interface TransactionAttributes {
   id: string;
   network: string;
+  phoneNumber: string;
   userId: string;
   amountToSell: number;
   amountToReceive: number;
@@ -25,6 +26,10 @@ TransactionInstance.init(
       type: DataTypes.STRING,
       allowNull: false
     },
+    phoneNumber: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     amountToSell: {
       type: DataTypes.NUMBER,
       allowNull: false,
@@ -32,7 +37,6 @@ TransactionInstance.init(
     amountToReceive: {
       type: DataTypes.NUMBER,
       allowNull: false,
-
     },
     status: {
       type: DataTypes.STRING,
