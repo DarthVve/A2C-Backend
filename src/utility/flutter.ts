@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { banks as fallbackBanks } from './getRandomBank';
 
 export const cachedBanks: any[] = [];
 
@@ -18,6 +19,8 @@ export const getBanks = async () => {
     }
   } catch (error) {
     console.error(error);
+    cachedBanks.push(...fallbackBanks);
+    return cachedBanks;
   }
 }
 
