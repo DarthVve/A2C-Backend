@@ -6,13 +6,11 @@ import { UserInstance } from './userModel';
 interface TransactionAttributes {
   id: string;
   network: string;
+  phoneNumber: string;
   userId: string;
-  email: string;
   amountToSell: number;
   amountToReceive: number;
-  phoneNumber: string;
-  status: boolean;
-
+  status: 'pending' | 'confirmed' | 'cancelled' | 'sent';
 }
 
 export class TransactionInstance extends Model<TransactionAttributes> { }
@@ -28,29 +26,22 @@ TransactionInstance.init(
       type: DataTypes.STRING,
       allowNull: false
     },
-    email: {
+    phoneNumber: {
       type: DataTypes.STRING,
       allowNull: false
     },
     amountToSell: {
       type: DataTypes.NUMBER,
       allowNull: false,
-
     },
     amountToReceive: {
       type: DataTypes.NUMBER,
       allowNull: false,
-
     },
-    phoneNumber: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-
     status: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: 'Pending',
+      defaultValue: 'pending',
     },
     userId: {
       type: DataTypes.UUIDV4,
@@ -64,5 +55,5 @@ TransactionInstance.init(
 );
 
 
-UserInstance.hasMany(TransactionInstance, { foreignKey: "user", as: "transfers" });
-TransactionInstance.belongsTo(UserInstance, { foreignKey: "user", as: "customer" });
+UserInstance.hasMany(TransactionInstance, { foreignKey: "userId", as: "transfers" });
+TransactionInstance.belongsTo(UserInstance, { foreignKey: "userId", as: "customer" });

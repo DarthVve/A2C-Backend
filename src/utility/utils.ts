@@ -85,7 +85,7 @@ export const generateToken = (user: { [key: string]: unknown }, time: string = '
 
 //function for paginating transactions
 export const getPagination = (page: number, size: number) => {
-  const limit = size ? size : 2;
+  const limit = size ? size : 15;
   const offset = page ? page * limit : 0;
   return { limit, offset };
 };
