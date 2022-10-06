@@ -31,7 +31,7 @@ export async function auth(req: Request, res: Response, next: NextFunction) {
     console.log(err);
     res.status(500).json({ msg: "Unexpected Auth error" });
   }
-}
+};
 
 
 export async function adminAuth(req: Request, res: Response, next: NextFunction) {
@@ -40,7 +40,7 @@ export async function adminAuth(req: Request, res: Response, next: NextFunction)
   } else {
     return res.status(401).json({ msg: "You are not authorized to access this route" });
   }
-}
+};
 
 
 export async function superAdminAuth(req: Request, res: Response, next: NextFunction) {
@@ -49,7 +49,7 @@ export async function superAdminAuth(req: Request, res: Response, next: NextFunc
   } else {
     return res.status(401).json({ msg: "You are not authorized to access this route" });
   }
-}
+};
 
 
 export async function oneTimeTokenAuth(req: Request, res: Response, next: NextFunction) {
@@ -83,4 +83,4 @@ export async function oneTimeTokenAuth(req: Request, res: Response, next: NextFu
     console.log(err);
     res.status(500).json({ msg: "Unexpected Auth error" });
   }
-}
+};

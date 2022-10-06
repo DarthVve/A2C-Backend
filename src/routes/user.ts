@@ -1,14 +1,7 @@
 import { Router } from 'express';
 import {
-  registerUser,
-  loginUser,
-  verifyUser,
-  forgetPassword,
-  resetPassword,
-  updateUsers,
-  setResetToken,
-  logoutUser,
-  resendVerificationEmail
+  registerUser, loginUser, verifyUser, forgetPassword, resetPassword, updateUsers,
+  setResetToken, logoutUser, resendVerificationEmail
 } from '../controller/userController';
 import { auth, oneTimeTokenAuth } from '../middleware/auth';
 const router = Router();

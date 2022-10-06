@@ -109,7 +109,7 @@ UserInstance.init(
       allowNull: false
     },
     wallet: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.FLOAT,
       defaultValue: 0
     },
     role: {
@@ -152,7 +152,7 @@ UserInstance.findOrCreate({
     console.log('Super Admin already seeded');
   }
 }, (err) => {
-  if(err.name === "SequelizeUniqueConstraintError"){
+  if (err.name === "SequelizeUniqueConstraintError") {
     console.log('Super Admin seeded');
   }
-})
+});
