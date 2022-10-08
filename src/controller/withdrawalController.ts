@@ -31,7 +31,7 @@ export async function withdrawal(req: Request, res: Response) {
 
     const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY);
     const details = {
-      account_bank: "044",
+      account_bank: code,
       account_number: number,
       amount: amount,
       currency: "NGN",
@@ -41,7 +41,7 @@ export async function withdrawal(req: Request, res: Response) {
     };
 
     const payment = await flw.Transfer.initiate(details).then((data: any) => { return data }).catch(console.log);
-
+    console.log(payment);
     if (payment.status === 'error') {
       return res.status(400).json({ msg: payment.message });
     } else {
