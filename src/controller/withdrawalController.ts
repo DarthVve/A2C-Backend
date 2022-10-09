@@ -4,7 +4,6 @@ import { withdrawalSchema, options } from "../utility/utils";
 import { WithdrawInstance } from "../model/withdrawModel";
 import { UserInstance } from '../model/userModel';
 import bcrypt from 'bcryptjs';
-import axios from "axios";
 const Flutterwave = require('flutterwave-node-v3');
 
 
@@ -41,7 +40,7 @@ export async function withdrawal(req: Request, res: Response) {
     };
 
     const payment = await flw.Transfer.initiate(details).then((data: any) => { return data }).catch(console.log);
-    console.log(payment);
+
     if (payment.status === 'error') {
       return res.status(400).json({ msg: payment.message });
     } else {
