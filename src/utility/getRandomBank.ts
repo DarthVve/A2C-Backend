@@ -1,4 +1,4 @@
-const banks = [
+export const banks = [
   { id: 132, code: '560', name: 'Page MFBank' },
   { id: 133, code: '304', name: 'Stanbic Mobile Money' },
   { id: 134, code: '308', name: 'FortisMobile' },
