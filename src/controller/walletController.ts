@@ -8,7 +8,6 @@ const APP_EMAIL = process.env.POD_GMAIL as string;
 //Update Wallet
 export const creditWallet = async (req: Request, res: Response) => {
   try {
-    console.log(req.body);
     const { amountToSell, amountToReceive, email, transactionId } = req.body;
     const user = await UserInstance.findOne({ where: { email } });
     const wallet = user?.getDataValue('wallet') as number || 0;

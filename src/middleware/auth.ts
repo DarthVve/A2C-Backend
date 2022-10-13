@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { verify } from 'jsonwebtoken';
 import { UserInstance } from "../model/userModel";
 import bcrypt from 'bcryptjs';
+import { isValid2FA } from "../utility/twoFactorAuth";
 
 const secret = process.env.JWT_SECRET as string;
 
@@ -48,6 +49,24 @@ export async function superAdminAuth(req: Request, res: Response, next: NextFunc
     next();
   } else {
     return res.status(401).json({ msg: "You are not authorized to access this route" });
+  }
+};
+
+export async function secondAuth(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { sessionCode } = req.cookies;
+    if (!sessionCode) {
+      return res.status(401).json({ msg: "2-Factor Authentication is needed. Provide the code sent to your email or phone" })
+    }
+
+    if (!isValid2FA(sessionCode)) {
+      return res.status(401).json({ msg: "Invalid 2-Factor Authentication code" });
+    }
+
+    next();
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ msg: "Unexpected Auth error" });
   }
 };
 

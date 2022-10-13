@@ -66,7 +66,9 @@ export async function getAllTransactions(req:Request,res:Response) {
       model: UserInstance,
       attributes: ["email", "phonenumber"],
       as: "customer"
-    } });
+      },
+      order: [['updatedAt', 'DESC']]
+    });
 
     return res.status(200).json({
       msg:"transaction successful",
@@ -89,8 +91,9 @@ export async function getPendingTransactions(req:Request,res:Response){
       model: UserInstance,
       attributes: ["email", "phonenumber"],
       as: "customer"
-    }
-  });
+      },
+      order: [['createdAt', 'ASC']]
+    });
   return res.status(200).json({
       msg:"successfully gotten all Pending transactions",
       totalPages: Math.ceil(pending.count/Number(size)),

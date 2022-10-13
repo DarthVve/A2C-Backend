@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@types/nodemailer": "^6.4.6",
+    "@vonage/server-sdk": "^2.11.2",
     "axios": "^0.27.2",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.32.0",
@@ -25,6 +26,7 @@
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
+    "node-2fa": "^2.0.3",
     "nodemailer": "^6.7.8",
     "nodemon": "^2.0.19",
     "sequelize": "^6.21.6",
