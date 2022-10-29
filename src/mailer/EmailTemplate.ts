@@ -403,3 +403,86 @@ export function walletNotification(updatedWallet: number, amount: number) {
   `;
   return temp
 };
+
+
+//Mail Template for sending 2FA code to Admin
+export function sessionCode2FA(sessionCode: string) {
+  let temp = `
+    <!DOCTYPE html>
+<html>
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!--[if (gte mso 9)|(IE)]><!-->
+    <link rel="noopener" target="_blank" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <!--<![endif]-->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+  </style>
+</head>
+<body>
+  <div style="
+  background: #E5E5E5;
+  padding: 10vh 0;
+  height: 100vh;
+  font-family: 'Inter', sans-serif;
+  box-sizing: border-box;">
+    <div style="
+    margin: auto;
+    width: 745px;
+    max-width: 90%;
+    min-height: 300px;
+    padding-top: 30px;
+    background: #FFFFFF;
+    display: table;
+    vertical-align: middle;
+    text-align: center;">
+      <a href="/" style="text-decoration: none;">
+        <div style="width: 151px;
+        height: 56px;
+        margin: 30px auto;
+        display: table;
+        vertical-align: middle;
+        padding: 5px 0;
+        justify-content: space-between;
+        font-family: 'Inter', sans-serif;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 19px;">
+          <img src="https://res.cloudinary.com/deqb447mp/image/upload/v1664044669/airtime2Cash/u8pxu0260n2wumj3wpkj.png" alt="logo" border="0" width=32 height=56 style="width: 32px; height: 56px;">
+          <p style="
+          display: table-cell; height: 56px; vertical-align: middle;">
+            <span style="color: #DE3D6D;">Airtime</span>
+            <span style="color: #F5844C;">2Cash</span>
+          </p>
+        </div>
+      </a>
+      <h1 style="color: #21334F;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 25px;
+      display: table;
+      margin: 30px auto;
+      padding: 0;">Your Code for 2 Factor Authentication</h1>
+      <p style="font-family: 'Inter', sans-serif;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 15px;
+      margin: 10px auto;
+      display: table">Your code below is valid for 1 Hour</p>
+      <h2 href="/login" style="font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 32px;
+      color: #DE3D6D;
+      margin: 20px auto; display: table">
+        ${sessionCode}
+      </h2>
+    </div>
+  </div>
+</body>
+</html>
+  `;
+  return temp;
+}
