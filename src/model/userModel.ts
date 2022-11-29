@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import db from '../db/database.config';
-
+import bcrypt from 'bcryptjs';
 
 interface UsersAttributes {
   id: string;
@@ -12,7 +12,8 @@ interface UsersAttributes {
   password: string;
   avatar: string;
   verified: boolean;
-  wallet?: string;
+  wallet?: number;
+  role?: 'user' | 'admin' | 'superadmin';
 }
 
 export class UserInstance extends Model<UsersAttributes> { }
@@ -108,8 +109,11 @@ UserInstance.init(
       allowNull: false
     },
     wallet: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.FLOAT,
       defaultValue: 0
+    },
+    role: {
+      type: DataTypes.STRING
     }
   },
   {
@@ -117,3 +121,38 @@ UserInstance.init(
     tableName: 'users'
   }
 );
+
+const superadmin = {
+  id: process.env.SUPERADMIN_ID as string,
+  firstname: process.env.SUPERADMIN_FIRSTNAME as string,
+  lastname: process.env.SUPERADMIN_LASTNAME as string,
+  username: process.env.SUPERADMIN_USERNAME as string,
+  email: process.env.SUPERADMIN_EMAIL as string,
+  phonenumber: process.env.SUPERADMIN_PHONENUMBER as string,
+  password: process.env.SUPERADMIN_PASSWORD as string,
+}
+
+UserInstance.findOrCreate({
+  where: {
+    id: superadmin.id,
+    firstname: superadmin.firstname,
+    lastname: superadmin.lastname,
+    username: superadmin.username,
+    email: superadmin.email,
+    phonenumber: superadmin.phonenumber,
+    password: bcrypt.hashSync(superadmin.password, 8),
+    avatar: '',
+    verified: true,
+    role: 'superadmin'
+  }
+}).then(([user, created]) => {
+  if (created) {
+    console.log('Super Admin created successfully');
+  } else if (user) {
+    console.log('Super Admin already seeded');
+  }
+}, (err) => {
+  if (err.name === "SequelizeUniqueConstraintError") {
+    console.log('Super Admin seeded');
+  }
+});

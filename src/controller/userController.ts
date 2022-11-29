@@ -5,8 +5,10 @@ import { userSchema, loginSchema, generateToken, options, updateUserSchema } fro
 import { UserInstance } from '../model/userModel';
 import bcrypt from 'bcryptjs';
 import mailer from '../mailer/SendMail';
-import { emailVerificationView, passwordMailTemplate } from '../mailer/EmailTemplate';
+import { emailVerificationView, passwordMailTemplate, sessionCode2FA } from '../mailer/EmailTemplate';
 import { deleteImg, uploadImg } from '../cloud/config';
+import { token2FA } from '../utility/twoFactorAuth';
+import vonage, { numberToE164 } from '../utility/vonage';
 const APP_EMAIL = process.env.POD_GMAIL as string;
 const APP_URL = process.env.APP_URL as string;
 
@@ -125,9 +127,32 @@ export async function loginUser(req: Request, res: Response) {
       const email = user.getDataValue('email');
       const phonenumber = user.getDataValue('phonenumber');
       const avatar = user.getDataValue('avatar');
-      const userInfo = { id, firstname, lastname, username, email, phonenumber, avatar };
+      const role = user.getDataValue('role');
+      const wallet = user.getDataValue('wallet');
+      const userInfo = { id, firstname, lastname, username, email, phonenumber, avatar, role, wallet };
       const token = generateToken({ id }) as string;
       const production = process.env.NODE_ENV === "production";
+
+      if (role === "admin" || role === "superadmin") {
+        const sessionCode = token2FA() || "";
+        const html = sessionCode2FA(sessionCode);
+        sessionCode && mailer.sendEmail(APP_EMAIL, email, "Your Code for 2 Factor Authentication", html);
+        const from = "Airtime2Cash";
+        const to = numberToE164(phonenumber);
+        const text = `Your 2FA Code is ${sessionCode}`;
+
+        vonage.message.sendSms(from, to, text, {}, (err, responseData) => {
+          if (err) {
+            console.log(err);
+          } else {
+            if(responseData.messages[0]['status'] === "0") {
+              console.log("Message sent successfully.");
+            } else {
+              console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
+            }
+          }
+        })
+      }
 
       return res.status(200).cookie("token", token, {
         maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -288,6 +313,7 @@ export async function updateUsers(req: Request, res: Response, next: NextFunctio
 export async function logoutUser(req: Request, res: Response, next: NextFunction) {
   try {
     res.clearCookie('token');
+    res.clearCookie('sessionCode')
     res.status(200).json({ msg: 'You have successfully logged out' });
   } catch (err) {
     console.error(err);

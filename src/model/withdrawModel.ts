@@ -4,7 +4,8 @@ import { UserInstance } from './userModel';
 
 
 interface WithdrawAttributes {
-  id: string;
+  id: number;
+  code: string;
   bank: string;
   name: string;
   number: string;
@@ -18,9 +19,21 @@ export class WithdrawInstance extends Model<WithdrawAttributes> { }
 WithdrawInstance.init(
   {
     id: {
-      type: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false,
+    },
+    code: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Bank code is required'
+        },
+        notEmpty: {
+          msg: 'Bank code cannot be empty'
+        }
+      }
     },
     bank: {
       type: DataTypes.STRING,

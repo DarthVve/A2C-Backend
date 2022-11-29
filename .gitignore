@@ -11,7 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
-database.sqlite
+
 package-lock.json
 coverage
 
@@ -31,4 +31,4 @@ todo
 .env
 .db.env
 Footer
-yarn.lock
+

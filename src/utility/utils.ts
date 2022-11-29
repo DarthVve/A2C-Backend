@@ -40,28 +40,41 @@ export const updateUserSchema = Joi.object().keys({
   avatar: Joi.string()
 });
 
+
 //add Account details
 export const accountSchema = Joi.object().keys({
   bank: Joi.string().required(),
   name: Joi.string().required(),
-  number: Joi.string().length(10).required()
+  number: Joi.string().length(10).required(),
 });
+
 
 //update Account details
 export const updateAccountSchema = Joi.object().keys({
-  bank: Joi.string(),
   name: Joi.string(),
   number: Joi.string().length(10)
 });
+
 
 //withdrawal schema
 export const withdrawalSchema = Joi.object().keys({
   bank: Joi.string(),
   name: Joi.string(),
   number: Joi.string().length(10),
+  code: Joi.string(),
   amount: Joi.string().required().regex(/^[0-9]{3,6}$/),
   password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required()
 });
+
+
+//Transaction schema
+export const transferAirtimeSchema = Joi.object().keys({
+  network: Joi.string().required(),
+  phoneNumber: Joi.string().regex(/^[a-zA-Z0-9]{11}$/).required(),
+  amountToSell: Joi.number().min(50).max(5000).required(),
+  amountToReceive: Joi.number(),
+});
+
 
 //Token Generator function for login sessions
 export const generateToken = (user: { [key: string]: unknown }, time: string = '7d'): unknown => {
@@ -69,3 +82,10 @@ export const generateToken = (user: { [key: string]: unknown }, time: string = '
   return jwt.sign(user, pass, { expiresIn: time });
 };
 
+
+//function for paginating transactions
+export const getPagination = (page: number, size: number) => {
+  const limit = size ? size : 15;
+  const offset = page ? page * limit : 0;
+  return { limit, offset };
+};
