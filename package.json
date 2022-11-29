@@ -9,7 +9,6 @@
     "compile": "tsc -w",
     "test": "jest",
     "tsc": "tsc",
-    "build": "tsc",
     "postinstall": "npm run build"
   },
   "dependencies": {
