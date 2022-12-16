@@ -1,0 +1,3782 @@
+openapi: 3.0.0
+info:
+  title: Airtime2Cash-PodE-Live Project
+  description: Airtime Cash allows users to sell their airtime for cash. It features a wallet that holds the funds' users receive in return for sold airtime and allows for the withdrawal of those funds into the user’s designated bank account.
+  contact:
+    name: Eunice Obebe
+    email: obebeeunice@gmail.com
+  version: '1.0'
+servers:
+- url: https://airtimecash-app.herokuapp.com/
+  variables: {}
+- url: http://localhost:3500
+  description: Development Environment
+  variables: {}
+paths:
+  /user/register:
+    post:
+      tags:
+      - User
+      summary: UserRegister
+      description: This route allows user registration
+      operationId: UserRegister
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UserRegisterRequest'
+              - example:
+                  firstname: Obebe
+                  lastname: Eunice
+                  username: Folaranmi
+                  email: obebeeunice@gmail.com
+                  phonenumber: '09036036393'
+                  password: '12345'
+                  confirm_password: '12345'
+            example:
+              firstname: Obebe
+              lastname: Eunice
+              username: Folaranmi
+              email: obebeeunice@gmail.com
+              phonenumber: '09036036393'
+              password: '12345'
+              confirm_password: '12345'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '98'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"62-ZgFBm9Sit9c/hdCyan29/yQaVxg"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 09:41:21 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/UserRegister'
+                - example:
+                    msg: User created successfully, welcome Folaranmi
+                    id: c6151de9-11b3-4eea-bc86-be315e87024a
+              example:
+                msg: User created successfully, welcome Folaranmi
+                id: c6151de9-11b3-4eea-bc86-be315e87024a
+      deprecated: false
+      security: []
+  /user/verify/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The user ID
+    post:
+      tags:
+      - User
+      summary: VerifyUser
+      description: This route verifies users after they have created an account
+      operationId: VerifyUser
+      parameters: []
+      responses:
+        '401':
+          description: Unauthorized
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '74'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"4a-8lBkFU833zKdtZHUSO5wljjQWB4"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 09:41:42 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/VerifyUser1'
+                - example:
+                    msg: Resend the mail you requested and use it in less than 10 minutes
+              example:
+                msg: Resend the mail you requested and use it in less than 10 minutes
+      deprecated: false
+      security: []
+    get:
+      tags:
+      - User
+      summary: VerifyUser(resendemail)
+      description: This route resends verification emails to users.
+      operationId: VerifyUser(resendemail)
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '33'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"21-Kr21W9xkdz57m6aN/E+RoPs4rg8"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 09:49:31 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/VerifyUserresendemail'
+                - example:
+                    msg: Verification email sent
+              example:
+                msg: Verification email sent
+      deprecated: false
+      security: []
+  /user/login:
+    post:
+      tags:
+      - User
+      summary: UserLogin
+      description: This allows users to log in after they have been verified.
+      operationId: UserLogin
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UserLoginRequest'
+              - example:
+                  emailOrUsername: obebeeunice@gmail.com
+                  password: '123456'
+            example:
+              emailOrUsername: obebeeunice@gmail.com
+              password: '123456'
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Set-Cookie:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM2MTUxZGU5LTExYjMtNGVlYS1iYzg2LWJlMzE1ZTg3MDI0YSIsImlhdCI6MTY2NTU2ODMwMSwiZXhwIjoxNjY2MTczMTAxfQ.0NE-zpyCCbFOwNefwnAtrCpe1pe1pQlWGKytJu2QFPw; Max-Age=604800; Path=/; Expires=Wed, 19 Oct 2022 09:51:41 GMT; HttpOnly; SameSite=Lax
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '256'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"100-gHJEkfYcj2/CGAasC124YVVFbh4"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 09:51:41 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/UserLogin'
+                - example:
+                    msg: You have successfully logged in
+                    userInfo:
+                      id: c6151de9-11b3-4eea-bc86-be315e87024a
+                      firstname: Obebe
+                      lastname: Eunice
+                      username: Folaranmi
+                      email: obebeeunice@gmail.com
+                      phonenumber: '09036036393'
+                      avatar: ''
+                      role: null
+                      wallet: 0
+              example:
+                msg: You have successfully logged in
+                userInfo:
+                  id: c6151de9-11b3-4eea-bc86-be315e87024a
+                  firstname: Obebe
+                  lastname: Eunice
+                  username: Folaranmi
+                  email: obebeeunice@gmail.com
+                  phonenumber: '09036036393'
+                  avatar: ''
+                  role: null
+                  wallet: 0
+      deprecated: false
+      security: []
+  /user/forgotPassword:
+    patch:
+      tags:
+      - User
+      summary: forgetPasword
+      description: Allow users to change their  forgotten password
+      operationId: forgetPasword
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/forgetPaswordRequest'
+              - example:
+                  email: obebeeunice@gmail.com
+            example:
+              email: obebeeunice@gmail.com
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '39'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"27-Y32kqnyIaS/lWaRmfuc5tccmqaI"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 09:50:28 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/forgetPasword'
+                - example:
+                    msg: email for password reset sent
+              example:
+                msg: email for password reset sent
+      deprecated: false
+      security: []
+  /user/resetPassword/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The user ID
+    patch:
+      tags:
+      - User
+      summary: resetPassword(patch)
+      description: Allow users to reset their password to a new one
+      operationId: resetPassword(patch)
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/resetPasswordpatchRequest'
+              - example:
+                  updatePassword: '123456'
+            example:
+              updatePassword: '123456'
+        required: true
+      responses:
+        '401':
+          description: Unauthorized
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '74'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"4a-8lBkFU833zKdtZHUSO5wljjQWB4"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 09:51:21 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/resetPasswordpatch1'
+                - example:
+                    msg: Resend the mail you requested and use it in less than 10 minutes
+              example:
+                msg: Resend the mail you requested and use it in less than 10 minutes
+      deprecated: false
+      security: []
+  /user/resetPassword/{userId}:
+    parameters:
+      - in: path
+        name: userId
+        schema:
+          type: string
+        required: true
+        description: The user ID
+    post:
+      tags:
+      - User
+      summary: ResetPassword(post)
+      description: Resets token
+      operationId: ResetPassword(post)
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ResetPasswordpostRequest'
+              - example:
+                  token: 1234t66788
+            example:
+              token: 1234t66788
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security: []
+  /user/update/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The user ID
+    patch:
+      tags:
+      - User
+      summary: userUpdate
+      description: Users can update their details through this route.
+      operationId: userUpdate
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/userUpdateRequest'
+              - example:
+                  firstname: Eunice
+                  lastname: Obebe
+                  phonenumber: '08113792805'
+                  avatar: https://m.media-amazon.com/images/I/61uM+SGiTPL._SL1000_.jpg
+            example:
+              firstname: Eunice
+              lastname: Obebe
+              phonenumber: '08113792805'
+              avatar: https://m.media-amazon.com/images/I/61uM+SGiTPL._SL1000_.jpg
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '231'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"e7-o9uFkZvdHkfmL7XefpyujNvy3TM"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 11:22:55 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/userUpdate'
+                - example:
+                    msg: You have successfully updated your profile
+                    firstname: Eunice
+                    lastname: Obebe
+                    phonenumber: '08113792805'
+                    avatar: https://res.cloudinary.com/deqb447mp/image/upload/v1665573775/airtime2Cash/khf0x0tsvavymbycqget.jpg
+              example:
+                msg: You have successfully updated your profile
+                firstname: Eunice
+                lastname: Obebe
+                phonenumber: '08113792805'
+                avatar: https://res.cloudinary.com/deqb447mp/image/upload/v1665573775/airtime2Cash/khf0x0tsvavymbycqget.jpg
+      deprecated: false
+      security: []
+  /user/logout:
+    get:
+      tags:
+      - User
+      summary: userLogout
+      description: Allows users to log out
+      operationId: userLogout
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Set-Cookie:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '42'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"2a-TjwW0Lfy8wQ/R2ltxRXgP6pxTlI"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 11:23:27 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/userLogout'
+                - example:
+                    msg: You have successfully logged out
+              example:
+                msg: You have successfully logged out
+      deprecated: false
+      security: []
+  /account/add:
+    post:
+      tags:
+      - Account
+      summary: createAccount
+      description: Allow users to create bank account
+      operationId: createAccount
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/createAccountRequest'
+              - example:
+                  bank: Access Bank
+                  name: Eunice Obebe
+                  number: '1234567890'
+            example:
+              bank: Access Bank
+              name: Eunice Obebe
+              number: '1234567890'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '297'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"129-BplBFmnIAgYBuMsSkZZblGtWfZ0"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 11:46:34 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/createAccount'
+                - example:
+                    msg: Account created successfully
+                    data:
+                      id: 11435faa-4260-4641-9c96-010b537f1967
+                      bank: Access Bank
+                      name: Eunice Obebe
+                      number: '1234567890'
+                      user: c6151de9-11b3-4eea-bc86-be315e87024a
+                      bankCode: '044'
+                      updatedAt: 2022-10-12T11:46:34.108Z
+                      createdAt: 2022-10-12T11:46:34.108Z
+              example:
+                msg: Account created successfully
+                data:
+                  id: 11435faa-4260-4641-9c96-010b537f1967
+                  bank: Access Bank
+                  name: Eunice Obebe
+                  number: '1234567890'
+                  user: c6151de9-11b3-4eea-bc86-be315e87024a
+                  bankCode: '044'
+                  updatedAt: 2022-10-12T11:46:34.108Z
+                  createdAt: 2022-10-12T11:46:34.108Z
+      deprecated: false
+  /account:
+    get:
+      tags:
+      - Account
+      summary: getAccounts
+      description: Route to get all accounts created by a user
+      operationId: getAccounts
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '306'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"132-wU86vzC5jmzAmtWPjI5EUBeSlLg"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 11:51:57 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/getAccounts'
+                - example:
+                    msg: Accounts retrieved successfully
+                    accounts:
+                    - id: 11435faa-4260-4641-9c96-010b537f1967
+                      bank: Access Bank
+                      name: Eunice Obebe
+                      number: '1234567890'
+                      user: c6151de9-11b3-4eea-bc86-be315e87024a
+                      bankCode: '044'
+                      createdAt: 2022-10-12T11:46:34.108Z
+                      updatedAt: 2022-10-12T11:46:34.108Z
+              example:
+                msg: Accounts retrieved successfully
+                accounts:
+                - id: 11435faa-4260-4641-9c96-010b537f1967
+                  bank: Access Bank
+                  name: Eunice Obebe
+                  number: '1234567890'
+                  user: c6151de9-11b3-4eea-bc86-be315e87024a
+                  bankCode: '044'
+                  createdAt: 2022-10-12T11:46:34.108Z
+                  updatedAt: 2022-10-12T11:46:34.108Z
+      deprecated: false
+  /account/update/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The user ID
+    patch:
+      tags:
+      - Account
+      summary: updateAccount
+      description: Route to update a bank account.
+      operationId: updateAccount
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/updateAccountRequest'
+              - example:
+                  name: Eunice Obebe
+                  number: '2345674530'
+            example:
+              name: Eunice Obebe
+              number: '2345674530'
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '297'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"129-U1loMgK3lYUCIpnA76eyqM6Ds6w"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 13:43:42 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/updateAccount'
+                - example:
+                    msg: Account updated successfully
+                    data:
+                      id: 4782896e-6a86-4fbc-ae64-707ae30b8e62
+                      bank: Access Bank
+                      name: Eunice Obebe
+                      number: '2345674530'
+                      user: c6151de9-11b3-4eea-bc86-be315e87024a
+                      bankCode: '044'
+                      createdAt: 2022-10-12T13:37:45.723Z
+                      updatedAt: 2022-10-12T13:43:42.507Z
+              example:
+                msg: Account updated successfully
+                data:
+                  id: 4782896e-6a86-4fbc-ae64-707ae30b8e62
+                  bank: Access Bank
+                  name: Eunice Obebe
+                  number: '2345674530'
+                  user: c6151de9-11b3-4eea-bc86-be315e87024a
+                  bankCode: '044'
+                  createdAt: 2022-10-12T13:37:45.723Z
+                  updatedAt: 2022-10-12T13:43:42.507Z
+      deprecated: false
+  /account/delete/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The user ID
+    delete:
+      tags:
+      - Account
+      summary: DeleteAccount
+      description: Route to delete an account created by a user
+      operationId: DeleteAccount
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '38'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"26-F9HDDQXKPx+RLC1qF17F54Ul18o"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 13:44:48 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/DeleteAccount'
+                - example:
+                    msg: Account deleted successfully
+              example:
+                msg: Account deleted successfully
+      deprecated: false
+  /transfer/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The user ID
+    post:
+      tags:
+      - Transfer
+      summary: createTransfer
+      description: Route to create transaction by a logged-in user
+      operationId: createTransfer
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/createTransferRequest'
+              - example:
+                  network: MTN
+                  phoneNumber: '09036036393'
+                  amountToSell: '700'
+            example:
+              network: MTN
+              phoneNumber: '09036036393'
+              amountToSell: '700'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '368'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"170-8VeYrrHSk81GwDQXcy0pNm5v6+E"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 13:59:06 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/createTransfer'
+                - example:
+                    msg: Request received, your account will be credited after confirmation
+                    transaction:
+                      status: pending
+                      id: a3404c05-0ad3-4df0-a243-06d9492cb547
+                      userId: c6151de9-11b3-4eea-bc86-be315e87024a
+                      network: MTN
+                      phoneNumber: '09036036393'
+                      amountToSell: '700'
+                      amountToReceive: 490
+                      updatedAt: 2022-10-12T13:59:00.013Z
+                      createdAt: 2022-10-12T13:59:00.013Z
+              example:
+                msg: Request received, your account will be credited after confirmation
+                transaction:
+                  status: pending
+                  id: a3404c05-0ad3-4df0-a243-06d9492cb547
+                  userId: c6151de9-11b3-4eea-bc86-be315e87024a
+                  network: MTN
+                  phoneNumber: '09036036393'
+                  amountToSell: '700'
+                  amountToReceive: 490
+                  updatedAt: 2022-10-12T13:59:00.013Z
+                  createdAt: 2022-10-12T13:59:00.013Z
+      deprecated: false
+  /transfer/transactions/all:
+    get:
+      tags:
+      - Transfer
+      summary: getTransaction
+      description: Route to get all types of transactions.
+      operationId: getTransaction
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '784'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"310-8CmlCPnBB9Cr9jTDaCT0MTHCd/w"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 15:36:07 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/getTransaction'
+                - example:
+                    msg: transaction successful
+                    totalPages: null
+                    transactions:
+                      count: 2
+                      rows:
+                      - id: a3404c05-0ad3-4df0-a243-06d9492cb547
+                        network: MTN
+                        phoneNumber: '09036036393'
+                        amountToSell: 700
+                        amountToReceive: 490
+                        status: pending
+                        userId: c6151de9-11b3-4eea-bc86-be315e87024a
+                        createdAt: 2022-10-12T13:59:00.013Z
+                        updatedAt: 2022-10-12T13:59:00.013Z
+                        customer:
+                          email: obebeeunice@gmail.com
+                          phonenumber: '08113792805'
+                      - id: d5686bde-b4cd-46c5-b175-fa41756722a2
+                        network: MTN
+                        phoneNumber: '09036036393'
+                        amountToSell: 700
+                        amountToReceive: 490
+                        status: pending
+                        userId: c6151de9-11b3-4eea-bc86-be315e87024a
+                        createdAt: 2022-10-12T15:34:25.083Z
+                        updatedAt: 2022-10-12T15:34:25.083Z
+                        customer:
+                          email: obebeeunice@gmail.com
+                          phonenumber: '08113792805'
+              example:
+                msg: transaction successful
+                totalPages: null
+                transactions:
+                  count: 2
+                  rows:
+                  - id: a3404c05-0ad3-4df0-a243-06d9492cb547
+                    network: MTN
+                    phoneNumber: '09036036393'
+                    amountToSell: 700
+                    amountToReceive: 490
+                    status: pending
+                    userId: c6151de9-11b3-4eea-bc86-be315e87024a
+                    createdAt: 2022-10-12T13:59:00.013Z
+                    updatedAt: 2022-10-12T13:59:00.013Z
+                    customer:
+                      email: obebeeunice@gmail.com
+                      phonenumber: '08113792805'
+                  - id: d5686bde-b4cd-46c5-b175-fa41756722a2
+                    network: MTN
+                    phoneNumber: '09036036393'
+                    amountToSell: 700
+                    amountToReceive: 490
+                    status: pending
+                    userId: c6151de9-11b3-4eea-bc86-be315e87024a
+                    createdAt: 2022-10-12T15:34:25.083Z
+                    updatedAt: 2022-10-12T15:34:25.083Z
+                    customer:
+                      email: obebeeunice@gmail.com
+                      phonenumber: '08113792805'
+      deprecated: false
+  /transfer/{userid}:
+    parameters:
+      - in: path
+        name: userid
+        schema:
+          type: string
+        required: true
+        description: The user ID
+    get:
+      tags:
+      - Transfer
+      summary: getUniqueTransaction
+      description: Route to get a unique transaction by its id
+      operationId: getUniqueTransaction
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '92'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"5c-+RSBF4Pezp/fcz5QsJn52HVE0V8"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 14:10:40 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/getUniqueTransaction'
+                - example:
+                    msg: User transaction successful
+                    totalPages: null
+                    transactions:
+                      count: 0
+                      rows: []
+              example:
+                msg: User transaction successful
+                totalPages: null
+                transactions:
+                  count: 0
+                  rows: []
+      deprecated: false
+  /transfer/transaction/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The user ID
+    get:
+      tags:
+      - Transfer
+      summary: getTransaction1
+      description: This route gets a single transaction by its id
+      operationId: getTransaction1
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '317'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"13d-D3Zw0hLKPMIzlRWfdIRNKCCeLT8"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 15:40:33 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/getTransaction1'
+                - example:
+                    msg: Transaction found
+                    transaction:
+                      id: a3404c05-0ad3-4df0-a243-06d9492cb547
+                      network: MTN
+                      phoneNumber: '09036036393'
+                      amountToSell: 700
+                      amountToReceive: 490
+                      status: pending
+                      userId: c6151de9-11b3-4eea-bc86-be315e87024a
+                      createdAt: 2022-10-12T13:59:00.013Z
+                      updatedAt: 2022-10-12T13:59:00.013Z
+              example:
+                msg: Transaction found
+                transaction:
+                  id: a3404c05-0ad3-4df0-a243-06d9492cb547
+                  network: MTN
+                  phoneNumber: '09036036393'
+                  amountToSell: 700
+                  amountToReceive: 490
+                  status: pending
+                  userId: c6151de9-11b3-4eea-bc86-be315e87024a
+                  createdAt: 2022-10-12T13:59:00.013Z
+                  updatedAt: 2022-10-12T13:59:00.013Z
+      deprecated: false
+  /transfer/confirm/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The user ID
+    patch:
+      tags:
+      - Transfer
+      summary: confirmTransfer
+      description: This route confirms a transaction.
+      operationId: confirmTransfer
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '336'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"150-IR7HPspRP7iNO1MDLmZIRHNd6kI"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 15:41:47 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/confirmTransfer'
+                - example:
+                    msg: Transaction confirmed successfully
+                    transaction:
+                      id: d5686bde-b4cd-46c5-b175-fa41756722a2
+                      network: MTN
+                      phoneNumber: '09036036393'
+                      amountToSell: 700
+                      amountToReceive: 490
+                      status: confirmed
+                      userId: c6151de9-11b3-4eea-bc86-be315e87024a
+                      createdAt: 2022-10-12T15:34:25.083Z
+                      updatedAt: 2022-10-12T15:41:47.337Z
+              example:
+                msg: Transaction confirmed successfully
+                transaction:
+                  id: d5686bde-b4cd-46c5-b175-fa41756722a2
+                  network: MTN
+                  phoneNumber: '09036036393'
+                  amountToSell: 700
+                  amountToReceive: 490
+                  status: confirmed
+                  userId: c6151de9-11b3-4eea-bc86-be315e87024a
+                  createdAt: 2022-10-12T15:34:25.083Z
+                  updatedAt: 2022-10-12T15:41:47.337Z
+      deprecated: false
+  /transfer/cancel/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The user ID
+    patch:
+      tags:
+      - Transfer
+      summary: cancelTransfer
+      description: This route cancel a transaction.
+      operationId: cancelTransfer
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '336'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"150-DqrAGWpX/ZMdMoYavMZ3U6XNH60"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 15:43:02 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/cancelTransfer'
+                - example:
+                    msg: Transaction cancelled successfully
+                    transaction:
+                      id: a3404c05-0ad3-4df0-a243-06d9492cb547
+                      network: MTN
+                      phoneNumber: '09036036393'
+                      amountToSell: 700
+                      amountToReceive: 490
+                      status: cancelled
+                      userId: c6151de9-11b3-4eea-bc86-be315e87024a
+                      createdAt: 2022-10-12T13:59:00.013Z
+                      updatedAt: 2022-10-12T15:43:02.094Z
+              example:
+                msg: Transaction cancelled successfully
+                transaction:
+                  id: a3404c05-0ad3-4df0-a243-06d9492cb547
+                  network: MTN
+                  phoneNumber: '09036036393'
+                  amountToSell: 700
+                  amountToReceive: 490
+                  status: cancelled
+                  userId: c6151de9-11b3-4eea-bc86-be315e87024a
+                  createdAt: 2022-10-12T13:59:00.013Z
+                  updatedAt: 2022-10-12T15:43:02.094Z
+      deprecated: false
+  /withdrawal:
+    post:
+      tags:
+      - Withdrawal
+      summary: createWithdrawal
+      description: Users are able to make a withdrawal through this route
+      operationId: createWithdrawal
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/createWithdrawalRequest'
+              - example:
+                  code: '044'
+                  bank: ACCESS BANK NIGERIA
+                  name: Eunice Obebe
+                  number: '1234567890'
+                  amount: '300'
+                  password: '123456'
+            example:
+              code: '044'
+              bank: ACCESS BANK NIGERIA
+              name: Eunice Obebe
+              number: '1234567890'
+              amount: '300'
+              password: '123456'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '73'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"49-QFP5ePYE5O4N+4IxFjtEscGcuYs"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 16:29:54 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/createWithdrawal'
+                - example:
+                    msg: Processing Withdrawal, Check 'Withdrawal History' to see status
+              example:
+                msg: Processing Withdrawal, Check 'Withdrawal History' to see status
+      deprecated: false
+  /withdrawal/all:
+    get:
+      tags:
+      - Withdrawal
+      summary: GetWithdrawals
+      description: This route gets all withdrawals made by the user
+      operationId: GetWithdrawals
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '816'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"330-QRSxKOlicdjmQ2jt4iWsKijYjkI"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 16:30:29 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GetWithdrawals'
+                - example:
+                    msg: Here are your Withdrawals
+                    withdrawals:
+                    - id: 369739
+                      code: '044'
+                      bank: ACCESS BANK NIGERIA
+                      name: Ade Bond01AAB
+                      number: '1234567890'
+                      amount: '300'
+                      status: NEW
+                      user: c6151de9-11b3-4eea-bc86-be315e87024a
+                      createdAt: 2022-10-12T16:17:07.788Z
+                      updatedAt: 2022-10-12T16:17:07.788Z
+                    - id: 369740
+                      code: '044'
+                      bank: ACCESS BANK NIGERIA
+                      name: Ade Bond01AAB
+                      number: '1234567890'
+                      amount: '300'
+                      status: NEW
+                      user: c6151de9-11b3-4eea-bc86-be315e87024a
+                      createdAt: 2022-10-12T16:17:18.675Z
+                      updatedAt: 2022-10-12T16:17:18.675Z
+                    - id: 369754
+                      code: '044'
+                      bank: ACCESS BANK NIGERIA
+                      name: Ade Bond01AAB
+                      number: '1234567890'
+                      amount: '300'
+                      status: NEW
+                      user: c6151de9-11b3-4eea-bc86-be315e87024a
+                      createdAt: 2022-10-12T16:29:54.935Z
+                      updatedAt: 2022-10-12T16:29:54.935Z
+              example:
+                msg: Here are your Withdrawals
+                withdrawals:
+                - id: 369739
+                  code: '044'
+                  bank: ACCESS BANK NIGERIA
+                  name: Ade Bond01AAB
+                  number: '1234567890'
+                  amount: '300'
+                  status: NEW
+                  user: c6151de9-11b3-4eea-bc86-be315e87024a
+                  createdAt: 2022-10-12T16:17:07.788Z
+                  updatedAt: 2022-10-12T16:17:07.788Z
+                - id: 369740
+                  code: '044'
+                  bank: ACCESS BANK NIGERIA
+                  name: Ade Bond01AAB
+                  number: '1234567890'
+                  amount: '300'
+                  status: NEW
+                  user: c6151de9-11b3-4eea-bc86-be315e87024a
+                  createdAt: 2022-10-12T16:17:18.675Z
+                  updatedAt: 2022-10-12T16:17:18.675Z
+                - id: 369754
+                  code: '044'
+                  bank: ACCESS BANK NIGERIA
+                  name: Ade Bond01AAB
+                  number: '1234567890'
+                  amount: '300'
+                  status: NEW
+                  user: c6151de9-11b3-4eea-bc86-be315e87024a
+                  createdAt: 2022-10-12T16:29:54.935Z
+                  updatedAt: 2022-10-12T16:29:54.935Z
+      deprecated: false
+  /withdrawal/wallet:
+    post:
+      tags:
+      - Withdrawal
+      summary: withdrawal
+      description: Allows successful withdrawal
+      operationId: withdrawal
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/withdrawalrequest'
+              - example:
+                  id: '369754'
+            example:
+              id: '369754'
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '31'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"1f-u1ah50q3gBI7xLfJ6IrxMCGal3g"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 16:36:01 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/withdrawal1'
+                - example:
+                    msg: Withdrawal successful
+              example:
+                msg: Withdrawal successful
+      deprecated: false
+  /admin/add:
+    post:
+      tags:
+      - Admin
+      summary: elevateAdmin
+      description: This route elevates a user to an admin
+      operationId: elevateAdmin
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/elevateAdminRequest'
+              - example:
+                  email: obebeeunice@gmail.com
+            example:
+              email: obebeeunice@gmail.com
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '32'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"20-nzRmyJaRYkL1M1mz/EHHEBPduvk"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 16:48:50 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/elevateAdmin'
+                - example:
+                    msg: User elevated to admin
+              example:
+                msg: User elevated to admin
+      deprecated: false
+  /admin/revoke:
+    post:
+      tags:
+      - Admin
+      summary: RevokeAdmin
+      description: This route revokes an admin
+      operationId: RevokeAdmin
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RevokeAdminRequest'
+              - example:
+                  email: obebeeunice@gmail.com
+            example:
+              email: obebeeunice@gmail.com
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '28'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"1c-/J9XQp65Z8bane9Ywu15kaWCiZU"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 16:49:54 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/RevokeAdmin'
+                - example:
+                    msg: Admin role revoked
+              example:
+                msg: Admin role revoked
+      deprecated: false
+  /admin/wallet:
+    patch:
+      tags:
+      - Admin
+      summary: AdminWallet
+      description: This route allows an admin to credit a user's wallet
+      operationId: AdminWallet
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AdminWalletRequest'
+              - example:
+                  amountToSell: '700'
+                  amountToReceive: '490'
+                  email: obebeeunice@gmail.com
+                  transactionId: a3404c05-0ad3-4df0-a243-06d9492cb547
+            example:
+              amountToSell: '700'
+              amountToReceive: '490'
+              email: obebeeunice@gmail.com
+              transactionId: a3404c05-0ad3-4df0-a243-06d9492cb547
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Powered-By:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Express
+            Access-Control-Allow-Origin:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: http://localhost:3000
+            Vary:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Origin
+            Access-Control-Allow-Credentials:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: 'true'
+            Access-Control-Expose-Headers:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: X-Powered-By,Access-Control-Allow-Origin,Vary,Access-Control-Allow-Credentials,Set-Cookie,Content-Type,Content-Length,ETag,Date,Connection,Keep-Alive
+            Content-Length:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: '49'
+            ETag:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: W/"31-72QFYKoD6ClDpHR2WEjzViZiJdE"
+            Date:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: Wed, 12 Oct 2022 16:54:01 GMT
+            Connection:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: keep-alive
+            Keep-Alive:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                  example: timeout=5
+          content:
+            application/json; charset=utf-8:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/AdminWallet'
+                - example:
+                    msg: Wallet credited successfully
+                    data: 490
+              example:
+                msg: Wallet credited successfully
+                data: 490
+      deprecated: false
+components:
+  schemas:
+    UserRegisterRequest:
+      title: UserRegisterRequest
+      required:
+      - firstname
+      - lastname
+      - username
+      - email
+      - phonenumber
+      - password
+      - confirm_password
+      type: object
+      properties:
+        firstname:
+          type: string
+        lastname:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        phonenumber:
+          type: string
+        password:
+          type: string
+        confirm_password:
+          type: string
+      example:
+        firstname: Obebe
+        lastname: Eunice
+        username: Folaranmi
+        email: obebeeunice@gmail.com
+        phonenumber: '09036036393'
+        password: '12345'
+        confirm_password: '12345'
+    UserRegister:
+      title: UserRegister
+      required:
+      - msg
+      - id
+      type: object
+      properties:
+        msg:
+          type: string
+        id:
+          type: string
+      example:
+        msg: User created successfully, welcome Folaranmi
+        id: c6151de9-11b3-4eea-bc86-be315e87024a
+    VerifyUser1:
+      title: VerifyUser1
+      required:
+      - msg
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: Resend the mail you requested and use it in less than 10 minutes
+    UserLoginRequest:
+      title: UserLoginRequest
+      required:
+      - emailOrUsername
+      - password
+      type: object
+      properties:
+        emailOrUsername:
+          type: string
+        password:
+          type: string
+      example:
+        emailOrUsername: obebeeunice@gmail.com
+        password: '123456'
+    UserLogin:
+      title: UserLogin
+      required:
+      - msg
+      - userInfo
+      type: object
+      properties:
+        msg:
+          type: string
+        userInfo:
+          allOf:
+          - $ref: '#/components/schemas/UserInfo'
+          - {}
+      example:
+        msg: You have successfully logged in
+        userInfo:
+          id: c6151de9-11b3-4eea-bc86-be315e87024a
+          firstname: Obebe
+          lastname: Eunice
+          username: Folaranmi
+          email: obebeeunice@gmail.com
+          phonenumber: '09036036393'
+          avatar: ''
+          role: null
+          wallet: 0
+    UserInfo:
+      title: UserInfo
+      required:
+      - id
+      - firstname
+      - lastname
+      - username
+      - email
+      - phonenumber
+      - avatar
+      - role
+      - wallet
+      type: object
+      properties:
+        id:
+          type: string
+        firstname:
+          type: string
+        lastname:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        phonenumber:
+          type: string
+        avatar:
+          type: string
+        role:
+          type: string
+          nullable: true
+        wallet:
+          type: integer
+          format: int32
+      example:
+        id: c6151de9-11b3-4eea-bc86-be315e87024a
+        firstname: Obebe
+        lastname: Eunice
+        username: Folaranmi
+        email: obebeeunice@gmail.com
+        phonenumber: '09036036393'
+        avatar: ''
+        role: null
+        wallet: 0
+    VerifyUserresendemail:
+      title: VerifyUserresendemail
+      required:
+      - msg
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: Verification email sent
+    forgetPaswordRequest:
+      title: forgetPaswordRequest
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          type: string
+      example:
+        email: obebeeunice@gmail.com
+    forgetPasword:
+      title: forgetPasword
+      required:
+      - msg
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: email for password reset sent
+    resetPasswordpatchRequest:
+      title: resetPasswordpatchRequest
+      required:
+      - updatePassword
+      type: object
+      properties:
+        updatePassword:
+          type: string
+      example:
+        updatePassword: '123456'
+    resetPasswordpatch1:
+      title: resetPasswordpatch1
+      required:
+      - msg
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: Resend the mail you requested and use it in less than 10 minutes
+    ResetPasswordpostRequest:
+      title: ResetPasswordpostRequest
+      required:
+      - token
+      type: object
+      properties:
+        token:
+          type: string
+      example:
+        token: 1234t66788
+    userUpdateRequest:
+      title: userUpdateRequest
+      required:
+      - firstname
+      - lastname
+      - phonenumber
+      - avatar
+      type: object
+      properties:
+        firstname:
+          type: string
+        lastname:
+          type: string
+        phonenumber:
+          type: string
+        avatar:
+          type: string
+      example:
+        firstname: Eunice
+        lastname: Obebe
+        phonenumber: '08113792805'
+        avatar: https://m.media-amazon.com/images/I/61uM+SGiTPL._SL1000_.jpg
+    userUpdate:
+      title: userUpdate
+      required:
+      - msg
+      - firstname
+      - lastname
+      - phonenumber
+      - avatar
+      type: object
+      properties:
+        msg:
+          type: string
+        firstname:
+          type: string
+        lastname:
+          type: string
+        phonenumber:
+          type: string
+        avatar:
+          type: string
+      example:
+        msg: You have successfully updated your profile
+        firstname: Eunice
+        lastname: Obebe
+        phonenumber: '08113792805'
+        avatar: https://res.cloudinary.com/deqb447mp/image/upload/v1665573775/airtime2Cash/khf0x0tsvavymbycqget.jpg
+    userLogout:
+      title: userLogout
+      required:
+      - msg
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: You have successfully logged out
+    createAccountRequest:
+      title: createAccountRequest
+      required:
+      - bank
+      - name
+      - number
+      type: object
+      properties:
+        bank:
+          type: string
+        name:
+          type: string
+        number:
+          type: string
+      example:
+        bank: Access Bank
+        name: Eunice Obebe
+        number: '1234567890'
+    createAccount:
+      title: createAccount
+      required:
+      - msg
+      - data
+      type: object
+      properties:
+        msg:
+          type: string
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Data'
+          - {}
+      example:
+        msg: Account created successfully
+        data:
+          id: 11435faa-4260-4641-9c96-010b537f1967
+          bank: Access Bank
+          name: Eunice Obebe
+          number: '1234567890'
+          user: c6151de9-11b3-4eea-bc86-be315e87024a
+          bankCode: '044'
+          updatedAt: 2022-10-12T11:46:34.108Z
+          createdAt: 2022-10-12T11:46:34.108Z
+    Data:
+      title: Data
+      required:
+      - id
+      - bank
+      - name
+      - number
+      - user
+      - bankCode
+      - updatedAt
+      - createdAt
+      type: object
+      properties:
+        id:
+          type: string
+        bank:
+          type: string
+        name:
+          type: string
+        number:
+          type: string
+        user:
+          type: string
+        bankCode:
+          type: string
+        updatedAt:
+          type: string
+        createdAt:
+          type: string
+      example:
+        id: 11435faa-4260-4641-9c96-010b537f1967
+        bank: Access Bank
+        name: Eunice Obebe
+        number: '1234567890'
+        user: c6151de9-11b3-4eea-bc86-be315e87024a
+        bankCode: '044'
+        updatedAt: 2022-10-12T11:46:34.108Z
+        createdAt: 2022-10-12T11:46:34.108Z
+    getAccounts:
+      title: getAccounts
+      required:
+      - msg
+      - accounts
+      type: object
+      properties:
+        msg:
+          type: string
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Account'
+          description: ''
+      example:
+        msg: Accounts retrieved successfully
+        accounts:
+        - id: 11435faa-4260-4641-9c96-010b537f1967
+          bank: Access Bank
+          name: Eunice Obebe
+          number: '1234567890'
+          user: c6151de9-11b3-4eea-bc86-be315e87024a
+          bankCode: '044'
+          createdAt: 2022-10-12T11:46:34.108Z
+          updatedAt: 2022-10-12T11:46:34.108Z
+    Account:
+      title: Account
+      required:
+      - id
+      - bank
+      - name
+      - number
+      - user
+      - bankCode
+      - createdAt
+      - updatedAt
+      type: object
+      properties:
+        id:
+          type: string
+        bank:
+          type: string
+        name:
+          type: string
+        number:
+          type: string
+        user:
+          type: string
+        bankCode:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      example:
+        id: 11435faa-4260-4641-9c96-010b537f1967
+        bank: Access Bank
+        name: Eunice Obebe
+        number: '1234567890'
+        user: c6151de9-11b3-4eea-bc86-be315e87024a
+        bankCode: '044'
+        createdAt: 2022-10-12T11:46:34.108Z
+        updatedAt: 2022-10-12T11:46:34.108Z
+    updateAccountRequest:
+      title: updateAccountRequest
+      required:
+      - name
+      - number
+      type: object
+      properties:
+        name:
+          type: string
+        number:
+          type: string
+      example:
+        name: Eunice Obebe
+        number: '2345674530'
+    updateAccount:
+      title: updateAccount
+      required:
+      - msg
+      - data
+      type: object
+      properties:
+        msg:
+          type: string
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Data'
+          - {}
+      example:
+        msg: Account updated successfully
+        data:
+          id: 4782896e-6a86-4fbc-ae64-707ae30b8e62
+          bank: Access Bank
+          name: Eunice Obebe
+          number: '2345674530'
+          user: c6151de9-11b3-4eea-bc86-be315e87024a
+          bankCode: '044'
+          createdAt: 2022-10-12T13:37:45.723Z
+          updatedAt: 2022-10-12T13:43:42.507Z
+    DeleteAccount:
+      title: DeleteAccount
+      required:
+      - msg
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: Account deleted successfully
+    createTransferRequest:
+      title: createTransferRequest
+      required:
+      - network
+      - phoneNumber
+      - amountToSell
+      type: object
+      properties:
+        network:
+          type: string
+        phoneNumber:
+          type: string
+        amountToSell:
+          type: string
+      example:
+        network: MTN
+        phoneNumber: '09036036393'
+        amountToSell: '700'
+    createTransfer:
+      title: createTransfer
+      required:
+      - msg
+      - transaction
+      type: object
+      properties:
+        msg:
+          type: string
+        transaction:
+          allOf:
+          - $ref: '#/components/schemas/Transaction'
+          - {}
+      example:
+        msg: Request received, your account will be credited after confirmation
+        transaction:
+          status: pending
+          id: a3404c05-0ad3-4df0-a243-06d9492cb547
+          userId: c6151de9-11b3-4eea-bc86-be315e87024a
+          network: MTN
+          phoneNumber: '09036036393'
+          amountToSell: '700'
+          amountToReceive: 490
+          updatedAt: 2022-10-12T13:59:00.013Z
+          createdAt: 2022-10-12T13:59:00.013Z
+    Transaction:
+      title: Transaction
+      required:
+      - status
+      - id
+      - userId
+      - network
+      - phoneNumber
+      - amountToSell
+      - amountToReceive
+      - updatedAt
+      - createdAt
+      type: object
+      properties:
+        status:
+          type: string
+        id:
+          type: string
+        userId:
+          type: string
+        network:
+          type: string
+        phoneNumber:
+          type: string
+        amountToSell:
+          type: string
+        amountToReceive:
+          type: integer
+          format: int32
+        updatedAt:
+          type: string
+        createdAt:
+          type: string
+      example:
+        status: pending
+        id: a3404c05-0ad3-4df0-a243-06d9492cb547
+        userId: c6151de9-11b3-4eea-bc86-be315e87024a
+        network: MTN
+        phoneNumber: '09036036393'
+        amountToSell: '700'
+        amountToReceive: 490
+        updatedAt: 2022-10-12T13:59:00.013Z
+        createdAt: 2022-10-12T13:59:00.013Z
+    getTransaction:
+      title: getTransaction
+      required:
+      - msg
+      - totalPages
+      - transactions
+      type: object
+      properties:
+        msg:
+          type: string
+        totalPages:
+          type: string
+          nullable: true
+        transactions:
+          allOf:
+          - $ref: '#/components/schemas/Transactions'
+          - {}
+      example:
+        msg: transaction successful
+        totalPages: null
+        transactions:
+          count: 2
+          rows:
+          - id: a3404c05-0ad3-4df0-a243-06d9492cb547
+            network: MTN
+            phoneNumber: '09036036393'
+            amountToSell: 700
+            amountToReceive: 490
+            status: pending
+            userId: c6151de9-11b3-4eea-bc86-be315e87024a
+            createdAt: 2022-10-12T13:59:00.013Z
+            updatedAt: 2022-10-12T13:59:00.013Z
+            customer:
+              email: obebeeunice@gmail.com
+              phonenumber: '08113792805'
+          - id: d5686bde-b4cd-46c5-b175-fa41756722a2
+            network: MTN
+            phoneNumber: '09036036393'
+            amountToSell: 700
+            amountToReceive: 490
+            status: pending
+            userId: c6151de9-11b3-4eea-bc86-be315e87024a
+            createdAt: 2022-10-12T15:34:25.083Z
+            updatedAt: 2022-10-12T15:34:25.083Z
+            customer:
+              email: obebeeunice@gmail.com
+              phonenumber: '08113792805'
+    Transactions:
+      title: Transactions
+      required:
+      - count
+      - rows
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        rows:
+          type: array
+          items:
+            $ref: '#/components/schemas/Row'
+          description: ''
+      example:
+        count: 2
+        rows:
+        - id: a3404c05-0ad3-4df0-a243-06d9492cb547
+          network: MTN
+          phoneNumber: '09036036393'
+          amountToSell: 700
+          amountToReceive: 490
+          status: pending
+          userId: c6151de9-11b3-4eea-bc86-be315e87024a
+          createdAt: 2022-10-12T13:59:00.013Z
+          updatedAt: 2022-10-12T13:59:00.013Z
+          customer:
+            email: obebeeunice@gmail.com
+            phonenumber: '08113792805'
+        - id: d5686bde-b4cd-46c5-b175-fa41756722a2
+          network: MTN
+          phoneNumber: '09036036393'
+          amountToSell: 700
+          amountToReceive: 490
+          status: pending
+          userId: c6151de9-11b3-4eea-bc86-be315e87024a
+          createdAt: 2022-10-12T15:34:25.083Z
+          updatedAt: 2022-10-12T15:34:25.083Z
+          customer:
+            email: obebeeunice@gmail.com
+            phonenumber: '08113792805'
+    Row:
+      title: Row
+      required:
+      - id
+      - network
+      - phoneNumber
+      - amountToSell
+      - amountToReceive
+      - status
+      - userId
+      - createdAt
+      - updatedAt
+      - customer
+      type: object
+      properties:
+        id:
+          type: string
+        network:
+          type: string
+        phoneNumber:
+          type: string
+        amountToSell:
+          type: integer
+          format: int32
+        amountToReceive:
+          type: integer
+          format: int32
+        status:
+          type: string
+        userId:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        customer:
+          allOf:
+          - $ref: '#/components/schemas/Customer'
+          - {}
+      example:
+        id: a3404c05-0ad3-4df0-a243-06d9492cb547
+        network: MTN
+        phoneNumber: '09036036393'
+        amountToSell: 700
+        amountToReceive: 490
+        status: pending
+        userId: c6151de9-11b3-4eea-bc86-be315e87024a
+        createdAt: 2022-10-12T13:59:00.013Z
+        updatedAt: 2022-10-12T13:59:00.013Z
+        customer:
+          email: obebeeunice@gmail.com
+          phonenumber: '08113792805'
+    Customer:
+      title: Customer
+      required:
+      - email
+      - phonenumber
+      type: object
+      properties:
+        email:
+          type: string
+        phonenumber:
+          type: string
+      example:
+        email: obebeeunice@gmail.com
+        phonenumber: '08113792805'
+    getUniqueTransaction:
+      title: getUniqueTransaction
+      required:
+      - msg
+      - totalPages
+      - transactions
+      type: object
+      properties:
+        msg:
+          type: string
+        totalPages:
+          type: string
+          nullable: true
+        transactions:
+          allOf:
+          - $ref: '#/components/schemas/Transactions1'
+          - {}
+      example:
+        msg: User transaction successful
+        totalPages: null
+        transactions:
+          count: 0
+          rows: []
+    Transactions1:
+      title: Transactions1
+      required:
+      - count
+      - rows
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        rows:
+          type: array
+          items:
+            type: string
+          description: ''
+      example:
+        count: 0
+        rows: []
+    getTransaction1:
+      title: getTransaction1
+      required:
+      - msg
+      - transaction
+      type: object
+      properties:
+        msg:
+          type: string
+        transaction:
+          allOf:
+          - $ref: '#/components/schemas/Transaction1'
+          - {}
+      example:
+        msg: Transaction found
+        transaction:
+          id: a3404c05-0ad3-4df0-a243-06d9492cb547
+          network: MTN
+          phoneNumber: '09036036393'
+          amountToSell: 700
+          amountToReceive: 490
+          status: pending
+          userId: c6151de9-11b3-4eea-bc86-be315e87024a
+          createdAt: 2022-10-12T13:59:00.013Z
+          updatedAt: 2022-10-12T13:59:00.013Z
+    Transaction1:
+      title: Transaction1
+      required:
+      - id
+      - network
+      - phoneNumber
+      - amountToSell
+      - amountToReceive
+      - status
+      - userId
+      - createdAt
+      - updatedAt
+      type: object
+      properties:
+        id:
+          type: string
+        network:
+          type: string
+        phoneNumber:
+          type: string
+        amountToSell:
+          type: integer
+          format: int32
+        amountToReceive:
+          type: integer
+          format: int32
+        status:
+          type: string
+        userId:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      example:
+        id: a3404c05-0ad3-4df0-a243-06d9492cb547
+        network: MTN
+        phoneNumber: '09036036393'
+        amountToSell: 700
+        amountToReceive: 490
+        status: pending
+        userId: c6151de9-11b3-4eea-bc86-be315e87024a
+        createdAt: 2022-10-12T13:59:00.013Z
+        updatedAt: 2022-10-12T13:59:00.013Z
+    confirmTransfer:
+      title: confirmTransfer
+      required:
+      - msg
+      - transaction
+      type: object
+      properties:
+        msg:
+          type: string
+        transaction:
+          allOf:
+          - $ref: '#/components/schemas/Transaction1'
+          - {}
+      example:
+        msg: Transaction confirmed successfully
+        transaction:
+          id: d5686bde-b4cd-46c5-b175-fa41756722a2
+          network: MTN
+          phoneNumber: '09036036393'
+          amountToSell: 700
+          amountToReceive: 490
+          status: confirmed
+          userId: c6151de9-11b3-4eea-bc86-be315e87024a
+          createdAt: 2022-10-12T15:34:25.083Z
+          updatedAt: 2022-10-12T15:41:47.337Z
+    cancelTransfer:
+      title: cancelTransfer
+      required:
+      - msg
+      - transaction
+      type: object
+      properties:
+        msg:
+          type: string
+        transaction:
+          allOf:
+          - $ref: '#/components/schemas/Transaction1'
+          - {}
+      example:
+        msg: Transaction cancelled successfully
+        transaction:
+          id: a3404c05-0ad3-4df0-a243-06d9492cb547
+          network: MTN
+          phoneNumber: '09036036393'
+          amountToSell: 700
+          amountToReceive: 490
+          status: cancelled
+          userId: c6151de9-11b3-4eea-bc86-be315e87024a
+          createdAt: 2022-10-12T13:59:00.013Z
+          updatedAt: 2022-10-12T15:43:02.094Z
+    createWithdrawalRequest:
+      title: createWithdrawalRequest
+      required:
+      - code
+      - bank
+      - name
+      - number
+      - amount
+      - password
+      type: object
+      properties:
+        code:
+          type: string
+        bank:
+          type: string
+        name:
+          type: string
+        number:
+          type: string
+        amount:
+          type: string
+        password:
+          type: string
+      example:
+        code: '044'
+        bank: ACCESS BANK NIGERIA
+        name: Eunice Obebe
+        number: '1234567890'
+        amount: '300'
+        password: '123456'
+    createWithdrawal:
+      title: createWithdrawal
+      required:
+      - msg
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: Processing Withdrawal, Check 'Withdrawal History' to see status
+    GetWithdrawals:
+      title: GetWithdrawals
+      required:
+      - msg
+      - withdrawals
+      type: object
+      properties:
+        msg:
+          type: string
+        withdrawals:
+          type: array
+          items:
+            $ref: '#/components/schemas/Withdrawal'
+          description: ''
+      example:
+        msg: Here are your Withdrawals
+        withdrawals:
+        - id: 369739
+          code: '044'
+          bank: ACCESS BANK NIGERIA
+          name: Ade Bond01AAB
+          number: '1234567890'
+          amount: '300'
+          status: NEW
+          user: c6151de9-11b3-4eea-bc86-be315e87024a
+          createdAt: 2022-10-12T16:17:07.788Z
+          updatedAt: 2022-10-12T16:17:07.788Z
+        - id: 369740
+          code: '044'
+          bank: ACCESS BANK NIGERIA
+          name: Ade Bond01AAB
+          number: '1234567890'
+          amount: '300'
+          status: NEW
+          user: c6151de9-11b3-4eea-bc86-be315e87024a
+          createdAt: 2022-10-12T16:17:18.675Z
+          updatedAt: 2022-10-12T16:17:18.675Z
+        - id: 369754
+          code: '044'
+          bank: ACCESS BANK NIGERIA
+          name: Ade Bond01AAB
+          number: '1234567890'
+          amount: '300'
+          status: NEW
+          user: c6151de9-11b3-4eea-bc86-be315e87024a
+          createdAt: 2022-10-12T16:29:54.935Z
+          updatedAt: 2022-10-12T16:29:54.935Z
+    Withdrawal:
+      title: Withdrawal
+      required:
+      - id
+      - code
+      - bank
+      - name
+      - number
+      - amount
+      - status
+      - user
+      - createdAt
+      - updatedAt
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        code:
+          type: string
+        bank:
+          type: string
+        name:
+          type: string
+        number:
+          type: string
+        amount:
+          type: string
+        status:
+          type: string
+        user:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      example:
+        id: 369739
+        code: '044'
+        bank: ACCESS BANK NIGERIA
+        name: Ade Bond01AAB
+        number: '1234567890'
+        amount: '300'
+        status: NEW
+        user: c6151de9-11b3-4eea-bc86-be315e87024a
+        createdAt: 2022-10-12T16:17:07.788Z
+        updatedAt: 2022-10-12T16:17:07.788Z
+    withdrawalrequest:
+      title: withdrawalrequest
+      required:
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+      example:
+        id: '369754'
+    withdrawal1:
+      title: withdrawal1
+      required:
+      - msg
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: Withdrawal successful
+    AminLoginRequest:
+      title: AminLoginRequest
+      required:
+      - emailOrUsername
+      - password
+      type: object
+      properties:
+        emailOrUsername:
+          type: string
+        password:
+          type: string
+      example:
+        emailOrUsername: obebefola@gmail.com
+        password: 41rt1m32c45h
+    AminLogin:
+      title: AminLogin
+      required:
+      - msg
+      - userInfo
+      type: object
+      properties:
+        msg:
+          type: string
+        userInfo:
+          allOf:
+          - $ref: '#/components/schemas/UserInfo1'
+          - {}
+      example:
+        msg: You have successfully logged in
+        userInfo:
+          id: 7fe74f27-9a6e-4757-819c-6dfd2c4aa900
+          firstname: SuperAdmin
+          lastname: Airtime2Cash
+          username: root
+          email: obebefola@gmail.com
+          phonenumber: '09010480555'
+          avatar: ''
+          role: superadmin
+          wallet: 0
+    UserInfo1:
+      title: UserInfo1
+      required:
+      - id
+      - firstname
+      - lastname
+      - username
+      - email
+      - phonenumber
+      - avatar
+      - role
+      - wallet
+      type: object
+      properties:
+        id:
+          type: string
+        firstname:
+          type: string
+        lastname:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        phonenumber:
+          type: string
+        avatar:
+          type: string
+        role:
+          type: string
+        wallet:
+          type: integer
+          format: int32
+      example:
+        id: 7fe74f27-9a6e-4757-819c-6dfd2c4aa900
+        firstname: SuperAdmin
+        lastname: Airtime2Cash
+        username: root
+        email: obebefola@gmail.com
+        phonenumber: '09010480555'
+        avatar: ''
+        role: superadmin
+        wallet: 0
+    elevateAdminRequest:
+      title: elevateAdminRequest
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          type: string
+      example:
+        email: obebeeunice@gmail.com
+    elevateAdmin:
+      title: elevateAdmin
+      required:
+      - msg
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: User elevated to admin
+    RevokeAdminRequest:
+      title: RevokeAdminRequest
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          type: string
+      example:
+        email: obebeeunice@gmail.com
+    RevokeAdmin:
+      title: RevokeAdmin
+      required:
+      - msg
+      type: object
+      properties:
+        msg:
+          type: string
+      example:
+        msg: Admin role revoked
+    AdminWalletRequest:
+      title: AdminWalletRequest
+      required:
+      - amountToSell
+      - amountToReceive
+      - email
+      - transactionId
+      type: object
+      properties:
+        amountToSell:
+          type: string
+        amountToReceive:
+          type: string
+        email:
+          type: string
+        transactionId:
+          type: string
+      example:
+        amountToSell: '700'
+        amountToReceive: '490'
+        email: obebeeunice@gmail.com
+        transactionId: a3404c05-0ad3-4df0-a243-06d9492cb547
+    AdminWallet:
+      title: AdminWallet
+      required:
+      - msg
+      - data
+      type: object
+      properties:
+        msg:
+          type: string
+        data:
+          type: integer
+          format: int32
+      example:
+        msg: Wallet credited successfully
+        data: 490
+  securitySchemes:
+    httpBearer:
+      type: http
+      scheme: bearer
+security:
+- httpBearer: []
+tags:
+- name: User
+  description: ''
+- name: Account
+  description: ''
+- name: Transfer
+  description: ''
+- name: Withdrawal
+  description: ''
+- name: Admin
+  description: ''
