@@ -1,4 +1,4 @@
-FROM node:14-alpine AS compilation
+FROM node:18-alpine
 
 ENV NODE_ENV=development
 
@@ -6,16 +6,14 @@ USER node
 
 WORKDIR /home/node/app
 
-COPY ./package.json .
+COPY . .
 
 RUN yarn
 
-COPY . .
-
-RUN yarn tsc
+RUN yarn build
 
 EXPOSE 3500
 
 VOLUME [ "$(pwd)/node_modules:/home/node/app/node_modules" ];
 
-CMD ["yarn", "dev:start"]
+CMD ["yarn", "start"]
