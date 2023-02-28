@@ -10,7 +10,7 @@ export async function auth(req: Request, res: Response, next: NextFunction) {
   try {
     const authorization = req.headers.authorization;
     const token = authorization?.slice(7) || req.cookies.token as string;
-    if (token) {
+    if (!token) {
       return res.status(401).json({ msg: "Authentication required. Please login" })
     }
 
