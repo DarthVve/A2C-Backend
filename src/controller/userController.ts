@@ -182,7 +182,7 @@ export async function verifyUser(req: Request, res: Response) {
     if (user) {
       const updateVerified = await user.update({ verified: true });
       if (updateVerified) {
-        return res.status(200).redirect(`${APP_URL}/Login`);
+        return res.status(200).redirect(`${APP_URL}/login`);
       } else {
         throw new Error('failed to update user')
       }
